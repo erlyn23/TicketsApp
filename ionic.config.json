@@ -1,0 +1,7 @@
+{
+  "name": "TicketsApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
