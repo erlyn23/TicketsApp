@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "miturnitord-a5afd": {
+      "hosting": {
+        "app": [
+          "miturnitord-a5afd"
+        ]
+      }
+    }
+  }
+}

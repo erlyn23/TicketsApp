@@ -12,9 +12,12 @@
       <h1 style="font-size: 30px; font-weight: bold;">Iniciar sesión</h1>
     </div>
     <div class="form-container">
-      <form>
-        <input type="text" class="auth-input" placeholder="&#xF0E0; Correo electrónico">
-        <input type="password" class="auth-input" placeholder="&#xF084; Contraseña">
+      <form [formGroup]="loginForm">
+        
+        <input type="text" formControlName="email" class="auth-input" placeholder="&#xF0E0; Correo electrónico">
+        
+        <input type="password" formControlName="password" class="auth-input" placeholder="&#xF084; Contraseña">
+        
         <button class="auth-btn">Entrar</button>
       </form>
     </div>
