@@ -9,6 +9,17 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
+ .auth-btn{ 
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,77,109,1) 0%, rgba(87,167,115,1) 100%);
+    border-style: none;
+    border-radius: 10px;
+    padding: 10px;
+    width: 90%;
+    height: 40px;
+    font-size: 20px;
+    margin-bottom: 20px;
+ }
+
 /* Core CSS required for Ionic components to work properly */
 @import "~@ionic/angular/css/core.css";
 
