@@ -7,7 +7,7 @@
     </ion-row>
   </ion-grid>
 
-  <div class="login-form-container">
+  <div class="login-form-container animate__animated animate__bounceIn">
     <div class="title">
       <h1 style="font-size: 30px; font-weight: bold;">Iniciar sesión</h1>
     </div>
@@ -22,6 +22,6 @@
 
   <div class="aditional-footer">
     <h4>¿No posees una cuenta?</h4>
-    <button class="auth-btn">Registrarme</button>
+    <button class="auth-btn" [routerLink]="['/register']">Registrarme</button>
   </div>
 </ion-content>

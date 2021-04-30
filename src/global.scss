@@ -21,7 +21,7 @@
  }
 
  .auth-input{
-   width: 90%;
+   width: 80%;
    margin: 15px 0;
    border-style: none;
    background-color: transparent;
@@ -31,10 +31,19 @@
    font-size: 20px;
    text-align: center;
    font-family: arial, fontawesome;
+   transition: 1s ease-in-out;
 
    &::placeholder{
       color: var(--ion-color-primary-constrast);
    }
+ }
+
+ .valid-field{
+   border-bottom-color: var(--ion-color-success);
+ }
+
+ .invalid-field{
+    border-bottom-color: red;
  }
 
 /* Core CSS required for Ionic components to work properly */

@@ -1,9 +1,65 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>register</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content color="primary">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" style="text-align: center;">
+        <h1 style="font-size: 50px;">TicketsApp</h1>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
-<ion-content>
+  <div class="register-form-container animate__animated animate__bounceIn">
+    <div class="title">
+      <h1 style="font-size: 30px; font-weight: bold;">Registrarme</h1>
+    </div>
+    <div class="form-container">
+      <form [formGroup]="registerForm">
 
+          <input type="text" formControlName="fullName" class="auth-input" [class]="isValidField('fullName')" placeholder="&#xF007; Nombre completo">
+          <div *ngIf="isValidField('fullName') === 'invalid-field'">
+            <p *ngIf="registerForm.get('fullName').errors?.required">Debes escribir tu nombre</p>
+            <p *ngIf="registerForm.get('fullName').errors?.minlength">Debes escribir al menos 3 letras</p>
+            <p *ngIf="registerForm.get('fullName').errors?.maxlength">Debes escribir menos de 50 letras</p>
+          </div>
+        
+          <input type="text" formControlName="phone" class="auth-input" [class]="isValidField('phone')" placeholder="&#xF095; Teléfono">
+          <div *ngIf="isValidField('phone') === 'invalid-field'">
+            <p *ngIf="registerForm.get('phone').errors?.required">Debes escribir tu teléfono</p>
+            <p *ngIf="registerForm.get('phone').errors?.minlength">Debes escribir al menos 9 números</p>
+            <p *ngIf="registerForm.get('phone').errors?.maxlength">Debes solo 20 números</p>
+            <p *ngIf="registerForm.get('phone').errors?.pattern">Solo puedes escribir números</p>
+          </div>
+
+       
+          <input type="text" formControlName="email" class="auth-input" [class]="isValidField('email')" placeholder="&#xF0E0; Correo electrónico">
+          <div *ngIf="isValidField('email') === 'invalid-field'">
+            <p *ngIf="registerForm.get('email').errors?.required">Debes escribir tu correo</p>
+            <p *ngIf="registerForm.get('email').errors?.pattern">Debes escribir un correo válido</p>
+          </div>
+
+          <input type="password" formControlName="password" class="auth-input" [class]="verifyPasswords(null)" [class]="isValidField('password')" (ionChange)="verifyPasswords($event)" placeholder="&#xF084; Contraseña">
+          <div *ngIf="isValidField('password') === 'invalid-field'">
+            <p *ngIf="registerForm.get('password').errors?.required">Debes escribir tu contraseña</p>
+            <p *ngIf="registerForm.get('password').errors?.minlength">Debes escribir al menos 8 carácteres</p>
+            <p *ngIf="registerForm.get('password').errors?.maxlength">Debes escribir menos de 16 carácteres</p>
+            <p *ngIf="registerForm.get('password').errors?.pattern">La contraseña debe contener 1 letra mayúscula y al menos 1 número</p>
+          </div>
+
+          <input type="password" formControlName="confirmPassword" class="auth-input" [class]="verifyPasswords(null)" [class]="isValidField('password')" (ionChange)="verifyPasswords($event)" placeholder="&#xF084; Repite la contraseña">
+          <div *ngIf="isValidField('confirmPassword') === 'invalid-field'">
+            <p *ngIf="registerForm.get('confirmPassword').errors?.required">Debes escribir tu contraseña</p>
+            <p *ngIf="registerForm.get('confirmPassword').errors?.minlength">Debes escribir al menos 8 carácteres</p>
+            <p *ngIf="registerForm.get('confirmPassword').errors?.maxlength">Debes escribir menos de 16 carácteres</p>
+            <p *ngIf="registerForm.get('confirmPassword').errors?.pattern">La contraseña debe contener 1 letra mayúscula y al menos 1 número</p>
+          </div>
+          <p *ngIf="verifyPasswords(null) === 'invalid-field'">Las contraseñas no coinciden</p>
+
+        <button class="auth-btn" [disabled]="registerForm.invalid && verifyPasswords(null) === 'invalid-field'">Registrarme</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="aditional-footer">
+    <h4>¿Ya posees una cuenta?</h4>
+    <button class="auth-btn" (click)="registerForm.reset()" [routerLink]="['/login']">Iniciar sesión</button>
+  </div>
 </ion-content>
