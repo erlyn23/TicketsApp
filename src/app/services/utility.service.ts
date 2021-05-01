@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { ToastController } from '@ionic/angular';
+import { LoadingController, ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
 
-  constructor(private toastCtrl: ToastController) { }
+  constructor(private toastCtrl: ToastController,
+    private loadingCtrl: LoadingController) { }
 
   async presentToast(message: string, customClass: string){
     const toast = this.toastCtrl.create({
@@ -16,5 +17,19 @@ export class UtilityService {
     });
 
     (await toast).present();
+  }
+
+  async presentLoading(){
+    const loading = this.loadingCtrl.create({
+      message: 'Procesando solicitud, por favor espere...',
+      backdropDismiss: false,
+      cssClass: 'custom-loading'
+    });
+
+    (await loading).present();
+  }
+
+  closeLoading(){
+    this.loadingCtrl.dismiss();
   }
 }

@@ -53,7 +53,7 @@
           </div>
           <p *ngIf="verifyPasswords(null) === 'invalid-field'">Las contraseñas no coinciden</p>
 
-        <button class="auth-btn" [disabled]="registerForm.invalid && verifyPasswords(null) === 'invalid-field'">Registrarme</button>
+        <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid && verifyPasswords(null) === 'invalid-field'">Registrarme</button>
       </form>
     </div>
   </div>
