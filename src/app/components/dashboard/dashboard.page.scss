@@ -1,0 +1,7 @@
+ion-toolbar{
+    --background: transparent !important; 
+}
+
+ion-content{
+    --background: var(--ion-color-primary-contrast);
+}

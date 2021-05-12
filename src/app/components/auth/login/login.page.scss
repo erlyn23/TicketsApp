@@ -1,8 +1,6 @@
 .login-form-container{
-    height: 80vh;
     width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-direction: column;
 
@@ -15,5 +13,22 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    text-align: center;
+    a{
+        color: white;
+        text-decoration: none;
+    }
+}
+
+.aditional-login{
+    background-color: white;
+    border-style: none;
+    padding: 10px;
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    color: black;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }

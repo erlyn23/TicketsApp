@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { MainPageRoutingModule } from './main-routing.module';
 
 import { MainPage } from './main.page';
+import { MainSlideComponent } from './main-slide/main-slide.component';
 
 @NgModule({
   imports: [
@@ -15,6 +16,6 @@ import { MainPage } from './main.page';
     IonicModule,
     MainPageRoutingModule
   ],
-  declarations: [MainPage]
+  declarations: [MainPage, MainSlideComponent]
 })
 export class MainPageModule {}

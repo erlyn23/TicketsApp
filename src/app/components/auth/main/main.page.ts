@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { IAuth } from 'src/app/core/models/auth.interface';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-main',
@@ -8,7 +10,14 @@ import { Router } from '@angular/router';
 })
 export class MainPage implements OnInit {
 
-  constructor(private router:Router) { }
+  constructor(private authService: AuthService,private router:Router) {
+
+    const user: IAuth = this.authService.userData;
+
+    if(user){
+      this.authService.signIn(user);
+    }
+   }
 
   ngOnInit() {
   }

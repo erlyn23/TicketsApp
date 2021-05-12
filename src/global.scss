@@ -8,16 +8,15 @@
  * For more information on global stylesheets, visit the documentation:
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
-
  .auth-btn{ 
-    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(72,77,109,1) 0%, rgba(87,167,115,1) 100%);
+    background: var(--ion-color-secondary);
     border-style: none;
-    border-radius: 10px;
+    border-radius: 30px;
     padding: 10px;
-    width: 90%;
+    width: 50%;
     height: 40px;
     font-size: 20px;
-    margin-bottom: 20px;
+    margin: 10px 0;
  }
 
  .auth-input{
@@ -26,8 +25,9 @@
    border-style: none;
    background-color: transparent;
    outline: none;
-   border-bottom-style: solid;
-   border-bottom-color: var(--ion-color-primary-contrast);
+   border-style: solid;
+   padding: 10px;
+   border-color: var(--ion-color-primary-contrast);
    font-size: 20px;
    text-align: center;
    font-family: arial, fontawesome;
@@ -36,6 +36,11 @@
    &::placeholder{
       color: var(--ion-color-primary-constrast);
    }
+ }
+
+ .back-button{
+  --background: transparent !important;
+  --box-shadow: none;
  }
 
  .valid-field{

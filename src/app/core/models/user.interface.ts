@@ -5,4 +5,5 @@ export interface IUser{
     password: string;
     photo?: string;
     isBusiness?: boolean;
+    step?: number;
 }
