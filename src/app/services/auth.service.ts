@@ -86,15 +86,29 @@ export class AuthService {
     await this.angularFireAuth.createUserWithEmailAndPassword(user.email, user.password).then(async result=>{
       if(result){
         await result.user.sendEmailVerification();
-        await this.angularFireDatabase.object(`users/${result.user.uid}`).set({
-          fullName: user.fullName,
-          phone: user.phone,
-          email: user.email,
-          isBusiness: false,
-          step: 1
-        }).then(()=>{
-          this.router.navigate(['/login']);
-        });
+        if(user.isBusiness){
+          await this.angularFireDatabase.object(`users/${result.user.uid}`).set({
+            fullName: user.fullName,
+            email: user.email,
+            isBusiness: user.isBusiness,
+            address: user.address,
+            businessName: user.businessName
+          }).then(async ()=>{
+            await this.utilityService.presentSimpleAlert('Información', 
+            'Gracias por registrarte con nosotros, para iniciar sesión, primero debes verificar tu cuenta de correo electrónico');
+            this.router.navigate(['/login']);
+          });
+        }else{
+          await this.angularFireDatabase.object(`users/${result.user.uid}`).set({
+            fullName: user.fullName,
+            email: user.email,
+            isBusiness: user.isBusiness,
+          }).then(async ()=>{
+            await this.utilityService.presentSimpleAlert('Información', 
+            'Gracias por registrarte con nosotros, para iniciar sesión, primero debes verificar tu cuenta de correo electrónico');
+            this.router.navigate(['/login']);
+          });
+        }
       }
     });
   }

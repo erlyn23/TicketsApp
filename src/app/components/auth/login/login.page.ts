@@ -53,7 +53,6 @@ export class LoginPage implements OnInit {
   }
 
   goToPage(page: string){
-    console.log("Entré aquí");
     this.router.navigate([page]);
   }
 }

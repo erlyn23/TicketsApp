@@ -1,0 +1,19 @@
+<ion-content color="primary">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" style="text-align: center;">
+          <img src="../../../../assets/img/LogoPNG.png" width="250" height="150">
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12" style="text-align: center;">
+        <h1>Tipo de cuenta</h1>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <div class="redirect-buttons-container animate__animated animate__bounceIn">
+    <button class="auth-btn" (click)="goToPage('/register')">Personal</button>
+    <button class="auth-btn" (click)="goToPage('/register/register-business')">Negocio</button>
+    <button class="auth-btn" (click)="goToPage('/login')">Ya tengo una cuenta</button>
+  </div>
+</ion-content>

@@ -6,12 +6,11 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.page.html',
-  styleUrls: ['./register.page.scss'],
+  selector: 'app-register-business',
+  templateUrl: './register-business.component.html',
+  styleUrls: ['./register-business.component.scss'],
 })
-export class RegisterPage implements OnInit {
-
+export class RegisterBusinessComponent implements OnInit {
   registerForm: FormGroup;
   private passwordPattern: RegExp = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])");
   private emailPattern: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -34,6 +33,8 @@ export class RegisterPage implements OnInit {
     this.registerForm = this.formBuilder.group({
       fullName: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       email: ["", [Validators.required, Validators.pattern(this.emailPattern)]],
+      businessName: ["", [Validators.required]],
+      address: ["", [Validators.required]],
       password: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(16), Validators.pattern(this.passwordPattern)]],
       confirmPassword: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(16), Validators.pattern(this.passwordPattern)]]
     });
@@ -61,7 +62,9 @@ export class RegisterPage implements OnInit {
         const user: IUser = { fullName: this.registerForm.value.fullName,
         email: this.registerForm.value.email,
         password: this.registerForm.value.password,
-        isBusiness: false };
+        businessName: this.registerForm.value.businessName,
+        address: this.registerForm.value.address,
+        isBusiness: true };
         
         await this.authService.registerUser(user).then(async ()=>{
           
@@ -84,5 +87,4 @@ export class RegisterPage implements OnInit {
       this.utilityService.closeLoading();
     }
   }
-
 }

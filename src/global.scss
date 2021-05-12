@@ -13,14 +13,14 @@
     border-style: none;
     border-radius: 30px;
     padding: 10px;
-    width: 50%;
+    width: 70%;
     height: 40px;
     font-size: 20px;
     margin: 10px 0;
  }
 
  .auth-input{
-   width: 80%;
+   width: 100%;
    margin: 15px 0;
    border-style: none;
    background-color: transparent;
@@ -44,11 +44,11 @@
  }
 
  .valid-field{
-   border-bottom-color: var(--ion-color-success);
+   border-color: var(--ion-color-success);
  }
 
  .invalid-field{
-    border-bottom-color: red;
+    border-color: red;
  }
 
  .error-toast{
@@ -65,6 +65,15 @@
    --background: var(--ion-color-primary-contrast);
    color: var(--ion-color-primary);
  }
+ .custom-info-alert{
+  --background: var(--ion-color-primary-contrast);
+  color: var(--ion-color-primary);
+
+  .alert-title{
+    color: var(--ion-color-primary);
+    text-align: center;
+  }
+}
 
 /* Core CSS required for Ionic components to work properly */
 @import "~@ionic/angular/css/core.css";
