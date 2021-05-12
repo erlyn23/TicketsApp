@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { IAuth } from 'src/app/core/models/auth.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
@@ -17,12 +18,11 @@ export class RegisterPage implements OnInit {
   private emailPattern: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   constructor(private formBuilder: FormBuilder,
     private authService: AuthService,
-    private utilityService: UtilityService) { 
-
-      const user: IAuth = this.authService.userData;
-
+    private utilityService: UtilityService,
+    private router: Router) { 
+      const user = this.authService.userData;
       if(user){
-        this.authService.signIn(user);
+        this.router.navigate(['/dashboard'])
       }
     }
 

@@ -17,12 +17,10 @@ export class LoginPage implements OnInit {
     private utilityService: UtilityService, 
     private authService: AuthService,
     private router: Router) {
-      const user: IAuth = this.authService.userData;
-
+      const user = this.authService.userData;
       if(user){
-        this.authService.signIn(user);
+        this.router.navigate(['/dashboard'])
       }
-
     }
 
   ngOnInit() {
@@ -50,6 +48,13 @@ export class LoginPage implements OnInit {
       
       this.utilityService.closeLoading();
     });
+  }
+
+  async signInWithFacebook(){
+    await this.authService.facebookLogin();
+  }
+  async signInWithGoogle(){
+    await this.authService.googleLogin();
   }
 
   goToPage(page: string){

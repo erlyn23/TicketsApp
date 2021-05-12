@@ -11,13 +11,11 @@ import { AuthService } from 'src/app/services/auth.service';
 export class MainPage implements OnInit {
 
   constructor(private authService: AuthService,private router:Router) {
-
-    const user: IAuth = this.authService.userData;
-
+    const user = this.authService.userData;
     if(user){
-      this.authService.signIn(user);
+      this.router.navigate(['/dashboard'])
     }
-   }
+  }
 
   ngOnInit() {
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -8,14 +8,8 @@ import { MenuController } from '@ionic/angular';
 })
 export class DashboardPage implements OnInit {
 
-  constructor(private menuCtrl: MenuController) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
   }
-
-  openMenu(){
-    this.menuCtrl.enable(true, 'first');
-    this.menuCtrl.toggle();
-  }
-
 }
