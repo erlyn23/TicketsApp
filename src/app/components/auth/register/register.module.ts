@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { RegisterPageRoutingModule } from './register-routing.module';
 
 import { RegisterPage } from './register.page';
+import { MapModule } from 'src/app/core/modules/map.module';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import { RegisterPage } from './register.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RegisterPageRoutingModule
+    RegisterPageRoutingModule,
+    MapModule
   ],
   declarations: [RegisterPage]
 })

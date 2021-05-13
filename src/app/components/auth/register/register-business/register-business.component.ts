@@ -113,7 +113,6 @@ export class RegisterBusinessComponent implements OnInit {
           await this.utilityService.presentToast('Usuario creado correctamente', 'success-toast');
         
         }).catch(async error=>{
-          
           await this.utilityService.presentToast('Ha ocurrido un error al crear usuario', 'error-toast');
           this.utilityService.closeLoading();
         

@@ -26,7 +26,7 @@ export class AuthService {
   constructor(private angularFireAuth: AngularFireAuth, 
   private angularFireDatabase: AngularFireDatabase,
   private utilityService: UtilityService,
-  private repositoryService: RepositoryService,
+  private repositoryService: RepositoryService<IUser>,
   private router: Router) {
     
     Storage.get({key: 'user'}).then(result=>{
@@ -43,6 +43,15 @@ export class AuthService {
     };
   }
 
+  async registerUser(user: IUser){
+    await this.angularFireAuth.createUserWithEmailAndPassword(user.email, user.password).then(async result=>{
+      if(result){
+        await result.user.sendEmailVerification();
+        await this.saveUserInDatabase(user, result);
+      }
+    });
+  }
+
   async signIn(auth: IAuth){
     await this.angularFireAuth.signInWithEmailAndPassword(auth.email, auth.password).then(async result=>{
         if(result){
@@ -50,8 +59,8 @@ export class AuthService {
             await this.angularFireAuth.currentUser.then(async result=>{
               if(result) {
                 await Storage.set({key: 'user', value: JSON.stringify(result)});
+                this.saveUserRole(result.uid);
                 this.userSubject.next(result);
-                this.router.navigate([DASHBOARD_ROUTE])
               }
             });
           }else{
@@ -71,21 +80,6 @@ export class AuthService {
           break;
         }
       });
-  }
-
-  async getUserRole(uid: string){
-    const isBusiness: AngularFireObject<boolean> = await this.angularFireDatabase.object(`users/${uid}/isBusiness`);
-    if(isBusiness) return true;
-    return false;
-  }
-
-  async registerUser(user: IUser){
-    await this.angularFireAuth.createUserWithEmailAndPassword(user.email, user.password).then(async result=>{
-      if(result){
-        await result.user.sendEmailVerification();
-        await this.saveUserInDatabase(user, result);
-      }
-    });
   }
 
   async facebookLogin(){
@@ -121,8 +115,8 @@ export class AuthService {
           
           if(result){
             await Storage.set({key: 'user', value: JSON.stringify(result)});
+            this.saveUserRole(result.uid);
             this.userSubject.next(result);
-            this.router.navigate([DASHBOARD_ROUTE])
           };
         
         });
@@ -144,7 +138,16 @@ export class AuthService {
         long: user.long,
         businessName: user.businessName
       }
+
+      const businessInfo = {
+        businessName: user.businessName,
+        latitude: user.latitude,
+        long: user.long,
+        clientsInTurn: 0,
+        businessPhoto: "",
+      }
       await this.repositoryService.setElement(`users/${result.user.uid}`, userWithBusiness).then(async ()=>{
+        await this.repositoryService.setElement(`businessList/${result.user.uid}`, businessInfo);
         await this.utilityService.presentSimpleAlert(infoTitle, infoMessage);
         this.router.navigate([LOGIN_ROUTE]);
       });
@@ -159,6 +162,15 @@ export class AuthService {
         this.router.navigate([LOGIN_ROUTE]);
       });
     }
+  }
+
+  saveUserRole(uid: string){
+    const fireObject: AngularFireObject<IUser> = this.angularFireDatabase.object(`users/${uid}`);
+    fireObject.valueChanges().subscribe(result=>{
+      Storage.set({key: 'role', value: JSON.stringify(result.isBusiness)}).then(()=>{
+        this.router.navigate([DASHBOARD_ROUTE]);
+      });
+    });
   }
 
   async signOut(){

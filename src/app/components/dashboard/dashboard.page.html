@@ -1,15 +1,43 @@
-<ion-tabs>
+<ion-tabs *ngIf="!isBusiness">
   
   <ion-tab-bar>
     
-    <ion-tab-button tab="home">
+    <ion-tab-button tab="/home">
       <ion-icon name="home"></ion-icon>
       <ion-label>Inicio</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="explore">
+    <ion-tab-button tab="/explore">
       <ion-icon name="eye"></ion-icon>
       <ion-label>Explorar</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="/favourites">
+      <ion-icon name="star"></ion-icon>
+      <ion-label>Favoritos</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="/profile">
+      <ion-icon name="person-circle-outline"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+
+</ion-tabs>
+
+<ion-tabs *ngIf="isBusiness">
+  
+  <ion-tab-bar>
+    
+    <ion-tab-button tab="b-home">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="employees">
+      <ion-icon name="person-circle"></ion-icon>
+      <ion-label>Empleados</ion-label>
     </ion-tab-button>
 
     <ion-tab-button tab="favourites">

@@ -49,7 +49,7 @@
           <p *ngIf="verifyPasswords(null) === 'invalid-field'">Las contraseñas no coinciden</p>
 
         <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid || verifyPasswords(null) === 'invalid-field'">Registrarme</button><br>
-        <button class="auth-btn" (click)="registerForm.reset()" [routerLink]="['/login']">Regresar</button>
+        <button class="auth-btn" (click)="registerForm.reset(); router.navigate(['/login'])">Regresar</button>
       </form>
     </div>
   </div>

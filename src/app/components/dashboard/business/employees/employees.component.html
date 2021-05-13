@@ -1,0 +1,17 @@
+<app-header></app-header>
+<ion-content color="primary">
+  <ion-list color="primary">
+    <ion-item color="primary" lines="full" *ngFor="let employee of employeesList, let i = index" (click)="goToEmployeeDetails(employee)">
+      <ion-label>
+        <ion-title>{{employee.fullName}}</ion-title>
+        <p>&nbsp; &nbsp; &nbsp; Clientes en turno: {{employee.clientsInTurn}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button>
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

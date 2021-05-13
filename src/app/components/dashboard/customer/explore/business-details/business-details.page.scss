@@ -1,0 +1,11 @@
+.business-cover{
+    width: 100%; 
+    height: 300px; 
+}
+ion-list{
+    background: var(--ion-color-primary-contrast);
+    ion-item{
+        color: black;
+        --background: var(--ion-color-primary-contrast);
+    }
+}

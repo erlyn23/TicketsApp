@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RepositoryService {
+export class RepositoryService<T> {
 
   constructor(private angularFireDatabase: AngularFireDatabase) { }
 
@@ -24,8 +24,8 @@ export class RepositoryService {
     await this.angularFireDatabase.database.ref(route).get();
   }
 
-  getAllElements(route: string){
-    return this.angularFireDatabase.object(route).snapshotChanges();
+  getAllElements(route: string): AngularFireObject<T>{
+    return this.angularFireDatabase.object(route);
   }
 
   async deleteElement(route: string){

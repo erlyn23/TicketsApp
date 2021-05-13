@@ -10,8 +10,10 @@ import { DashboardPage } from './dashboard.page';
 import { HeaderComponent } from '../core/header/header.component';
 import { HomeComponent } from './customer/home/home.component';
 import { ExploreComponent } from './customer/explore/explore.component';
-import { MapComponent } from '../core/map/map.component';
-import { RegisterBusinessComponent } from '../auth/register/register-business/register-business.component';
+import { MapModule } from 'src/app/core/modules/map.module';
+import { BHomeComponent } from './business/b-home/b-home.component';
+import { BrowserModule } from '@angular/platform-browser';
+import { EmployeesComponent } from './business/employees/employees.component';
 
 @NgModule({
   imports: [
@@ -19,13 +21,14 @@ import { RegisterBusinessComponent } from '../auth/register/register-business/re
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    DashboardPageRoutingModule
+    DashboardPageRoutingModule,
+    MapModule
   ],
   declarations: [DashboardPage, 
     HeaderComponent, 
     HomeComponent,
     ExploreComponent,
-    MapComponent,
-    RegisterBusinessComponent ]
+    BHomeComponent,
+    EmployeesComponent ]
 })
 export class DashboardPageModule {}

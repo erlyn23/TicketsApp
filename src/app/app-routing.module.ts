@@ -25,6 +25,10 @@ const routes: Routes = [
     path: 'dashboard',
     canActivate: [AuthGuard],
     loadChildren: () => import('./components/dashboard/dashboard.module').then( m => m.DashboardPageModule),
+  },
+  {
+    path: 'business-details',
+    loadChildren: () => import('./components/dashboard/customer/explore/business-details/business-details.module').then( m => m.BusinessDetailsPageModule)
   }
 ];
 

@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button slot="icon-only" (click)="goToPage('/dashboard/explore')">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title *ngIf="business != null">{{business.businessName}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content style="--background: var(--ion-color-primary-contrast)">
+  <img *ngIf="business != null && business.businessPhoto.length > 0" [src]="business.businessPhoto" alt="" class="business-cover">
+
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12" style="text-align: center; color: black;">
+        <h1>Lista de empleados</h1>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Nombre del empleado</h2>
+        <p>Clientes en turno: 4</p>
+      </ion-label>
+      <ion-button expand="block" fill="clear">
+        Reservar
+      </ion-button>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Nombre del empleado</h2>
+        <p>Clientes en turno: 4</p>
+      </ion-label>
+      <ion-button expand="block" fill="clear">
+        Reservar
+      </ion-button>
+    </ion-item>
+    <ion-item lines="none">
+      <ion-label>
+        <h2>Nombre del empleado</h2>
+        <p>Clientes en turno: 4</p>
+      </ion-label>
+      <ion-button expand="block" fill="clear">
+        Reservar
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-grid fixed>
+    <ion-row>
+      <ion-col size="12" style="text-align: center; color: black;">
+        <h1>Ubicación</h1>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <app-map></app-map>
+
+</ion-content>

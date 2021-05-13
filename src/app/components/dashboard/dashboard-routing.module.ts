@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { BHomeComponent } from './business/b-home/b-home.component';
+import { BProfileComponent } from './business/b-profile/b-profile.component';
+import { EmployeesComponent } from './business/employees/employees.component';
 import { ExploreComponent } from './customer/explore/explore.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
 import { HomeComponent } from './customer/home/home.component';
@@ -12,7 +15,6 @@ const routes: Routes = [
     path: '',
     component: DashboardPage,
     children: [
-      {path: '', component: HomeComponent, pathMatch:'full'},
       {
         path: 'home',
         component: HomeComponent
@@ -28,6 +30,18 @@ const routes: Routes = [
       {
         path: 'profile',
         component: ProfileComponent
+      },
+      {
+        path: 'b-home',
+        component: BHomeComponent
+      },
+      {
+        path: 'employees',
+        component: EmployeesComponent,
+      },
+      {
+        path: 'b-profile',
+        component: BProfileComponent
       }
     ]
   }
