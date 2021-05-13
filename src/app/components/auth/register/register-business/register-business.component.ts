@@ -5,6 +5,9 @@ import { IAuth } from 'src/app/core/models/auth.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import * as MapBox from 'mapbox-gl';
+import * as MapBoxGeoCoder from '@mapbox/mapbox-gl-geocoder';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-register-business',
@@ -27,6 +30,7 @@ export class RegisterBusinessComponent implements OnInit {
 
   ngOnInit() {
     this.initForm();
+    this.initMap();
   }
 
   private initForm():void{
@@ -34,9 +38,44 @@ export class RegisterBusinessComponent implements OnInit {
       fullName: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       email: ["", [Validators.required, Validators.pattern(this.emailPattern)]],
       businessName: ["", [Validators.required]],
-      address: ["", [Validators.required]],
+      longitude: ["", [Validators.required]],
+      latitude: ["", [Validators.required]],
       password: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(16), Validators.pattern(this.passwordPattern)]],
       confirmPassword: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(16), Validators.pattern(this.passwordPattern)]]
+    });
+  }
+
+  initMap():void{
+    const initLong = -70.1654584;
+    const initLat = 18.7009047;
+    MapBox.accessToken = environment.mapToken;
+    const map = new MapBox.Map({
+      container: 'mapbox-container',
+      style: 'mapbox://styles/mapbox/streets-v11', 
+      center: [initLong, initLat], 
+      zoom: 6,
+    });
+    const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
+
+    this.registerForm.get('longitude').setValue(marker._lngLat.lng);
+    this.registerForm.get('latitude').setValue(marker._lngLat.lat);
+
+    const geocoder = new MapBoxGeoCoder({
+      accessToken: environment.mapToken,
+      mapboxgl: MapBox,
+      placeholder: 'Dirección del negocio',
+      marker: false
+    });
+    map.addControl(geocoder);
+
+    map.addControl(new MapBox.NavigationControl());
+    map.on('click', (e)=>{
+      const currentLng = e.lngLat.lng;
+      const currentLat = e.lngLat.lat;
+      marker.setLngLat([currentLng, currentLat]);
+
+      this.registerForm.get('longitude').setValue(currentLng);
+      this.registerForm.get('latitude').setValue(currentLat);
     });
   }
 
@@ -63,7 +102,8 @@ export class RegisterBusinessComponent implements OnInit {
         email: this.registerForm.value.email,
         password: this.registerForm.value.password,
         businessName: this.registerForm.value.businessName,
-        address: this.registerForm.value.address,
+        latitude: this.registerForm.value.latitude,
+        long: this.registerForm.value.longitude,
         isBusiness: true };
         
         await this.authService.registerUser(user).then(async ()=>{

@@ -8,8 +8,12 @@ import { Router } from '@angular/router';
 import { UtilityService } from './utility.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Plugins } from '@capacitor/core';
+import { RepositoryService } from './repository.service';
 
 const { Storage } = Plugins;
+
+const LOGIN_ROUTE = '/login';
+const DASHBOARD_ROUTE = '/dashboard';
 
 @Injectable({
   providedIn: 'root'
@@ -22,11 +26,14 @@ export class AuthService {
   constructor(private angularFireAuth: AngularFireAuth, 
   private angularFireDatabase: AngularFireDatabase,
   private utilityService: UtilityService,
+  private repositoryService: RepositoryService,
   private router: Router) {
+    
     Storage.get({key: 'user'}).then(result=>{
       this.userSubject = new BehaviorSubject<firebase.default.User>(JSON.parse(result.value));
       this.user$ = this.userSubject.asObservable();
     });
+  
   }
 
   public get userData(){
@@ -37,15 +44,14 @@ export class AuthService {
   }
 
   async signIn(auth: IAuth){
-    await firebase.default.auth().setPersistence(firebase.default.auth.Auth.Persistence.LOCAL).then(async ()=>{
-      return await this.angularFireAuth.signInWithEmailAndPassword(auth.email, auth.password).then(async result=>{
+    await this.angularFireAuth.signInWithEmailAndPassword(auth.email, auth.password).then(async result=>{
         if(result){
           if(result.user.emailVerified){
             await this.angularFireAuth.currentUser.then(async result=>{
               if(result) {
                 await Storage.set({key: 'user', value: JSON.stringify(result)});
                 this.userSubject.next(result);
-                this.router.navigate(['/dashboard'])
+                this.router.navigate([DASHBOARD_ROUTE])
               }
             });
           }else{
@@ -65,14 +71,12 @@ export class AuthService {
           break;
         }
       });
-    });
   }
 
   async getUserRole(uid: string){
     const isBusiness: AngularFireObject<boolean> = await this.angularFireDatabase.object(`users/${uid}/isBusiness`);
-    if(isBusiness){
-
-    }
+    if(isBusiness) return true;
+    return false;
   }
 
   async registerUser(user: IUser){
@@ -87,12 +91,15 @@ export class AuthService {
   async facebookLogin(){
     await this.withExternalPopUp(new firebase.default.auth.FacebookAuthProvider());
   }
+  
   async googleLogin(){
     await this.withExternalPopUp(new firebase.default.auth.GoogleAuthProvider());
   }
 
   async withExternalPopUp(provider){
+    
     await this.angularFireAuth.signInWithPopup(provider).then(async result=>{
+      
       if(result.additionalUserInfo.isNewUser){
         const profile = result.user;
         const user: IUser = {
@@ -103,52 +110,62 @@ export class AuthService {
         };
         await result.user.sendEmailVerification();
         await this.saveUserInDatabase(user, result);
+      
       }else if(!result.user.emailVerified){
+        
         this.utilityService.presentToast('No has verificado tu correo electrónico', 'error-toast')
+      
       }else{
+        
         await this.angularFireAuth.currentUser.then(async result=>{
+          
           if(result){
             await Storage.set({key: 'user', value: JSON.stringify(result)});
             this.userSubject.next(result);
-            this.router.navigate(['/dashboard'])
+            this.router.navigate([DASHBOARD_ROUTE])
           };
+        
         });
       }
     });
   }
 
   async saveUserInDatabase(user:IUser, result){
+
+    const infoMessage = 'Gracias por registrarte con nosotros, para iniciar sesión, primero debes verificar tu cuenta de correo electrónico';
+    const infoTitle = 'Información';
+
     if(user.isBusiness){
       const userWithBusiness = {
         fullName: user.fullName,
         email: user.email,
         isBusiness: user.isBusiness,
-        address: user.address,
+        latitude: user.latitude,
+        long: user.long,
         businessName: user.businessName
       }
-      this.setUser(userWithBusiness, result);
+      await this.repositoryService.setElement(`users/${result.user.uid}`, userWithBusiness).then(async ()=>{
+        await this.utilityService.presentSimpleAlert(infoTitle, infoMessage);
+        this.router.navigate([LOGIN_ROUTE]);
+      });
     }else{
       const userWithoutBusiness = {
         fullName: user.fullName,
         email: user.email,
         isBusiness: user.isBusiness,
       };
-      this.setUser(userWithoutBusiness, result);
+      await this.repositoryService.setElement(`users/${result.user.uid}`, userWithoutBusiness).then(async ()=>{
+        await this.utilityService.presentSimpleAlert(infoTitle, infoMessage);
+        this.router.navigate([LOGIN_ROUTE]);
+      });
     }
   }
 
-  async setUser(user, result){
-    await this.angularFireDatabase.object(`users/${result.user.uid}`).set(user).then(async ()=>{
-      await this.utilityService.presentSimpleAlert('Información', 
-      'Gracias por registrarte con nosotros, para iniciar sesión, primero debes verificar tu cuenta de correo electrónico');
-      this.router.navigate(['/login']);
-    });
-  }
   async signOut(){
     await this.angularFireAuth.signOut().then(async ()=>{
       await Storage.remove({key: 'user'});
       this.userSubject.next(null);
-      this.router.navigate(['/login']);
+      this.router.navigate([LOGIN_ROUTE]);
     });
   }
 }

@@ -3,7 +3,8 @@ export interface IUser{
     email: string;
     password: string;
     businessName?: string;
-    address?:string;
+    long?: number;
+    latitude?: number;
     photo?: string;
     isBusiness?: boolean;
 }

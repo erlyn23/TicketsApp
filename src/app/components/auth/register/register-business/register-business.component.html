@@ -23,10 +23,7 @@
             <p *ngIf="registerForm.get('businessName').errors?.required">Debes escribir el nombre de tu negocio</p>
           </div>
 
-          <input type="text" formControlName="address" class="auth-input" [class]="isValidField('address')" placeholder="&#xF3C5; Dirección">
-          <div *ngIf="isValidField('address') === 'invalid-field'">
-            <p *ngIf="registerForm.get('address').errors?.required">Debes escribir la dirección del negocio</p>
-          </div>
+          <app-map></app-map>
 
           <input type="text" formControlName="email" class="auth-input" [class]="isValidField('email')" placeholder="&#xF0E0; Correo electrónico">
           <div *ngIf="isValidField('email') === 'invalid-field'">
