@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { IEmployee } from 'src/app/core/models/employee.interface';
 import { UtilityService } from 'src/app/services/utility.service';
 import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
+import { RepositoryService } from 'src/app/services/repository.service';
 
 @Component({
   selector: 'app-business-details',
@@ -16,7 +17,9 @@ export class BusinessDetailsPage implements OnInit {
 
   business: IBusiness = null;
   employees: IEmployee[] = [];
+  clientsInTurnCount: number = 0;
   constructor(private utilityService: UtilityService, 
+    private repositoryService: RepositoryService<IBusiness>,
     private router: Router) {
   }
 
@@ -24,9 +27,11 @@ export class BusinessDetailsPage implements OnInit {
     const navigationExtras = this.router.getCurrentNavigation().extras.state?.business;
     if(navigationExtras != null) this.business = navigationExtras;
     else this.router.navigate(['/dashboard']);
+    this.clientsInTurnCount = this.router.getCurrentNavigation().extras.state?.clientsInTurn;
 
     this.initMap();
     this.getEmployees();
+    this.updateClientsInTurn();
   }
 
   getEmployees(){
@@ -51,6 +56,12 @@ export class BusinessDetailsPage implements OnInit {
     
     map.addControl(new MapBox.NavigationControl());
     map.scrollZoom.disable()
+  }
+
+  updateClientsInTurn(){
+    this.repositoryService.updateElement(`businessList/${this.business.key}`,{
+      clientsInTurn: this.clientsInTurnCount
+    });
   }
 
   async openReserveModal(employee: IEmployee){

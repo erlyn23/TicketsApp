@@ -19,7 +19,9 @@ export class ExploreComponent implements OnInit {
 
   businessSubscription: Subscription;
 
-  navExtras: NavigationExtras = { state: { business: null } };
+  navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0 } };
+
+  clientsInTurnCount: number = 0;
 
   constructor(private repositoryService: RepositoryService<IBusiness[]>,
     private router: Router) {
@@ -35,15 +37,24 @@ export class ExploreComponent implements OnInit {
       const businessList = result.payload.val();
 
       this.businessList = [];
+      this.clientsInTurnCount = 0;
       for(let businessKey in businessList){
         businessList[businessKey].key = businessKey;
         this.businessList.push(businessList[businessKey]);
+        
+        //Ciclo para obtener la cuenta general de los clientes en turno
+        for(let employeeKey in businessList[businessKey].employees){
+          let turnCount = businessList[businessKey].employees[employeeKey].clientsInTurn;
+          this.clientsInTurnCount += turnCount;
+        }
+
       }
     });
   }
 
-  goToBusinessDetails(business: IBusiness){
+  goToBusinessDetails(business: IBusiness, clientsInTurnCount: number){
     this.navExtras.state.business = business;
+    this.navExtras.state.clientsInTurn = clientsInTurnCount;
     this.router.navigate(['/business-details'], this.navExtras);
   }
 

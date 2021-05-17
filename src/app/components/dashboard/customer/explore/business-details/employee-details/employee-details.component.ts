@@ -135,11 +135,14 @@ export class EmployeeDetailsComponent implements OnInit{
         });
     }
 
-    async unreserveTurn(){
+    async unreserveTurn(previousQuantity){
         await this.repositoryService.updateElement(`users/${this.userUid}`, {
             isInTurn: false
         }).then(()=>{
            this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
+           this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
+                clientsInTurn: previousQuantity - 1
+            });
         });
     }
 
@@ -166,5 +169,6 @@ export class EmployeeDetailsComponent implements OnInit{
     ngOnDestroy(): void {
         this.employeeSubscription.unsubscribe();
         this.userSubscription.unsubscribe();
+        this.clientsInTurnCountSubscription.unsubscribe();
     }
 }
