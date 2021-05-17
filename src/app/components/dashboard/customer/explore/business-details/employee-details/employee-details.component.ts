@@ -1,6 +1,7 @@
 import { OnInit, Component, Input } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
+import { IEmployeeComments } from 'src/app/core/models/employee-comments.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { IUser } from 'src/app/core/models/user.interface';
@@ -38,6 +39,9 @@ export class EmployeeDetailsComponent implements OnInit{
     clientsCountRef: AngularFireObject<any>;
     clientsInTurnCountSubscription: Subscription;
 
+    comment: string;
+    employeeComments: IEmployeeComments[];
+
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
     private userRepoService: RepositoryService<IUser>,
@@ -59,6 +63,10 @@ export class EmployeeDetailsComponent implements OnInit{
         this.objectRef = this.repositoryService.getAllElements(`businessList/${this.additionalKey}/employees/${this.data.key}`);
         this.employeeSubscription = this.objectRef.valueChanges().subscribe(result=>{
             this.dbEmployee = result;
+            this.employeeComments = [];
+            for(let comment in this.dbEmployee.comments){
+                this.employeeComments.push(this.dbEmployee.comments[comment]);
+            }
         });
     }
 
@@ -133,6 +141,22 @@ export class EmployeeDetailsComponent implements OnInit{
         }).then(()=>{
            this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
         });
+    }
+
+    async doComment(){
+        if(this.comment !== undefined && this.comment !== ""){
+            const newDate = new Date();
+            const actualDate = `${newDate.getDate()}/${newDate.getMonth()+1}/${newDate.getFullYear()}`;
+            await this.repositoryService.pushElement(`businessList/${this.additionalKey}/employees/${this.data.key}/comments`,{
+                user: this.authService.userData.displayName,
+                comment: this.comment,
+                commentDate: actualDate
+            }).then(()=>{
+                this.comment = "";
+            });
+        }else{
+            this.utilityService.presentToast('Debes escribir un comentario', 'error-toast');
+        }
     }
 
     closeModal(){

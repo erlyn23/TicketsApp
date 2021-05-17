@@ -91,7 +91,31 @@
         </ion-row>
     </ion-grid>
 
-    <div *ngIf="employeeDetailPage === 'employeeComments'">
-        <p>Hello to employee comments</p>
+    <div *ngIf="employeeDetailPage === 'employeeComments'" class="employee-comments-container">
+        <div class="comment-inputs">
+            <form>
+                <ion-grid>
+                    <ion-row>
+                        <ion-col size="9">
+                            <textarea type="text" class="auth-input" [(ngModel)]="comment" name="comment" placeholder="Escribe un comentario"></textarea>
+                        </ion-col>
+                        <ion-col size="3">
+                            <button class="send-comment-btn" (click)="doComment()">
+                                <ion-icon slot="center" name="paper-plane-outline"></ion-icon>
+                            </button>
+                        </ion-col>
+                    </ion-row>
+                </ion-grid>
+            </form>
+        </div>
+        <div class="comments-content">
+            <ion-card *ngFor="let comment of employeeComments">
+                <ion-card-title>{{comment.user}}</ion-card-title>
+                <ion-card-content>
+                    <p>{{comment.comment}}</p>
+                    <p class="right"><small>{{comment.commentDate}}</small></p>
+                </ion-card-content>
+            </ion-card>
+        </div>
     </div>
 </ion-content>

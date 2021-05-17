@@ -10,20 +10,19 @@ ion-segment{
 
 .rating-content{
     h1{
-        color: black;
+        color: var(--ion-color-primary);
     }
     width: 100%;
     min-height: 1px;
-    color: yellow;
+    color: var(--ion-color-primary);
     font-size: 30px;
-    text-shadow: 0 6px 25px gray;
     text-align: center;
 }
 
 .clients-in-turn-content{
     width: 100%;
     min-height: 1px;
-    color: black;
+    color: var(--ion-color-primary);
     text-align: center;
     font-size: 65px;
 }
@@ -34,7 +33,7 @@ ion-segment{
 
     h1{
         font-size: 25px;
-        color: black;
+        color: var(--ion-color-primary);
     }
 
     .auth-btn{
@@ -46,6 +45,56 @@ ion-segment{
 
     ion-item{
         --background: var(--ion-color-primary-contrast);
-        color: black;
+        color: var(--ion-color-primary);
+    }
+}
+
+.employee-comments-container{
+    height: 100%;
+    .comment-inputs{
+        width: 100%;
+        text-align: center;
+        .auth-input{
+            border-color: var(--ion-color-primary);
+            width: 100%;
+            color: var(--ion-color-primary);
+            resize: none;
+            &::placeholder{
+                color: var(--ion-color-primary);
+            }
+        }
+        .send-comment-btn{
+            width: 75px;
+            height: 78px;
+            font-size: 25px;
+            margin-left: 10px;
+            background: var(--ion-color-primary);
+            color: var( --ion-color-primary-contrast);
+            margin: 15px;
+            padding: 10px;
+            border-radius: 125px;
+        }
+    }
+    
+    .comments-content{
+        height: 100%;
+        background: #c7c7c7;
+        border-top-style: solid;
+        border-top-color: var(--ion-color-primary);
+    }
+}
+
+ion-card{
+    color: var(--ion-color-primary);
+    padding: 10px;
+    ion-card-title{
+        text-align: center;
+        color: var(--ion-color-primary);
+    }
+    p{
+        font-size: 20px;
+    }
+    .right{
+        text-align: right;
     }
 }
