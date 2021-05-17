@@ -1,6 +1,7 @@
 import { IEmployee } from "./employee.interface";
 
 export interface IBusiness{
+    key?: string;
     businessName: string;
     latitude: number;
     long: number;

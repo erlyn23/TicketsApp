@@ -1,0 +1,97 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+            <ion-button (click)="closeModal()">
+                <ion-icon slot="start" name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>{{data.fullName}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-segment swipeGesture [(ngModel)]="employeeDetailPage" value="employeeInfo">
+        <ion-segment-button value="employeeInfo">
+            <ion-label>Información</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="employeeComments">
+            <ion-label>Comentarios</ion-label>
+        </ion-segment-button>
+    </ion-segment>
+
+    <ion-grid *ngIf="employeeDetailPage === 'employeeInfo'">
+        <ion-row>
+            <ion-col size="12">
+                <div class="rating-content">
+                    <h1>Calificación actual</h1>
+                    <span [ngSwitch]="dbEmployee.rating">
+                    <p *ngSwitchCase="1">
+                        <i class="fas fa-star"></i>
+                    </p>
+                    <p *ngSwitchCase="2">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </p>
+                    <p *ngSwitchCase="3">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </p>
+                    <p *ngSwitchCase="4">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </p>
+                    <p *ngSwitchCase="5">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </p>
+                    <p *ngSwitchDefault>
+                        <span style="color: lightgray; text-shadow: none; font-size: 20px;"><em>Este empleado aún no ha sido calificado</em></span>
+                    </p>
+                    </span>
+                </div>
+                <div class="rating-content">
+                    <h1>Calificar</h1>
+                    <div id="stars-content">
+                        <i class="far fa-star" (click)="rateEmployee(1)"></i>
+                        <i class="far fa-star" (click)="rateEmployee(2)"></i>
+                        <i class="far fa-star" (click)="rateEmployee(3)"></i>
+                        <i class="far fa-star" (click)="rateEmployee(4)"></i>
+                        <i class="far fa-star" (click)="rateEmployee(5)"></i>
+                    </div>
+                </div>
+                <div class="clients-in-turn-content">
+                    <h1>Total de clientes en turno</h1>
+                    <h3>{{clientsInTurnCount}}</h3>
+                </div>
+                <div class="reserve-turn">
+                    <h1>Reservar turno</h1>
+                    <form>
+                        <ion-item>
+                            <ion-label>Fecha de reserva</ion-label>
+                            <ion-datetime display-format="DD/MM/YYYY" 
+                            [(ngModel)]="reserveDate" name="reserveDate"
+                            doneText="Aceptar" 
+                            cancelText="Cancelar"></ion-datetime>
+                        </ion-item>
+                    </form>
+                    <button class="auth-btn" (click)="reserveTurn()" *ngIf="!isInTurn">
+                        Reservar
+                    </button>
+                    <button class="auth-btn cancel-btn" (click)="unreserveTurn()" *ngIf="isInTurn">
+                        Cancelar reserva anterior
+                    </button>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <div *ngIf="employeeDetailPage === 'employeeComments'">
+        <p>Hello to employee comments</p>
+    </div>
+</ion-content>

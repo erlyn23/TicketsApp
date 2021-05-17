@@ -8,6 +8,7 @@ import { BusinessDetailsPageRoutingModule } from './business-details-routing.mod
 
 import { BusinessDetailsPage } from './business-details.page';
 import { MapModule } from 'src/app/core/modules/map.module';
+import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { MapModule } from 'src/app/core/modules/map.module';
     BusinessDetailsPageRoutingModule,
     MapModule
   ],
-  declarations: [BusinessDetailsPage]
+  declarations: [BusinessDetailsPage, 
+    EmployeeDetailsComponent]
 })
 export class BusinessDetailsPageModule {}

@@ -1,0 +1,17 @@
+<ion-header>
+    <ion-toolbar class="modal-header">
+        <ion-buttons slot="start">
+            <ion-button (click)="closeWindow()">
+                <ion-icon slot="start" name="arrow-back"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+        <ion-title>Agregar empleado</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <form>
+        <input type="text" class="auth-input" [(ngModel)]="employeeName" name="employeeName" placeholder="Nombre del empleado">
+        <button class="auth-btn" (click)="saveEmployee()">Agregar</button>
+    </form>
+</ion-content>

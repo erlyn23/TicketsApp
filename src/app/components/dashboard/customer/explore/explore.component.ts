@@ -32,10 +32,12 @@ export class ExploreComponent implements OnInit {
   getBusinessList(){
     this.objectRef = this.repositoryService.getAllElements(`businessList`);
     this.businessSubscription = this.objectRef.snapshotChanges().subscribe(result=>{
-      const data = result.payload.val();
+      const businessList = result.payload.val();
 
-      for(let item in data){
-        this.businessList.push(data[item]);
+      this.businessList = [];
+      for(let businessKey in businessList){
+        businessList[businessKey].key = businessKey;
+        this.businessList.push(businessList[businessKey]);
       }
     });
   }

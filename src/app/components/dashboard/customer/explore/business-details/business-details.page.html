@@ -21,31 +21,12 @@
   </ion-grid>
 
   <ion-list>
-    <ion-item lines="none">
+    <ion-item lines="none" *ngFor="let employee of employees, let i = index">
       <ion-label>
-        <h2>Nombre del empleado</h2>
-        <p>Clientes en turno: 4</p>
+        <h2>{{employee.fullName}}</h2>
+        <p><em>Clientes en turno: {{employee.clientsInTurn}}</em></p>
       </ion-label>
-      <ion-button expand="block" fill="clear">
-        Reservar
-      </ion-button>
-    </ion-item>
-
-    <ion-item lines="none">
-      <ion-label>
-        <h2>Nombre del empleado</h2>
-        <p>Clientes en turno: 4</p>
-      </ion-label>
-      <ion-button expand="block" fill="clear">
-        Reservar
-      </ion-button>
-    </ion-item>
-    <ion-item lines="none">
-      <ion-label>
-        <h2>Nombre del empleado</h2>
-        <p>Clientes en turno: 4</p>
-      </ion-label>
-      <ion-button expand="block" fill="clear">
+      <ion-button expand="block" fill="clear" (click)="openReserveModal(employee);">
         Reservar
       </ion-button>
     </ion-item>

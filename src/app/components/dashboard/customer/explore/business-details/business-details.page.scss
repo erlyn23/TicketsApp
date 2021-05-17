@@ -7,5 +7,8 @@ ion-list{
     ion-item{
         color: black;
         --background: var(--ion-color-primary-contrast);
+        ion-label > p{
+            color: gray;
+        }
     }
 }

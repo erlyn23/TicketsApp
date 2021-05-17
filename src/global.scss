@@ -73,6 +73,20 @@
     color: var(--ion-color-primary);
     text-align: center;
   }
+  .alert-message{
+    color: black;
+    text-align: center;
+  }
+}
+
+.custom-modal{
+  margin-top: 128px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.modal-header{
+  --background: white;
+  color: var(--ion-color-primary);
 }
 
 /* Core CSS required for Ionic components to work properly */

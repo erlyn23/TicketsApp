@@ -12,8 +12,8 @@ import { HomeComponent } from './customer/home/home.component';
 import { ExploreComponent } from './customer/explore/explore.component';
 import { MapModule } from 'src/app/core/modules/map.module';
 import { BHomeComponent } from './business/b-home/b-home.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { EmployeesComponent } from './business/employees/employees.component';
+import { AddEmployeeComponent } from './business/employees/add-employee/add-employee.component';
 
 @NgModule({
   imports: [
@@ -29,6 +29,7 @@ import { EmployeesComponent } from './business/employees/employees.component';
     HomeComponent,
     ExploreComponent,
     BHomeComponent,
-    EmployeesComponent ]
+    EmployeesComponent,
+    AddEmployeeComponent]
 })
 export class DashboardPageModule {}

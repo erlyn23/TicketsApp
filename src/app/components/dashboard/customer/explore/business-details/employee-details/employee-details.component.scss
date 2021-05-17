@@ -1,0 +1,51 @@
+ion-content{
+    --background: var(--ion-color-primary-contrast);
+}
+
+ion-segment{
+    ion-segment-button{
+        color: var(--ion-color-primary);
+    }
+}
+
+.rating-content{
+    h1{
+        color: black;
+    }
+    width: 100%;
+    min-height: 1px;
+    color: yellow;
+    font-size: 30px;
+    text-shadow: 0 6px 25px gray;
+    text-align: center;
+}
+
+.clients-in-turn-content{
+    width: 100%;
+    min-height: 1px;
+    color: black;
+    text-align: center;
+    font-size: 65px;
+}
+
+.reserve-turn{
+    width: 100%;
+    text-align: center;
+
+    h1{
+        font-size: 25px;
+        color: black;
+    }
+
+    .auth-btn{
+        background: var(--ion-color-primary);
+    }
+    .cancel-btn{
+        background: gray;
+    }
+
+    ion-item{
+        --background: var(--ion-color-primary-contrast);
+        color: black;
+    }
+}

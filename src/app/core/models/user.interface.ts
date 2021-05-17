@@ -7,4 +7,5 @@ export interface IUser{
     latitude?: number;
     photo?: string;
     isBusiness?: boolean;
+    isInTurn?: boolean;
 }

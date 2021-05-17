@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import * as MapBox from 'mapbox-gl';
 import { environment } from 'src/environments/environment';
+import { IEmployee } from 'src/app/core/models/employee.interface';
+import { UtilityService } from 'src/app/services/utility.service';
+import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
 
 @Component({
   selector: 'app-business-details',
@@ -12,7 +15,9 @@ import { environment } from 'src/environments/environment';
 export class BusinessDetailsPage implements OnInit {
 
   business: IBusiness = null;
-  constructor(private router: Router) {
+  employees: IEmployee[] = [];
+  constructor(private utilityService: UtilityService, 
+    private router: Router) {
   }
 
   ngOnInit() {
@@ -21,6 +26,14 @@ export class BusinessDetailsPage implements OnInit {
     else this.router.navigate(['/dashboard']);
 
     this.initMap();
+    this.getEmployees();
+  }
+
+  getEmployees(){
+    for(let employeeKey in this.business.employees){
+      this.business.employees[employeeKey].key = employeeKey;
+      this.employees.push(this.business.employees[employeeKey]);
+    }
   }
 
   initMap():void{
@@ -38,6 +51,10 @@ export class BusinessDetailsPage implements OnInit {
     
     map.addControl(new MapBox.NavigationControl());
     map.scrollZoom.disable()
+  }
+
+  async openReserveModal(employee: IEmployee){
+    await this.utilityService.openModal(EmployeeDetailsComponent, employee, this.business.key);
   }
 
   goToPage(page: string){

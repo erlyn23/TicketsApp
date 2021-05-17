@@ -21,7 +21,7 @@ export class RepositoryService<T> {
   }
 
   async getOneElement(route: string){
-    await this.angularFireDatabase.database.ref(route).get();
+    (await this.angularFireDatabase.database.ref(route).get()).toJSON();
   }
 
   getAllElements(route: string): AngularFireObject<T>{

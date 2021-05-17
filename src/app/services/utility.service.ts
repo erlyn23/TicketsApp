@@ -1,5 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AlertController, LoadingController, ToastController } from '@ionic/angular';
+import { AlertController, 
+  LoadingController, 
+  ToastController,
+  ModalController
+} from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +12,8 @@ export class UtilityService {
 
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController) { }
+    private alertCtrl: AlertController,
+    private modalCtrl: ModalController) { }
 
   async presentToast(message: string, customClass: string){
     const toast = this.toastCtrl.create({
@@ -45,5 +50,45 @@ export class UtilityService {
       }]
     });
     (await alert).present();
+  }
+
+  async presentAlertWithActions(title: string, message: string,
+    confirmHandler: (value: any)=> boolean | void | { [key: string]: any}, 
+    cancelHandler: (value: any)=> boolean | void | { [key: string]: any}){
+    const alert = await this.alertCtrl.create({
+      header: title,
+      message: message,
+      cssClass: 'custom-info-alert',
+      backdropDismiss: false,
+      buttons: [{
+        text: 'Aceptar',
+        handler: confirmHandler
+      },{
+        text: 'Cancelar',
+        handler: cancelHandler
+      }]
+    });
+
+    (await alert).present();
+  }
+
+  closeAlert(){
+    this.alertCtrl.dismiss();
+  }
+
+  async openModal(component, data?, additionalKey?:string){
+    const modal = this.modalCtrl.create({
+      component: component,
+      cssClass: 'custom-modal',
+      componentProps:{
+        'data': data,
+        'additionalKey': additionalKey
+      }
+    });
+    (await modal).present();
+  }
+
+  closeModal(){
+    this.modalCtrl.dismiss();
   }
 }
