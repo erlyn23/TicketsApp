@@ -55,7 +55,7 @@ export class EmployeeDetailsComponent implements OnInit{
     ngOnInit():void{
         const user = this.authService.userData;
         this.userUid = user.uid;
-
+        
         this.getEmployeeDetails();
         this.getCurrentUserTurn();
         this.getClientsInTurnCount();

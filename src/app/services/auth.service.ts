@@ -47,6 +47,7 @@ export class AuthService {
     await this.angularFireAuth.createUserWithEmailAndPassword(user.email, user.password).then(async result=>{
       if(result){
         await result.user.sendEmailVerification();
+        await result.user.updateProfile({displayName: user.fullName});
         await this.saveUserInDatabase(user, result);
       }
     });

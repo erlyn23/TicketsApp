@@ -1,4 +1,38 @@
-<app-header></app-header>
 <ion-content color="primary">
-
-</ion-content>
+    <ion-grid>
+        <ion-row>
+            <ion-col size="12" style="text-align: center;" >
+                <h1>Listado de turnos 
+                    <button class="auth-btn" (click)="toggleReorder()">
+                        <ion-icon size="large" id="toggle-icon" slot="icon-only" name="reorder-three-outline"></ion-icon>
+                    </button>
+                </h1>
+            </ion-col>
+        </ion-row>
+        <ion-reorder-group id="reorder-parent" (ionItemReorder)="reorderTurns($event)" disabled="true">
+            <ion-list *ngFor="let turn of turns, let i = index">
+                <ion-reorder>
+                    <ion-item lines="none" color="primary">
+                        <ion-avatar>
+                            <img src="../../../../../assets/img/user_icon.png"
+                                alt="" *ngIf="turn.clientPhoto === undefined">
+                        </ion-avatar>&nbsp;&nbsp;&nbsp;
+                        <ion-label>
+                            <span>{{turn.clientName}}</span>&nbsp;
+                            <span>#{{i+1}}</span>
+                            <ion-button fill="clear" style="color: white;" (click)="openCancelTurn(turn)">
+                                <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+                            </ion-button>
+                            <div>
+                                {{turn.employeeName}}
+                            </div>
+                            <div>
+                                <small>{{turn.reserveDate | date: 'short'}}</small>
+                            </div>
+                        </ion-label>
+                    </ion-item>
+                </ion-reorder>
+            </ion-list>
+        </ion-reorder-group>
+    </ion-grid>
+</ion-content> 

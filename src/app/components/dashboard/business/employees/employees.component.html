@@ -1,11 +1,9 @@
-<app-header></app-header>
 <ion-content color="primary">
   <ion-list color="primary">
     <ion-item color="primary" lines="full" *ngFor="let employee of employeesList, let i = index">
       <ion-label>
         <ion-title (click)="goToEmployeeDetails(employee)">{{employee.fullName}}</ion-title>
-        <p>&nbsp; &nbsp; &nbsp; Clientes en turno: {{employee.clientsInTurn}}</p>
-        <span [ngSwitch]="employee.rating">
+        <div [ngSwitch]="employee.rating">
         <p *ngSwitchCase="1">
           &nbsp; &nbsp; &nbsp;  <ion-icon slot="start" name="star"></ion-icon> 
         </p>
@@ -31,9 +29,9 @@
           <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
         </p>
-        </span>
+        </div>
       </ion-label>
-      <ion-button fill="clear" (click)="openDeleteConfirm(i)">
+      <ion-button fill="clear" (click)="openDeleteConfirm(employee)">
         <ion-icon slot="icon-only" name="trash"></ion-icon>
       </ion-button>
     </ion-item>
