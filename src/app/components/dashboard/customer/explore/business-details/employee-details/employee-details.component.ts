@@ -24,23 +24,25 @@ export class EmployeeDetailsComponent implements OnInit{
     employeeDetailPage: string = 'employeeInfo';
 
     objectRef: AngularFireObject<IEmployee>;
-    employeeSubscription: Subscription;
 
     dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: []};
 
     userUid: string;
     userRef: AngularFireObject<IUser>;
-    userSubscription: Subscription;
     isInTurn: boolean = false; 
 
     reserveDate: string = (new Date()).toISOString();
 
     clientsInTurnCount: number = 0;
     clientsCountRef: AngularFireObject<any>;
-    clientsInTurnCountSubscription: Subscription;
 
     comment: string;
     employeeComments: IEmployeeComments[];
+
+
+    employeeSubscription: Subscription;
+    userSubscription: Subscription;
+    clientsInTurnCountSubscription: Subscription;
 
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
@@ -135,14 +137,32 @@ export class EmployeeDetailsComponent implements OnInit{
         });
     }
 
-    async unreserveTurn(previousQuantity){
-        await this.repositoryService.updateElement(`users/${this.userUid}`, {
+    employeeClientTurnObject: AngularFireObject<ITurn>;
+    searchClientEmployeeTurn(){
+        this.employeeClientTurnObject = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
+        const employeeClientTurn$ = this.employeeClientTurnObject.valueChanges().subscribe(result=>{
+            this.searchEmployeeToUnreserveTurn(result.employeeKey);
+            employeeClientTurn$.unsubscribe();
+        });
+    }
+
+    searchEmployeeToUnreserveTurn(employeeKey: string){
+        const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${this.additionalKey}/employees/${employeeKey}`);
+        const employee$ = employeeToUnsubscribeObjectRef.valueChanges().subscribe(result=>{
+            this.unreserveTurn(employeeKey, result.clientsInTurn)
+            employee$.unsubscribe();
+        });
+    }
+
+    unreserveTurn(employeeKey: string, previousQuantity: number){
+        this.repositoryService.updateElement(`users/${this.userUid}`, {
             isInTurn: false
         }).then(()=>{
-           this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
-           this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
-                clientsInTurn: previousQuantity - 1
-            });
+           this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${employeeKey}`,{
+            clientsInTurn: previousQuantity - 1
+           }).then(()=>{
+            this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
+           });
         });
     }
 

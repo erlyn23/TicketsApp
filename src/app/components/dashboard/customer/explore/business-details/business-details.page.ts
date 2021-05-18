@@ -7,6 +7,8 @@ import { IEmployee } from 'src/app/core/models/employee.interface';
 import { UtilityService } from 'src/app/services/utility.service';
 import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
 import { RepositoryService } from 'src/app/services/repository.service';
+import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-business-details',
@@ -18,8 +20,11 @@ export class BusinessDetailsPage implements OnInit {
   business: IBusiness = null;
   employees: IEmployee[] = [];
   clientsInTurnCount: number = 0;
+
+  employees$: Subscription;
   constructor(private utilityService: UtilityService, 
     private repositoryService: RepositoryService<IBusiness>,
+    private angularFireDatabase: AngularFireDatabase,
     private router: Router) {
   }
 
@@ -35,10 +40,16 @@ export class BusinessDetailsPage implements OnInit {
   }
 
   getEmployees(){
-    for(let employeeKey in this.business.employees){
-      this.business.employees[employeeKey].key = employeeKey;
-      this.employees.push(this.business.employees[employeeKey]);
-    }
+    const employeesObject: AngularFireObject<IEmployee[]> = this.angularFireDatabase.object(`businessList/${this.business.key}/employees`);
+    this.employees$ = employeesObject.snapshotChanges().subscribe(result=>{
+      const data = result.payload.val();
+
+      this.employees = [];
+      for(let employeeKey in data){
+        data[employeeKey].key = employeeKey;
+        this.employees.push(data[employeeKey]);
+      }
+    });
   }
 
   initMap():void{
@@ -70,6 +81,10 @@ export class BusinessDetailsPage implements OnInit {
 
   goToPage(page: string){
     this.router.navigate([page]);
+  }
+
+  ngOnDestroy(): void {
+    this.employees$.unsubscribe();
   }
 
 }

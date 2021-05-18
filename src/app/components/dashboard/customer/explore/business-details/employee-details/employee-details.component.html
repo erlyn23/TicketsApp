@@ -83,7 +83,7 @@
                     <button class="auth-btn" (click)="reserveTurn()" *ngIf="!isInTurn">
                         Reservar
                     </button>
-                    <button class="auth-btn cancel-btn" (click)="unreserveTurn(clientsInTurnCount)" *ngIf="isInTurn">
+                    <button class="auth-btn cancel-btn" (click)="searchClientEmployeeTurn()" *ngIf="isInTurn">
                         Cancelar reserva anterior
                     </button>
                 </div>
