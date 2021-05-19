@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireObject } from '@angular/fire/database';
+import { AngularFireStorage } from '@angular/fire/storage';
 import { NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
@@ -47,7 +48,6 @@ export class ExploreComponent implements OnInit {
           let turnCount = businessList[businessKey].employees[employeeKey].clientsInTurn;
           this.clientsInTurnCount += turnCount;
         }
-
       }
     });
   }

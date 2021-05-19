@@ -10,7 +10,7 @@
   <ion-list color="primary">
     <ion-item color="primary" lines="none" *ngFor="let business of businessList, let i = index" (click)="goToBusinessDetails(business, clientsInTurnCount)">
       <ion-thumbnail>
-        <img *ngIf="business.businessPhoto != ''" src="https://www.eastbayri.com/uploads/original/20200709-105919-roots%20barber%20shop-10.jpg" />
+        <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
         <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
       </ion-thumbnail>
       <ion-label>

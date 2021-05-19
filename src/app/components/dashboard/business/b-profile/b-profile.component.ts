@@ -13,6 +13,7 @@ import { RepositoryService } from 'src/app/services/repository.service';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { PhotoPopoverComponent } from 'src/app/components/core/photo-popover/photo-popover.component';
 import { AngularFireStorage } from '@angular/fire/storage';
+import { ChangePasswordComponent } from 'src/app/components/core/change-password/change-password.component';
 
 @Component({
   selector: 'app-b-profile',
@@ -53,10 +54,7 @@ export class BProfileComponent implements OnInit {
       this.registerForm.controls.latitude.setValue(result.latitude); 
       
       if(result.photo != undefined) {
-        const businessProfilePhoto = this.angularFireStorage.storage.ref(result.photo);
-        businessProfilePhoto.getDownloadURL().then(value=>{
-          this.businessPhoto = value;
-        })
+        this.businessPhoto = result.photo;
       }
 
       this.initMap(result.long, result.latitude);
@@ -145,6 +143,14 @@ export class BProfileComponent implements OnInit {
       await this.utilityService.presentToast('El formulario no es válido', 'error-toast');
       this.utilityService.closeLoading();
     }
+  }
+
+  async openChangePassword(){
+    await this.utilityService.openModal(ChangePasswordComponent);
+  }
+
+  async logOut(){
+    await this.authService.signOut();
   }
 
   ngOnDestroy(): void {

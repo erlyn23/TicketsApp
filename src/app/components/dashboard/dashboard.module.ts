@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -15,6 +15,7 @@ import { EmployeesComponent } from './business/employees/employees.component';
 import { AddEmployeeComponent } from './business/employees/add-employee/add-employee.component';
 import { BEmployeeDetailsComponent } from './business/employees/b-employee-details/b-employee-details.component';
 import { BProfileComponent } from './business/b-profile/b-profile.component';
+import { ChangePasswordComponent } from '../core/change-password/change-password.component';
 
 @NgModule({
   imports: [
@@ -32,6 +33,7 @@ import { BProfileComponent } from './business/b-profile/b-profile.component';
     EmployeesComponent,
     AddEmployeeComponent,
     BEmployeeDetailsComponent,
-    BProfileComponent]
+    BProfileComponent,
+    ChangePasswordComponent]
 })
 export class DashboardPageModule {}

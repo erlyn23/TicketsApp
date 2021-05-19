@@ -44,11 +44,11 @@
  }
 
  .valid-field{
-   border-color: var(--ion-color-success);
+   border-color: var(--ion-color-success) !important;
  }
 
  .invalid-field{
-    border-color: red;
+    border-color: red !important;
  }
 
  .error-toast{

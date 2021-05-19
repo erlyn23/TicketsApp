@@ -23,8 +23,8 @@
           <app-map></app-map>
           
         <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid">Guardar cambios</button><br>
-        <button class="auth-btn" >Cambiar contraseña</button><br>
-        <button class="auth-btn" >Cerrar sesión</button>
+        <button class="auth-btn" (click)="openChangePassword()">Cambiar contraseña</button><br>
+        <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
       </form>
     </div>
   </div>

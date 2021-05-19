@@ -50,11 +50,14 @@ export class PhotoPopoverComponent implements OnInit{
         const uploadPhoto$ = uploadTask.percentageChanges().subscribe(percent=>{
             if(percent === 100){
                 const uid = this.authService.userData.uid;
-                this.repositoryService.updateElement(`users/${uid}`,{photo: filePath}).then(()=>{
-                    this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: filePath}).then(()=>{
-                        this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
-                        this.utilityService.closeLoading();
-                        this.utilityService.closePopover();
+                const uploadedPhoto$ = fileRef.getDownloadURL().subscribe(result=>{
+                    this.repositoryService.updateElement(`users/${uid}`,{photo: result}).then(()=>{
+                        this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: result}).then(()=>{
+                            this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
+                            this.utilityService.closeLoading();
+                            this.utilityService.closePopover();
+                            uploadedPhoto$.unsubscribe();
+                        });
                     });
                 });
                 uploadPhoto$.unsubscribe();
