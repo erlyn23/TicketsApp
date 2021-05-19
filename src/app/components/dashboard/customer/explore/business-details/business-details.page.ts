@@ -33,7 +33,7 @@ export class BusinessDetailsPage implements OnInit {
     if(navigationExtras != null) this.business = navigationExtras;
     else this.router.navigate(['/dashboard']);
     this.clientsInTurnCount = this.router.getCurrentNavigation().extras.state?.clientsInTurn;
-
+    
     this.initMap();
     this.getEmployees();
     this.updateClientsInTurn();

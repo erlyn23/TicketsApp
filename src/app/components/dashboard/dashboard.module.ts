@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -16,6 +16,8 @@ import { AddEmployeeComponent } from './business/employees/add-employee/add-empl
 import { BEmployeeDetailsComponent } from './business/employees/b-employee-details/b-employee-details.component';
 import { BProfileComponent } from './business/b-profile/b-profile.component';
 import { ChangePasswordComponent } from '../core/change-password/change-password.component';
+import { ProfileComponent } from './customer/profile/profile.component';
+import { FavouritesComponent } from './customer/favourites/favourites.component';
 
 @NgModule({
   imports: [
@@ -28,7 +30,9 @@ import { ChangePasswordComponent } from '../core/change-password/change-password
   ],
   declarations: [DashboardPage,
     HomeComponent,
+    ProfileComponent,
     ExploreComponent,
+    FavouritesComponent,
     BHomeComponent,
     EmployeesComponent,
     AddEmployeeComponent,

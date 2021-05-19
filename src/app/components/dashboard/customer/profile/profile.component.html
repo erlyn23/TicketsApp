@@ -1,2 +1,24 @@
 <ion-content color="primary">
-</ion-content>
+    <div class="photo-container">
+      <img class="profile" src="../../../../assets/img/user_icon.png" (click)="openChangePhotoPopover()" height="100" *ngIf="userPhoto === ''">
+      <img [src]="userPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="userPhoto !== ''">
+    </div>
+  
+    <div class="register-form-container animate__animated animate__bounceIn">
+      <div class="form-container">
+        <form [formGroup]="updateProfileForm">
+  
+            <input type="text" formControlName="fullName" class="auth-input" [class]="isValidField('fullName')" placeholder="&#xF007; Nombre completo">
+            <div *ngIf="isValidField('fullName') === 'invalid-field'">
+              <p *ngIf="updateProfileForm.get('fullName').errors?.required">Debes escribir tu nombre</p>
+              <p *ngIf="updateProfileForm.get('fullName').errors?.minlength">Debes escribir al menos 3 letras</p>
+              <p *ngIf="updateProfileForm.get('fullName').errors?.maxlength">Debes escribir menos de 50 letras</p>
+            </div>
+            
+          <button class="auth-btn" (click)="updateProfile()">Guardar cambios</button><br>
+          <button class="auth-btn" (click)="openChangePassword()">Cambiar contraseña</button><br>
+          <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
+        </form>
+      </div>
+    </div>
+  </ion-content>

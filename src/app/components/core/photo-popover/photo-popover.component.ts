@@ -25,26 +25,27 @@ export class PhotoPopoverComponent implements OnInit{
 
     async uploadImage(ev){
         const isBusiness = (await Storage.get({key: 'role'})).value;
-        await this.uploadBusinessImage(ev.target.files[0], Boolean(isBusiness));
+        await this.uploadBusinessImage(ev.target.files[0], isBusiness);
     }
 
-    async uploadBusinessImage(image, isBusiness: boolean){
+    async uploadBusinessImage(image, isBusiness: string){
         let filePath = '';
         const uid = this.authService.userData.uid;
 
-        (isBusiness) ? filePath = `business/business-${uid}` : filePath = `clients/client-${uid}`;
-        
+        if(isBusiness === 'true') filePath = `business/business-${uid}`;
+        else filePath = `clients/client-${uid}`;
+
         this.utilityService.presentAlertWithActions('Confirmar', '¿Estás seguro de querer subir esta foto?',
         async ()=>
         {   await this.utilityService.presentLoading(); 
-            this.savePhotoInDb(image, filePath); 
+            this.savePhotoInDb(image, filePath, isBusiness); 
         },
         ()=>{ 
             this.utilityService.closeAlert(); 
         })
     }
 
-    async savePhotoInDb(image, filePath){
+    async savePhotoInDb(image, filePath, isBusiness){
         const fileRef = this.angularFireStorage.ref(filePath);
         const uploadTask = this.angularFireStorage.upload(filePath, image);
         const uploadPhoto$ = uploadTask.percentageChanges().subscribe(percent=>{
@@ -52,12 +53,16 @@ export class PhotoPopoverComponent implements OnInit{
                 const uid = this.authService.userData.uid;
                 const uploadedPhoto$ = fileRef.getDownloadURL().subscribe(result=>{
                     this.repositoryService.updateElement(`users/${uid}`,{photo: result}).then(()=>{
-                        this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: result}).then(()=>{
-                            this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
-                            this.utilityService.closeLoading();
-                            this.utilityService.closePopover();
-                            uploadedPhoto$.unsubscribe();
-                        });
+                        if(isBusiness === 'true') this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: result});
+                        this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
+                        this.utilityService.closeLoading();
+                        this.utilityService.closePopover();
+                        uploadedPhoto$.unsubscribe();
+                    }).catch(err=>{
+                        console.log(err);
+                        this.utilityService.presentToast('Ha ocurrido un error al subir la foto', 'error-toast');
+                        this.utilityService.closeLoading();
+                        this.utilityService.closePopover();
                     });
                 });
                 uploadPhoto$.unsubscribe();

@@ -23,15 +23,12 @@ import { ChangePasswordComponent } from 'src/app/components/core/change-password
 export class BProfileComponent implements OnInit {
 
   registerForm: FormGroup;
-  private emailPattern: RegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   businessPhoto: string = "";
   constructor(private formBuilder: FormBuilder,
     private repositoryService: RepositoryService<IUser>,
     private authService: AuthService,
     private utilityService: UtilityService,
     private angularFireDatabase: AngularFireDatabase,
-    private angularFireAuth: AngularFireAuth,
-    private angularFireStorage: AngularFireStorage,
     private router: Router) { 
       const user = this.authService.userData;
       if(user){

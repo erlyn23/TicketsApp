@@ -1,2 +1,51 @@
 <ion-content color="primary">
-</ion-content>
+    <ion-grid>
+      <ion-row>
+        <ion-col size="12">
+          <ion-searchbar placeholder="Buscar negocio" [(ngModel)]="searchFilter" name="searchFilter" 
+          (ionChange)="searchForBusiness($event, businessList)"></ion-searchbar>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  
+    <ion-list color="primary" *ngIf="searchBusiness.length === 0 && searchFilter.length === 0">
+      <ion-item color="primary" lines="none" *ngFor="let business of businessList, let i = index">
+        <ion-thumbnail>
+          <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
+          <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+        </ion-thumbnail>
+        <ion-label>
+          <ion-title (click)="goToBusinessDetails(business, clientsInTurnCount)">
+            {{business.businessName}}
+            <div>Clientes en turno: {{clientsInTurnCount}}</div>
+          </ion-title>
+        </ion-label>
+        <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  
+    <ion-list color="primary" *ngIf="searchBusiness.length > 0 && searchFilter.length > 0">
+      <ion-item color="primary" lines="none" *ngFor="let business of searchBusiness, let i = index" (click)="goToBusinessDetails(business, clientsInTurnCount)">
+        <ion-thumbnail>
+          <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
+          <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+        </ion-thumbnail>
+        <ion-label>
+          <ion-title>
+            {{business.businessName}}
+            <div>Clientes en turno: {{clientsInTurnCount}}</div>
+          </ion-title>
+        </ion-label>
+        <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  
+    <div class="no-search-matching" *ngIf="searchBusiness.length === 0 && searchFilter.length > 0" style="width: 100%; color: white; text-align: center;">
+      <p><em>No existen negocios con este nombre</em></p>
+    </div>
+  </ion-content>
+  
