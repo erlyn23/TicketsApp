@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { AlertController, 
   LoadingController, 
   ToastController,
-  ModalController
+  ModalController,
+  PopoverController
 } from '@ionic/angular';
 
 @Injectable({
@@ -13,7 +14,8 @@ export class UtilityService {
   constructor(private toastCtrl: ToastController,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private modalCtrl: ModalController) { }
+    private modalCtrl: ModalController,
+    private popoverCtrl: PopoverController) { }
 
   async presentToast(message: string, customClass: string){
     const toast = this.toastCtrl.create({
@@ -90,5 +92,21 @@ export class UtilityService {
 
   closeModal(){
     this.modalCtrl.dismiss();
+  }
+
+  async showPopover(component){
+    const popover = this.popoverCtrl.create({
+      component: component,
+      cssClass: 'custom-popover',
+      translucent: true,
+      mode: 'ios',
+      animated: true
+    });
+
+    (await popover).present();
+  }
+
+  closePopover(){
+    this.popoverCtrl.dismiss();
   }
 }

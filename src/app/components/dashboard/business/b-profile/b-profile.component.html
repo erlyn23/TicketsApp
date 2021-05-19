@@ -1,12 +1,8 @@
 <ion-content color="primary">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12" style="text-align: center;">
-          <img src="../../../../assets/img/user_icon.png" height="100" *ngIf="authService.userData.photoURL === undefined">
-          <img class="profile" [src]="authService.userData.photoURL" alt="" *ngIf="authService.userData.photoURL !== undefined">
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <div class="photo-container">
+    <img class="profile" src="../../../../assets/img/user_icon.png" (click)="openChangePhotoPopover()" height="100" *ngIf="businessPhoto === undefined || businessPhoto === ''">
+    <img [src]="businessPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="businessPhoto !== ''">
+  </div>
 
   <div class="register-form-container animate__animated animate__bounceIn">
     <div class="form-container">
@@ -25,12 +21,6 @@
           </div>
 
           <app-map></app-map>
-
-          <input type="text" formControlName="email" class="auth-input" [class]="isValidField('email')" placeholder="&#xF0E0; Correo electrónico">
-          <div *ngIf="isValidField('email') === 'invalid-field'">
-            <p *ngIf="registerForm.get('email').errors?.required">Debes escribir tu correo</p>
-            <p *ngIf="registerForm.get('email').errors?.pattern">Debes escribir un correo válido</p>
-          </div>
           
         <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid">Guardar cambios</button><br>
         <button class="auth-btn" >Cambiar contraseña</button><br>

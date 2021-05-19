@@ -89,6 +89,10 @@
   color: var(--ion-color-primary);
 }
 
+.custom-popover{
+  margin-top: -175px;
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "~@ionic/angular/css/core.css";
 
