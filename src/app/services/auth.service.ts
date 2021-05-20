@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import * as firebase from 'firebase/app';
@@ -9,6 +9,8 @@ import { UtilityService } from './utility.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Plugins } from '@capacitor/core';
 import { RepositoryService } from './repository.service';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+import { Platform } from '@ionic/angular';
 
 const { Storage } = Plugins;
 
@@ -27,6 +29,9 @@ export class AuthService {
   private angularFireDatabase: AngularFireDatabase,
   private utilityService: UtilityService,
   private repositoryService: RepositoryService<IUser>,
+  private ngZone: NgZone,
+  private facebook: Facebook,
+  private platform: Platform,
   private router: Router) {
     
     Storage.get({key: 'user'}).then(result=>{
@@ -84,45 +89,61 @@ export class AuthService {
   }
 
   async facebookLogin(){
-    await this.withExternalPopUp(new firebase.default.auth.FacebookAuthProvider());
+    if(this.platform.is('android')){
+      const res: FacebookLoginResponse = await this.facebook.login(['public_profile', 'email']);
+      const facebookCrendential = firebase.default.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+      await this.signInWithFacebook(facebookCrendential);
+    }else{
+      this.socialSignIn(new firebase.default.auth.FacebookAuthProvider());
+    }
+  }
+
+  async signInWithFacebook(credential){
+    await this.angularFireAuth.signInWithCredential(credential).then(result=>{
+      this.socialSignInLogic(result);
+    });
   }
   
   async googleLogin(){
-    await this.withExternalPopUp(new firebase.default.auth.GoogleAuthProvider());
+    const provider = new firebase.default.auth.GoogleAuthProvider();
+    await this.socialSignIn(provider);
   }
 
-  async withExternalPopUp(provider){
-    
+
+  async socialSignIn(provider){
     await this.angularFireAuth.signInWithPopup(provider).then(async result=>{
-      
-      if(result.additionalUserInfo.isNewUser){
-        const profile = result.user;
-        const user: IUser = {
-          email: profile.email,
-          fullName: profile.displayName,
-          password: '',
-          isBusiness: false
-        };
-        await result.user.sendEmailVerification();
-        await this.saveUserInDatabase(user, result);
-      
-      }else if(!result.user.emailVerified){
-        
-        this.utilityService.presentToast('No has verificado tu correo electrónico', 'error-toast')
-      
-      }else{
-        
-        await this.angularFireAuth.currentUser.then(async result=>{
-          
-          if(result){
-            await Storage.set({key: 'user', value: JSON.stringify(result)});
-            this.saveUserRole(result.uid);
-            this.userSubject.next(result);
-          };
-        
-        });
-      }
+      await this.socialSignInLogic(result);
     });
+  }
+
+  async socialSignInLogic(result){
+    if(result.additionalUserInfo.isNewUser){
+      const profile = result.user;
+      const user: IUser = {
+        email: profile.email,
+        fullName: profile.displayName,
+        password: '',
+        isBusiness: false
+      };
+      await result.user.sendEmailVerification();
+      await this.saveUserInDatabase(user, result);
+    
+    }else if(!result.user.emailVerified){
+      
+      this.utilityService.presentToast('No has verificado tu correo electrónico', 'error-toast')
+    
+    }else{
+      
+      await this.angularFireAuth.currentUser.then(async result=>{
+        
+        if(result){
+          await Storage.set({key: 'user', value: JSON.stringify(result)});
+          this.saveUserRole(result.uid);
+          this.userSubject.next(result);
+        };
+      
+      });
+    }
   }
 
   async saveUserInDatabase(user:IUser, result){
@@ -169,7 +190,9 @@ export class AuthService {
     const fireObject: AngularFireObject<IUser> = this.angularFireDatabase.object(`users/${uid}`);
     fireObject.valueChanges().subscribe(result=>{
       Storage.set({key: 'role', value: JSON.stringify(result.isBusiness)}).then(()=>{
-        this.router.navigate([DASHBOARD_ROUTE]);
+        this.ngZone.run(()=>{
+          this.router.navigate([DASHBOARD_ROUTE]);
+        });
       });
     });
   }

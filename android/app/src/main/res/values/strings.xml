@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">TicketsApp</string>
+    <string name="title_activity_main">TicketsApp</string>
+    <string name="package_name">io.ionic.starter</string>
+    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="fb_app_id">485202792695317</string>
+    <string name="fb_app_name">Tu TurnoRD</string>
+    <bool name="fb_auto_log_app_events_enabled">true</bool>
+    <bool name="fb_advertiser_id_collection_enabled">false</bool>
+</resources>

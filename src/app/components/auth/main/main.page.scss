@@ -12,6 +12,22 @@
         text-align: center;
     }
 }
+@media(min-width: 500px){
+    .title-container{
+        position: relative;
+        margin-top: -20px;
+        height: 200px;
+        background-color: var(--ion-color-secondary);
+        clip-path: circle(20.5% at 50% 0);
+        z-index: 1;
+        h1{
+            position: relative;
+            top: 20%;
+            font-size: 40px;
+            text-align: center;
+        }
+    }
+}
 
 app-main-slide{
     display: block;

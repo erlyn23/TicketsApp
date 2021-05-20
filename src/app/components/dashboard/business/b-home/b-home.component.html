@@ -16,6 +16,8 @@
                         <ion-avatar>
                             <img src="../../../../../assets/img/user_icon.png"
                                 alt="" *ngIf="turn.clientPhoto === undefined">
+                                <img [src]="turn.clientPhoto"
+                                alt="" *ngIf="turn.clientPhoto !== undefined">
                         </ion-avatar>&nbsp;&nbsp;&nbsp;
                         <ion-label>
                             <span>{{turn.clientName}}</span>&nbsp;

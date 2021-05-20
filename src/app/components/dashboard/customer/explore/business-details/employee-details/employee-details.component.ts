@@ -44,6 +44,8 @@ export class EmployeeDetailsComponent implements OnInit{
     userSubscription: Subscription;
     clientsInTurnCountSubscription: Subscription;
 
+    clientPhoto: string;
+
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
     private userRepoService: RepositoryService<IUser>,
@@ -59,6 +61,7 @@ export class EmployeeDetailsComponent implements OnInit{
         this.getEmployeeDetails();
         this.getCurrentUserTurn();
         this.getClientsInTurnCount();
+        this.getClientPhoto();
     }
 
     getEmployeeDetails(){
@@ -69,6 +72,14 @@ export class EmployeeDetailsComponent implements OnInit{
             for(let comment in this.dbEmployee.comments){
                 this.employeeComments.push(this.dbEmployee.comments[comment]);
             }
+        });
+    }
+
+    getClientPhoto(){
+        const object: AngularFireObject<IUser> = this.angularFireDatabase.object(`users/${this.userUid}`);
+        const user$ = object.valueChanges().subscribe(result=>{
+            this.clientPhoto = result.photo;
+            user$.unsubscribe();
         });
     }
 
@@ -113,7 +124,7 @@ export class EmployeeDetailsComponent implements OnInit{
         });
     }
 
-    async reserveTurn(){
+    async reserveTurn(clientPhoto: string){
         await this.utilityService.presentLoading();
         await this.repositoryService.updateElement(`users/${this.userUid}`, {
             isInTurn: true
@@ -122,6 +133,7 @@ export class EmployeeDetailsComponent implements OnInit{
                 employeeName: this.data.fullName,
                 clientName: this.authService.userData.displayName,
                 clientKey: this.authService.userData.uid,
+                clientPhoto: clientPhoto,
                 employeeKey: this.data.key,
                 reserveDate: this.reserveDate
             }).then(()=>{

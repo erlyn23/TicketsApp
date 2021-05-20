@@ -27,3 +27,24 @@ ion-slides{
         text-align: center;
     }
 }
+
+@media(min-width: 500px){
+    .text-content{
+        position: absolute;
+        width: 100%;
+        display: flex;
+        bottom: 50px;
+        z-index: 2;
+        margin-left: 20px;
+        margin-right: 20px;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        .initial-message{
+            background-color: rgba(158, 158, 158, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    }
+}

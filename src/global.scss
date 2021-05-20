@@ -9,7 +9,9 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
  .auth-btn{ 
+    outline: none;
     background: var(--ion-color-secondary);
+    color: white;
     border-style: none;
     border-radius: 30px;
     padding: 10px;
