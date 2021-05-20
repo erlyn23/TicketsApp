@@ -27,13 +27,13 @@
   </ion-list>
 
   <ion-list color="primary" *ngIf="searchBusiness.length > 0 && searchFilter.length > 0">
-    <ion-item color="primary" lines="none" *ngFor="let business of searchBusiness, let i = index" (click)="goToBusinessDetails(business, clientsInTurnCount)">
+    <ion-item color="primary" lines="none" *ngFor="let business of searchBusiness, let i = index">
       <ion-thumbnail>
         <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
         <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
       </ion-thumbnail>
       <ion-label>
-        <ion-title>
+        <ion-title (click)="goToBusinessDetails(business, clientsInTurnCount)">
           {{business.businessName}}
           <div>Clientes en turno: {{clientsInTurnCount}}</div>
         </ion-title>

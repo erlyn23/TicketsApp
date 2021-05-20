@@ -1,2 +1,37 @@
 <ion-content color="primary">
+    <div class="photo-container">
+        <img class="profile" src="../../../../assets/img/user_icon.png" height="100" *ngIf="userPhoto === ''">
+        <img [src]="userPhoto" class="profile" alt="" *ngIf="userPhoto !== ''">
+    </div>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col size="12" style="text-align: center;">
+                <ion-title>Bienvenido, {{userName}}</ion-title>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12" style="text-align: center;">
+                <h4>Explora los negocios más visitados</h4>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+
+    <ion-list color="primary">
+        <ion-item color="primary" lines="none" *ngFor="let business of businessTopThreeList, let i = index">
+          <ion-thumbnail>
+            <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
+            <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+          </ion-thumbnail>
+          <ion-label>
+            <ion-title (click)="goToBusinessDetails(business)">
+              {{business.businessName}}
+              <div>Clientes en turno: {{business.clientsInTurn}}</div>
+            </ion-title>
+          </ion-label>
+          <ion-button fill="clear" (click)="addBusinessToFavouriteList(business)">
+            <ion-icon slot="icon-only" name="star"></ion-icon>
+          </ion-button>
+        </ion-item>
+    </ion-list>
 </ion-content>

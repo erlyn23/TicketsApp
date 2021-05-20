@@ -1,0 +1,23 @@
+.photo-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+    
+    .profile{
+        width: 150px;
+        height: 150px;
+        border-top-left-radius: 50% 50%;
+        border-top-right-radius: 50% 50%;
+        border-bottom-right-radius: 50% 50%;
+        border-bottom-left-radius: 50% 50%;
+    }
+}
+
+ion-list{
+    background: var(--ion-color-primary);
+}
+ion-button{
+    color: white;
+}
