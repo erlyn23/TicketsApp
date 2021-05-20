@@ -29,6 +29,10 @@ const routes: Routes = [
   {
     path: 'business-details',
     loadChildren: () => import('./components/dashboard/customer/explore/business-details/business-details.module').then( m => m.BusinessDetailsPageModule)
+  },
+  {
+    path: 'revocer-password',
+    loadChildren: () => import('./components/auth/revocer-password/revocer-password.module').then( m => m.RevocerPasswordPageModule)
   }
 ];
 
