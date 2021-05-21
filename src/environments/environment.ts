@@ -12,7 +12,8 @@ export const environment = {
     messagingSenderId: "1066585980356",
     appId: "1:1066585980356:web:d0e5ce67f4e58d04097891"
   },
-  mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw'
+  mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw',
+  clientId: '1066585980356-ce1gmva74c90bda3p03ce8g9ru81cjto.apps.googleusercontent.com'
 };
 
 /*

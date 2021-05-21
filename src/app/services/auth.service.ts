@@ -10,7 +10,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Plugins } from '@capacitor/core';
 import { RepositoryService } from './repository.service';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Platform } from '@ionic/angular';
+import { environment } from 'src/environments/environment';
 
 const { Storage } = Plugins;
 
@@ -31,6 +33,7 @@ export class AuthService {
   private repositoryService: RepositoryService<IUser>,
   private ngZone: NgZone,
   private facebook: Facebook,
+  private googlePlus: GooglePlus,
   private platform: Platform,
   private router: Router) {
     
@@ -90,6 +93,7 @@ export class AuthService {
 
   async facebookLogin(){
     if(this.platform.is('android')){
+      await this.utilityService.presentLoading();
       const res: FacebookLoginResponse = await this.facebook.login(['public_profile', 'email']);
       const facebookCrendential = firebase.default.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
       await this.signInWithFacebook(facebookCrendential);
@@ -101,14 +105,37 @@ export class AuthService {
   async signInWithFacebook(credential){
     await this.angularFireAuth.signInWithCredential(credential).then(result=>{
       this.socialSignInLogic(result);
+      this.utilityService.closeLoading();
     });
   }
   
   async googleLogin(){
-    const provider = new firebase.default.auth.GoogleAuthProvider();
-    await this.socialSignIn(provider);
-  }
 
+    if(this.platform.is('android')){
+      this.utilityService.presentLoading();
+      await this.googlePlus.login({
+        'webClientId': environment.clientId,
+        'offline': true
+      }).then(async res=>{
+        await this.signInWithGoogle(res);
+      }).catch(err=>{
+        this.utilityService.closeLoading();
+      });
+    }else{
+      const provider = new firebase.default.auth.GoogleAuthProvider();
+      await this.socialSignIn(provider);
+    }
+  } 
+
+  async signInWithGoogle(loginResponse){
+    const credential = firebase.default.auth.GoogleAuthProvider.credential(loginResponse.idToken)
+    await this.angularFireAuth.signInWithCredential(credential).then(async result=>{
+      await this.socialSignInLogic(result);
+      this.utilityService.closeLoading();
+    }).catch(async err=>{
+      this.utilityService.closeLoading();
+    });
+  }
 
   async socialSignIn(provider){
     await this.angularFireAuth.signInWithPopup(provider).then(async result=>{
