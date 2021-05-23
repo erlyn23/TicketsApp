@@ -112,7 +112,7 @@ export class AuthService {
   async googleLogin(){
 
     if(this.platform.is('android')){
-      this.utilityService.presentLoading();
+      await this.utilityService.presentLoading();
       await this.googlePlus.login({
         'webClientId': environment.clientId,
         'offline': true

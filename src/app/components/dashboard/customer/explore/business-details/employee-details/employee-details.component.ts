@@ -33,16 +33,12 @@ export class EmployeeDetailsComponent implements OnInit{
 
     reserveDate: string = (new Date()).toISOString();
 
-    clientsInTurnCount: number = 0;
-    clientsCountRef: AngularFireObject<any>;
-
     comment: string;
     employeeComments: IEmployeeComments[];
 
 
     employeeSubscription: Subscription;
     userSubscription: Subscription;
-    clientsInTurnCountSubscription: Subscription;
 
     clientPhoto: string;
 
@@ -60,7 +56,6 @@ export class EmployeeDetailsComponent implements OnInit{
         
         this.getEmployeeDetails();
         this.getCurrentUserTurn();
-        this.getClientsInTurnCount();
         this.getClientPhoto();
     }
 
@@ -90,22 +85,6 @@ export class EmployeeDetailsComponent implements OnInit{
         });
     }
 
-    getClientsInTurnCount(){
-        this.clientsCountRef = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}`);
-        this.clientsInTurnCountSubscription = this.clientsCountRef.snapshotChanges().subscribe(result=>{
-            const data = result.payload.val();
-            this.clientsInTurnCount = 0;
-            for(let clientKey in data){
-                if(data[clientKey].employeeKey === this.data.key){
-                    this.clientsInTurnCount++;
-                    this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
-                        clientsInTurn: this.clientsInTurnCount
-                    });
-                }
-            }
-        });
-    }
-
     async rateEmployee(rate: number){
         await this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
             rating: Math.round((this.data.rating + rate) / 2)
@@ -124,21 +103,30 @@ export class EmployeeDetailsComponent implements OnInit{
         });
     }
 
-    async reserveTurn(clientPhoto: string){
+    async reserveTurn(clientPhoto: string, previousQuantity: number){
         await this.utilityService.presentLoading();
         await this.repositoryService.updateElement(`users/${this.userUid}`, {
             isInTurn: true
         }).then(async ()=>{
-            await this.repositoryService.updateElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`,{
+
+            let turnInfo = {
                 employeeName: this.data.fullName,
                 clientName: this.authService.userData.displayName,
                 clientKey: this.authService.userData.uid,
                 clientPhoto: clientPhoto,
                 employeeKey: this.data.key,
                 reserveDate: this.reserveDate
-            }).then(()=>{
-                this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
-                this.utilityService.closeLoading();
+            };
+
+            if(clientPhoto === undefined) delete turnInfo['clientPhoto'];
+
+            await this.repositoryService.updateElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`, turnInfo).then(async ()=>{
+                await this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
+                    clientsInTurn: previousQuantity + 1
+                }).then(async ()=>{
+                    this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
+                    this.utilityService.closeLoading();
+                });
             }).catch(err=>{
                 this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
                 this.utilityService.closeLoading();
@@ -201,6 +189,5 @@ export class EmployeeDetailsComponent implements OnInit{
     ngOnDestroy(): void {
         this.employeeSubscription.unsubscribe();
         this.userSubscription.unsubscribe();
-        this.clientsInTurnCountSubscription.unsubscribe();
     }
 }

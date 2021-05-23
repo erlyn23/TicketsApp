@@ -51,8 +51,15 @@ export class ExploreComponent implements OnInit {
         for(let employeeKey in businessList[businessKey].employees){
           let turnCount = businessList[businessKey].employees[employeeKey].clientsInTurn;
           this.clientsInTurnCount += turnCount;
+          this.updateClientsInTurn(businessKey);
         }
       }
+    });
+  }
+
+  updateClientsInTurn(businessKey: string){
+    this.repositoryService.updateElement(`businessList/${businessKey}`,{
+      clientsInTurn: this.clientsInTurnCount
     });
   }
 

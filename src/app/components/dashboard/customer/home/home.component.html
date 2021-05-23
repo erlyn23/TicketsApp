@@ -1,7 +1,7 @@
 <ion-content color="primary">
     <div class="photo-container">
-        <img class="profile" src="../../../../assets/img/user_icon.png" height="100" *ngIf="userPhoto === ''">
-        <img [src]="userPhoto" class="profile" alt="" *ngIf="userPhoto !== ''">
+        <img class="profile" src="../../../../assets/img/user_icon.png" height="100" *ngIf="userPhoto === undefined">
+        <img [src]="userPhoto" class="profile" alt="" *ngIf="userPhoto !== undefined">
     </div>
 
     <ion-grid>

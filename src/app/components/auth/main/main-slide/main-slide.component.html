@@ -1,5 +1,5 @@
 <ion-content>
-    <ion-slides pager="true" [options]="slideOpts">
+    <ion-slides pager="true" #slideCtrl [options]="slideOpts" pager="false" >
         <ion-slide>
           <div class="slide-img" style="background: url(../../../../../assets/img/main/pexels-thgusstavo-santana-1813346.jpg);    
             background-position: center;
@@ -25,6 +25,6 @@
         <div class="initial-message">
             <h1>Todo lo que necesitas en un solo lugar</h1>
         </div>
-        <button class="auth-btn" type="button" [routerLink]="['/login']">Ingresar</button>
+        <button class="auth-btn" type="button" (click)="checkCredentials()">Ingresar</button>
     </div>
 </ion-content>

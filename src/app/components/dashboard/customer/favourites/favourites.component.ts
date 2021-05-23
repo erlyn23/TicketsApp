@@ -20,9 +20,7 @@ export class FavouritesComponent implements OnInit {
 
   businessSubscription: Subscription;
 
-  navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0 } };
-
-  clientsInTurnCount: number = 0;
+  navExtras: NavigationExtras = { state: { business: null } };
 
   searchBusiness: IBusiness[] = [];
 
@@ -43,7 +41,6 @@ export class FavouritesComponent implements OnInit {
     this.businessSubscription = this.objectRef.snapshotChanges().subscribe(result=>{
       const businessKeyList = result.payload.val();
       this.businessList = [];
-      this.clientsInTurnCount = 0;
       for(let businessKey in businessKeyList){
         this.getBusinessList(businessKey);
       }
@@ -55,11 +52,6 @@ export class FavouritesComponent implements OnInit {
     const business$ = businessRef.valueChanges().subscribe(result=>{
       result.key = businessKey;
       this.businessList.push(result);
-      //Ciclo para obtener la cuenta general de los clientes en turno
-      for(let employeeKey in result.employees){
-        let turnCount = result.employees[employeeKey].clientsInTurn;
-        this.clientsInTurnCount += turnCount;
-      }
       business$.unsubscribe();
     });    
   }
@@ -89,9 +81,8 @@ export class FavouritesComponent implements OnInit {
     });
   }
 
-  goToBusinessDetails(business: IBusiness, clientsInTurnCount: number){    
+  goToBusinessDetails(business: IBusiness){    
     this.navExtras.state.business = business;
-    this.navExtras.state.clientsInTurn = clientsInTurnCount;
     this.router.navigate(['/business-details'], this.navExtras);
   }
 

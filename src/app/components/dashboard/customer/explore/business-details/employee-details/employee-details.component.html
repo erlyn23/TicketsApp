@@ -67,7 +67,7 @@
                 </div>
                 <div class="clients-in-turn-content">
                     <h1>Total de clientes en turno</h1>
-                    <h3>{{clientsInTurnCount}}</h3>
+                    <h3>{{dbEmployee.clientsInTurn}}</h3>
                 </div>
                 <div class="reserve-turn">
                     <h1>Reservar turno</h1>
@@ -80,7 +80,7 @@
                             cancelText="Cancelar"></ion-datetime>
                         </ion-item>
                     </form>
-                    <button class="auth-btn" (click)="reserveTurn(clientPhoto)" *ngIf="!isInTurn">
+                    <button class="auth-btn" (click)="reserveTurn(clientPhoto, dbEmployee.clientsInTurn)" *ngIf="!isInTurn">
                         Reservar
                     </button>
                     <button class="auth-btn cancel-btn" (click)="searchClientEmployeeTurn()" *ngIf="isInTurn">

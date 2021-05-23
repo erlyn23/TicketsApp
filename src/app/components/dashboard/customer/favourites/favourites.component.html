@@ -15,9 +15,9 @@
           <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
         </ion-thumbnail>
         <ion-label>
-          <ion-title (click)="goToBusinessDetails(business, clientsInTurnCount)" style="font-size: 15px;">
+          <ion-title (click)="goToBusinessDetails(business)" style="font-size: 15px;">
             {{business.businessName}}
-            <div>Clientes en turno: {{clientsInTurnCount}}</div>
+            <div>Clientes en turno: {{business.clientsInTurn}}</div>
           </ion-title>
         </ion-label>
         <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
@@ -33,9 +33,9 @@
           <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
         </ion-thumbnail>
         <ion-label>
-          <ion-title (click)="goToBusinessDetails(business, clientsInTurnCount)" style="font-size: 15px;">
+          <ion-title (click)="goToBusinessDetails(business)" style="font-size: 15px;">
             {{business.businessName}}
-            <div>Clientes en turno: {{clientsInTurnCount}}</div>
+            <div>Clientes en turno: {{business.clientsInTurn}}</div>
           </ion-title>
         </ion-label>
         <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
