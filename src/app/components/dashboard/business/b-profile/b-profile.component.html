@@ -19,7 +19,6 @@
           <div *ngIf="isValidField('businessName') === 'invalid-field'">
             <p *ngIf="registerForm.get('businessName').errors?.required">Debes escribir el nombre de tu negocio</p>
           </div>
-
           <app-map></app-map>
           
         <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid">Guardar cambios</button><br>

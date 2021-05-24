@@ -57,7 +57,7 @@ export class BusinessDetailsPage implements OnInit {
       container: 'mapbox-container',
       style: 'mapbox://styles/mapbox/streets-v11', 
       center: [initLong, initLat], 
-      zoom: 9,
+      zoom: 15,
     });
     const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
     

@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-toolbar class="modal-header">
+    <ion-toolbar color="primary">
         <ion-buttons slot="start">
             <ion-button (click)="closeWindow()">
                 <ion-icon slot="start" name="arrow-back"></ion-icon>
@@ -12,6 +12,7 @@
 <ion-content>
     <form>
         <input type="text" class="auth-input" [(ngModel)]="employeeName" name="employeeName" placeholder="Nombre del empleado">
+        <input type="text" class="auth-input" [(ngModel)]="employeeSpecialty" name="employeeSpecialty" placeholder="Especialidad del empleado">
         <button class="auth-btn" (click)="saveEmployee()">Agregar</button>
     </form>
 </ion-content>

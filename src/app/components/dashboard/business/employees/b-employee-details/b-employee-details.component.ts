@@ -21,7 +21,7 @@ export class BEmployeeDetailsComponent implements OnInit{
 
     objectRef: AngularFireObject<IEmployee>;
 
-    dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: []};
+    dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: [], employeeSpecialty: ''};
 
     userUid: string;
 

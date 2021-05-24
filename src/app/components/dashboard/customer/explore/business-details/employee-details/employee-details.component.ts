@@ -28,7 +28,7 @@ export class EmployeeDetailsComponent implements OnInit{
 
     objectRef: AngularFireObject<IEmployee>;
 
-    dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: []};
+    dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: [], employeeSpecialty: ''};
 
     userUid: string;
     userRef: AngularFireObject<IUser>;
@@ -119,45 +119,57 @@ export class EmployeeDetailsComponent implements OnInit{
     }
 
     async reserveTurn(clientPhoto: string, previousQuantity: number){
-        await this.utilityService.presentLoading();
-        await this.repositoryService.updateElement(`users/${this.userUid}`, {
-            isInTurn: true
-        }).then(async ()=>{
+        const actualDate = new Date();
+        const sendedDate = new Date(this.reserveDate);
+        actualDate.setHours(0,0,0,0);
+        sendedDate.setHours(0,0,0,0);
 
-            let turnInfo = {
-                employeeName: this.data.fullName,
-                clientName: this.authService.userData.displayName,
-                clientKey: this.authService.userData.uid,
-                clientPhoto: clientPhoto,
-                employeeKey: this.data.key,
-                reserveDate: this.reserveDate
-            };
+        if(sendedDate < actualDate) await this.utilityService.presentToast('La fecha debe ser igual o adelantada a la de hoy', 'error-toast');
+        else{
+            await this.utilityService.presentLoading();
+            await this.repositoryService.updateElement(`users/${this.userUid}`, {
+                isInTurn: true
+            }).then(async ()=>{
 
-            if(clientPhoto === undefined) delete turnInfo['clientPhoto'];
+                let turnInfo = {
+                    employeeName: this.data.fullName,
+                    clientName: this.authService.userData.displayName,
+                    clientKey: this.authService.userData.uid,
+                    clientPhoto: clientPhoto,
+                    employeeKey: this.data.key,
+                    reserveDate: this.reserveDate
+                };
 
-            await this.repositoryService.updateElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`, turnInfo).then(async ()=>{
-                await this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
-                    clientsInTurn: previousQuantity + 1
-                }).then(async ()=>{
-                    this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
+                if(clientPhoto === undefined) delete turnInfo['clientPhoto'];
+
+                await this.repositoryService.updateElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`, turnInfo).then(async ()=>{
+                    await this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
+                        clientsInTurn: previousQuantity + 1
+                    }).then(async ()=>{
+                        this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
+                        this.utilityService.closeLoading();
+                    });
+                }).catch(err=>{
+                    this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
                     this.utilityService.closeLoading();
                 });
             }).catch(err=>{
                 this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
                 this.utilityService.closeLoading();
             });
-        }).catch(err=>{
-            this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
-            this.utilityService.closeLoading();
-        });
+        }
     }
 
     employeeClientTurnObject: AngularFireObject<ITurn>;
     searchClientEmployeeTurn(){
         this.employeeClientTurnObject = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
         const employeeClientTurn$ = this.employeeClientTurnObject.valueChanges().subscribe(result=>{
-            this.searchEmployeeToUnreserveTurn(result.employeeKey);
-            employeeClientTurn$.unsubscribe();
+            if(result !== null){
+                this.searchEmployeeToUnreserveTurn(result.employeeKey);
+                employeeClientTurn$.unsubscribe();
+            }else{
+                this.utilityService.presentToast('El turno no está reservado en este negocio', 'error-toast');
+            }
         });
     }
 

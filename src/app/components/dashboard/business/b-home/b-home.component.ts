@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireObject } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
+import { IBusiness } from 'src/app/core/models/business.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { RepositoryService } from 'src/app/services/repository.service';
@@ -18,9 +19,10 @@ export class BHomeComponent implements OnInit {
   turns: ITurn[] = [];
 
   businessKey: string;
+  isOpened: boolean = false;
 
   constructor(private authService: AuthService, 
-    private repositoryService: RepositoryService<ITurn>,
+    private repositoryService: RepositoryService<any>,
     private utilityService: UtilityService) { }
 
   ngOnInit() {
@@ -28,6 +30,7 @@ export class BHomeComponent implements OnInit {
     this.businessKey = user.uid;
 
     this.getTurns();
+    this.getBusinessStatus();
   }
 
   getTurns(){
@@ -39,6 +42,14 @@ export class BHomeComponent implements OnInit {
         data[turnKey].key = turnKey;
         this.turns.push(data[turnKey]);
       }
+    });
+  }
+
+  getBusinessStatus(){
+    const businessStatus: AngularFireObject<IBusiness> = this.repositoryService.getAllElements(`businessList/${this.businessKey}`);
+    const businessStatus$ = businessStatus.valueChanges().subscribe(result=>{
+      this.isOpened = result.isOpened;
+      businessStatus$.unsubscribe();
     });
   }
 
@@ -73,6 +84,12 @@ export class BHomeComponent implements OnInit {
       isInTurn: false
     }).then(()=>{
       this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${clientKey}`);
+    });
+  }
+
+  async updateBusinessStatus(ev){
+    await this.repositoryService.updateElement(`businessList/${this.businessKey}`, {
+      isOpened: this.isOpened
     });
   }
 }

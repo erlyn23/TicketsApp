@@ -3,6 +3,9 @@
     <ion-item color="primary" lines="full" *ngFor="let employee of employeesList, let i = index">
       <ion-label>
         <ion-title (click)="goToEmployeeDetails(employee)">{{employee.fullName}}</ion-title>
+        <div>
+          <p>&nbsp; &nbsp;{{employee.employeeSpecialty}}</p>
+        </div>
         <div [ngSwitch]="employee.rating">
         <p *ngSwitchCase="1">
           &nbsp; &nbsp; &nbsp;  <ion-icon slot="start" name="star"></ion-icon> 

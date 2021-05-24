@@ -24,6 +24,14 @@
             <ion-grid>
                 <ion-row>
                     <ion-col size="12">
+                        <div class="clients-in-turn-content">
+                            <h1>Especialidad</h1>
+                            <h3>{{dbEmployee.employeeSpecialty}}</h3>
+                        </div>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
                         <div class="rating-content">
                             <h1>Calificación actual</h1>
                             <span [ngSwitch]="dbEmployee.rating">

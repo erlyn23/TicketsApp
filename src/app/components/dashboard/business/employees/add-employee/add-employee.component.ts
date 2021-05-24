@@ -10,7 +10,8 @@ import { UtilityService } from "src/app/services/utility.service";
 })
 export class AddEmployeeComponent implements OnInit{
 
-    employeeName: string;
+    employeeName: string = "";
+    employeeSpecialty: string = "";
     userUid: string;
     constructor(private authService: AuthService, 
         private utilityService: UtilityService,
@@ -23,10 +24,11 @@ export class AddEmployeeComponent implements OnInit{
 
     async saveEmployee(){
         await this.utilityService.presentLoading();
-        if(this.employeeName.length > 0){
+        if(this.employeeName.length > 0 && this.employeeSpecialty.length > 0){
             await this.repositoryService.pushElement(`businessList/${this.userUid}/employees`, {
                 fullName: this.employeeName,
                 clientsInTurn: 0,
+                employeeSpecialty: this.employeeSpecialty,
                 rating: 0
             }).then(async ()=>{
                 await this.utilityService.presentToast('Empleado agregado correctamente', 'success-toast');
@@ -38,7 +40,7 @@ export class AddEmployeeComponent implements OnInit{
                 this.utilityService.closeModal();
             });
         }else{
-            await this.utilityService.presentToast('Debes escribir el nombre del empleado', 'error-toast');
+            await this.utilityService.presentToast('Debes escribir el nombre del empleado y su especialidad', 'error-toast');
             this.utilityService.closeLoading();
         }
     }

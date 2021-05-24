@@ -43,23 +43,23 @@ export class ExploreComponent implements OnInit {
     this.businessSubscription = this.objectRef.snapshotChanges().subscribe(result=>{
       const businessList = result.payload.val();
       this.businessList = [];
-      this.clientsInTurnCount = 0;
       for(let businessKey in businessList){
         businessList[businessKey].key = businessKey;
         this.businessList.push(businessList[businessKey]);
-        //Ciclo para obtener la cuenta general de los clientes en turno
+        
         for(let employeeKey in businessList[businessKey].employees){
-          let turnCount = businessList[businessKey].employees[employeeKey].clientsInTurn;
-          this.clientsInTurnCount += turnCount;
-          this.updateClientsInTurn(businessKey);
+          this.clientsInTurnCount = 0;
+          let turnsCount = businessList[businessKey].employees[employeeKey].clientsInTurn;
+          this.clientsInTurnCount += turnsCount;
+          this.updateClientsInTurn(businessKey, this.clientsInTurnCount);
         }
       }
     });
   }
 
-  updateClientsInTurn(businessKey: string){
+  updateClientsInTurn(businessKey: string, clientsInTurn: number){
     this.repositoryService.updateElement(`businessList/${businessKey}`,{
-      clientsInTurn: this.clientsInTurnCount
+      clientsInTurn: clientsInTurn,
     });
   }
 
@@ -67,8 +67,9 @@ export class ExploreComponent implements OnInit {
   searchForBusiness(ev, businessList: IBusiness[]){
     let searchFilter:string = ev.target.value;
     if(searchFilter.length > 0){
+      
+      this.searchBusiness = [];
       for(let business of businessList){
-        this.searchBusiness = [];
         if(business.businessName.toLowerCase().includes(searchFilter.toLowerCase())){
           this.searchBusiness.push(business);
         }

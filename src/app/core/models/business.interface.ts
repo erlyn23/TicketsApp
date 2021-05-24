@@ -8,4 +8,5 @@ export interface IBusiness{
     clientsInTurn: number;
     businessPhoto: string;
     employees: IEmployee[];
+    isOpened: boolean;
 }

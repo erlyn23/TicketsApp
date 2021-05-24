@@ -5,6 +5,9 @@
     &::placeholder{
         color: var(--ion-color-primary);
     }
+    &:focus::placeholder{
+        color: transparent;
+    }
 }
 .auth-btn{
     background: var(--ion-color-primary);

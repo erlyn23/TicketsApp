@@ -31,7 +31,11 @@ export class FavouritesComponent implements OnInit {
     private router: Router) {
   }
 
-  ngOnInit() {
+  ngOnInit(){
+
+  }
+
+  ionViewWillEnter() {
     this.userUid = this.authService.userData.uid;
     this.getFavouritesList();
   }
@@ -47,27 +51,30 @@ export class FavouritesComponent implements OnInit {
     });
   }
 
-  getBusinessList(businessKey: string){
-    const businessRef: AngularFireObject<IBusiness> = this.angularFireDatabase.object(`businessList/${businessKey}`);
-    const business$ = businessRef.valueChanges().subscribe(result=>{
-      result.key = businessKey;
-      this.businessList.push(result);
-      business$.unsubscribe();
+  businessListSubscription: Subscription;
+  getBusinessList(favouriteKey: string){
+    const businessRef: AngularFireObject<IBusiness[]> = this.angularFireDatabase.object(`businessList`);
+    this.businessListSubscription = businessRef.snapshotChanges().subscribe(result=>{
+      const businessList = result.payload.val();
+      for(let businessKey in businessList){
+        if(businessKey === favouriteKey){
+          businessList[businessKey].key = businessKey;
+          this.businessList.push(businessList[businessKey]);
+        }
+      }
     });    
   }
 
   searchFilter: string = "";
   searchForBusiness(ev, businessList: IBusiness[]){
-    let searchFilter:string = ev.target.value;
-    if(searchFilter.length > 0){
+    if(this.searchFilter.length > 0){
+      this.searchBusiness = [];
       for(let business of businessList){
-        this.searchBusiness = [];
-        if(business.businessName.toLowerCase().includes(searchFilter.toLowerCase())){
+        if(business.businessName.toLowerCase().includes(this.searchFilter.toLowerCase())){
           this.searchBusiness.push(business);
         }
       }
-    }
-    else{
+    }else{
       this.searchBusiness = [];
     }
   }
@@ -81,13 +88,14 @@ export class FavouritesComponent implements OnInit {
     });
   }
 
-  goToBusinessDetails(business: IBusiness){    
+  goToBusinessDetails(business: IBusiness){
     this.navExtras.state.business = business;
     this.router.navigate(['/business-details'], this.navExtras);
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     this.businessSubscription.unsubscribe();
+    this.businessListSubscription.unsubscribe();
   }
 
 }
