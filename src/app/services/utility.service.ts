@@ -85,7 +85,8 @@ export class UtilityService {
       componentProps:{
         'data': data,
         'additionalKey': additionalKey
-      }
+      },
+      swipeToClose: true
     });
     (await modal).present();
   }

@@ -1,5 +1,6 @@
-import { OnInit, Component, Input } from '@angular/core';
+import { OnInit, Component, Input, ViewChild } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
+import { IonSlides } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { IEmployeeComments } from 'src/app/core/models/employee-comments.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
@@ -20,6 +21,8 @@ export class EmployeeDetailsComponent implements OnInit{
     
     @Input() data: IEmployee;
     @Input() additionalKey: string;
+
+    @ViewChild('slideCtrl') slideCtrl: IonSlides;
 
     employeeDetailPage: string = 'employeeInfo';
 
@@ -82,6 +85,18 @@ export class EmployeeDetailsComponent implements OnInit{
         this.userRef = this.userRepoService.getAllElements(`users/${this.userUid}`);
         this.userSubscription = this.userRef.valueChanges().subscribe(result=>{
             this.isInTurn = result.isInTurn;
+        });
+    }
+
+    setSlide(ev){
+        if(ev.detail.value === 'employeeInfo') this.slideCtrl.slideTo(0, 400);
+        else this.slideCtrl.slideTo(1, 400);
+    }
+
+    setSegment(ev){
+        this.slideCtrl.getActiveIndex().then(index=>{
+            if(index === 0) this.employeeDetailPage = 'employeeInfo'; 
+            else this.employeeDetailPage = 'employeeComments';
         });
     }
 

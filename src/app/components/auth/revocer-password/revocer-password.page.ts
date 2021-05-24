@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -11,7 +12,8 @@ export class RevocerPasswordPage implements OnInit {
 
   email: string = "";
   constructor(private utilityService: UtilityService, 
-    private angularFireAuth: AngularFireAuth) { }
+    private angularFireAuth: AngularFireAuth,
+    private router: Router) { }
 
   ngOnInit() {
   }
@@ -31,6 +33,10 @@ export class RevocerPasswordPage implements OnInit {
     }else{
       await this.utilityService.presentToast('Debes escribir un correo', 'error-toast');
     }
+  }
+
+  goToPage(page: string){
+    this.router.navigate([page]);
   }
 
 }

@@ -17,7 +17,7 @@
     padding: 10px;
     width: 70%;
     height: 40px;
-    font-size: 20px;
+    font-size: 15px;
     margin: 10px 0;
  }
 
@@ -38,6 +38,9 @@
    &::placeholder{
       color: var(--ion-color-primary-constrast);
    }
+   &:focus::placeholder{
+     color: transparent;
+   }
  }
 
  .back-button{
@@ -54,11 +57,13 @@
  }
 
  .error-toast{
+   color: white;
   --background: var(--ion-color-danger);
    color: var(--ion-color-primary-constrast);
  }
 
  .success-toast{
+   color: white;
    --background: var(--ion-color-success);
    color: var(--ion-color-primary-constrast);
  }
@@ -79,20 +84,6 @@
     color: black;
     text-align: center;
   }
-}
-
-.custom-modal{
-  margin-top: 128px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-.modal-header{
-  --background: white;
-  color: var(--ion-color-primary);
-}
-
-.custom-popover{
-  margin-top: -175px;
 }
 
 /* Core CSS required for Ionic components to work properly */

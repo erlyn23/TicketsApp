@@ -7,6 +7,9 @@ import { UtilityService } from 'src/app/services/utility.service';
 import * as MapBox from 'mapbox-gl';
 import * as MapBoxGeoCoder from '@mapbox/mapbox-gl-geocoder';
 import { environment } from 'src/environments/environment';
+import { Plugins } from '@capacitor/core';
+
+const { Geolocation } = Plugins;
 
 @Component({
   selector: 'app-register-business',
@@ -21,6 +24,7 @@ export class RegisterBusinessComponent implements OnInit {
     private authService: AuthService,
     private utilityService: UtilityService,
     private router: Router) { 
+      
       const user = this.authService.userData;
       if(user){
         this.router.navigate(['/dashboard'])
@@ -44,17 +48,16 @@ export class RegisterBusinessComponent implements OnInit {
     });
   }
 
-  initMap():void{
-    const initLong = -70.1654584;
-    const initLat = 18.7009047;
+  async initMap(){
+    const coordinates = await Geolocation.getCurrentPosition();
     MapBox.accessToken = environment.mapToken;
     const map = new MapBox.Map({
       container: 'mapbox-container',
       style: 'mapbox://styles/mapbox/streets-v11', 
-      center: [initLong, initLat], 
-      zoom: 6,
+      center: [coordinates.coords.longitude, coordinates.coords.latitude], 
+      zoom: 15,
     });
-    const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
+    const marker = new MapBox.Marker().setLngLat([coordinates.coords.longitude, coordinates.coords.latitude]).addTo(map);
 
     this.registerForm.get('longitude').setValue(marker._lngLat.lng);
     this.registerForm.get('latitude').setValue(marker._lngLat.lat);
