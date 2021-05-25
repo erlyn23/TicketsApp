@@ -227,6 +227,7 @@ export class AuthService {
   async signOut(){
     await this.angularFireAuth.signOut().then(async ()=>{
       await Storage.remove({key: 'user'});
+      await Storage.remove({key: 'role'});
       this.userSubject.next(null);
       this.router.navigate([LOGIN_ROUTE]);
     });

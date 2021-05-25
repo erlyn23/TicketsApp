@@ -25,15 +25,15 @@
                 <ion-row>
                     <ion-col size="12">
                         <div class="clients-in-turn-content">
-                            <h1>Especialidad</h1>
-                            <h3>{{dbEmployee.employeeSpecialty}}</h3>
+                            <h3>Especialidad</h3>
+                            <h5>{{dbEmployee.employeeSpecialty}}</h5>
                         </div>
                     </ion-col>
                 </ion-row>
                 <ion-row>
                     <ion-col size="12">
                         <div class="rating-content">
-                            <h1>Calificación actual</h1>
+                            <h3>Calificación actual</h3>
                             <span [ngSwitch]="dbEmployee.rating">
                             <p *ngSwitchCase="1">
                                 <i class="fas fa-star"></i>
@@ -66,7 +66,7 @@
                             </span>
                         </div>
                         <div class="rating-content">
-                            <h1>Calificar</h1>
+                            <h3>Calificar</h3>
                             <div id="stars-content">
                                 <i class="far fa-star" (click)="rateEmployee(1)"></i>
                                 <i class="far fa-star" (click)="rateEmployee(2)"></i>
@@ -76,11 +76,11 @@
                             </div>
                         </div>
                         <div class="clients-in-turn-content">
-                            <h1>Total de clientes en turno</h1>
-                            <h3>{{dbEmployee.clientsInTurn}}</h3>
+                            <h3>Total de clientes en turno</h3>
+                            <h5>{{dbEmployee.clientsInTurn}}</h5>
                         </div>
                         <div class="reserve-turn">
-                            <h1>Reservar turno</h1>
+                            <h3>Reservar turno</h3>
                             <form>
                                 <ion-item>
                                     <ion-label>Fecha de reserva</ion-label>
@@ -121,13 +121,25 @@
                     </form>
                 </div>
                 <div class="comments-content">
-                    <ion-card *ngFor="let comment of employeeComments">
-                        <ion-card-title>{{comment.user}}</ion-card-title>
-                        <ion-card-content>
-                            <p>{{comment.comment}}</p>
-                            <p class="right"><small>{{comment.commentDate}}</small></p>
-                        </ion-card-content>
-                    </ion-card>
+                    <ion-slides [options]="commentsOpts" #commentsSlide class="comments-slide">
+                        <ion-slide *ngFor="let comment of employeeComments">
+                            <div class="comments-card">
+                                <ion-card-title>{{comment.user}}</ion-card-title>
+                                <ion-card-content>
+                                    <p>{{comment.comment}}</p>
+                                    <p class="right"><small>{{comment.commentDate}}</small></p>
+                                </ion-card-content>
+                            </div>
+                        </ion-slide>
+                    </ion-slides>
+                    <ion-fab horizontal="start" style="margin-top: -45px;">
+                        <ion-fab-button side="end" (click)="upComment()">
+                            <ion-icon name="arrow-up"></ion-icon>
+                        </ion-fab-button>
+                        <ion-fab-button side="start" (click)="downComment()">
+                            <ion-icon name="arrow-down"></ion-icon>
+                        </ion-fab-button>
+                    </ion-fab>
                 </div>
             </div>
         </ion-slide>

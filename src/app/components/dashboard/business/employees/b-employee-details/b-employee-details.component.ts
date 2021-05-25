@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
+import { IonSlides } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { IEmployeeComments } from 'src/app/core/models/employee-comments.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
@@ -18,6 +19,14 @@ export class BEmployeeDetailsComponent implements OnInit{
     @Input() data: IEmployee;
 
     employeeDetailPage: string = 'employeeInfo';
+    
+    @ViewChild('slideCtrl') slideCtrl: IonSlides;
+    @ViewChild('commentsSlide') commentsSlide: IonSlides;
+    commentsOpts ={
+        direction: 'vertical',
+        autoplay: false,
+        speed: 400,
+    }
 
     objectRef: AngularFireObject<IEmployee>;
 
@@ -73,6 +82,26 @@ export class BEmployeeDetailsComponent implements OnInit{
                 }
             }
         });
+    }
+
+    setSlide(ev){
+        if(ev.detail.value === 'employeeInfo') this.slideCtrl.slideTo(0, 400);
+        else this.slideCtrl.slideTo(1, 400);
+    }
+
+    setSegment(ev){
+        this.slideCtrl.getActiveIndex().then(index=>{
+            if(index === 0) this.employeeDetailPage = 'employeeInfo'; 
+            else this.employeeDetailPage = 'employeeComments';
+        });
+    }
+
+    upComment(){
+        this.commentsSlide.slidePrev();
+    }
+
+    downComment(){
+        this.commentsSlide.slideNext();
     }
 
     closeModal(){

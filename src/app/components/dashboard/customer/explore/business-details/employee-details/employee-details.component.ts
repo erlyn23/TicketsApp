@@ -23,6 +23,13 @@ export class EmployeeDetailsComponent implements OnInit{
     @Input() additionalKey: string;
 
     @ViewChild('slideCtrl') slideCtrl: IonSlides;
+    @ViewChild('commentsSlide') commentsSlide: IonSlides;
+
+    commentsOpts ={
+        direction: 'vertical',
+        autoplay: false,
+        speed: 400,
+    }
 
     employeeDetailPage: string = 'employeeInfo';
 
@@ -207,6 +214,14 @@ export class EmployeeDetailsComponent implements OnInit{
         }else{
             this.utilityService.presentToast('Debes escribir un comentario', 'error-toast');
         }
+    }
+
+    upComment(){
+        this.commentsSlide.slidePrev();
+    }
+
+    downComment(){
+        this.commentsSlide.slideNext();
     }
 
     closeModal(){
