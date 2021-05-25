@@ -26,6 +26,10 @@ export class BHomeComponent implements OnInit {
     private utilityService: UtilityService) { }
 
   ngOnInit() {
+    
+  }
+
+  ionViewWillEnter() {
     const user = this.authService.userData;
     this.businessKey = user.uid;
 
@@ -91,5 +95,9 @@ export class BHomeComponent implements OnInit {
     await this.repositoryService.updateElement(`businessList/${this.businessKey}`, {
       isOpened: this.isOpened
     });
+  }
+
+  ionViewWillLeave() {
+    this.turn$.unsubscribe();
   }
 }

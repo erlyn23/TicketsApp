@@ -50,6 +50,9 @@ export class BEmployeeDetailsComponent implements OnInit{
     }
 
     ngOnInit():void{
+        
+    }
+    ionViewWillEnter() {
         const user = this.authService.userData;
         this.userUid = user.uid;
 
@@ -108,7 +111,7 @@ export class BEmployeeDetailsComponent implements OnInit{
         this.utilityServie.closeModal();  
     }
 
-    ngOnDestroy(): void {
+    ionViewWillLeave() {
         this.employeeSubscription.unsubscribe();
         this.clientsInTurnCountSubscription.unsubscribe();
     }

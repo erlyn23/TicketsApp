@@ -1,32 +1,32 @@
 <ion-content color="primary">
   <ion-list color="primary">
     <ion-item color="primary" lines="full" *ngFor="let employee of employeesList, let i = index">
-      <ion-label>
+      <ion-label style="text-align: center;">
         <ion-title (click)="goToEmployeeDetails(employee)">{{employee.fullName}}</ion-title>
         <div>
-          <p>&nbsp; &nbsp;{{employee.employeeSpecialty}}</p>
+          <p>{{employee.employeeSpecialty}}</p>
         </div>
         <div [ngSwitch]="employee.rating">
         <p *ngSwitchCase="1">
-          &nbsp; &nbsp; &nbsp;  <ion-icon slot="start" name="star"></ion-icon> 
+          <ion-icon slot="start" name="star"></ion-icon> 
         </p>
         <p *ngSwitchCase="2">
-          &nbsp; &nbsp; &nbsp;<ion-icon slot="start" name="star"></ion-icon> 
+          <ion-icon slot="start" name="star"></ion-icon> 
           <ion-icon slot="start" name="star"></ion-icon>
         </p>
         <p *ngSwitchCase="3">
-          &nbsp; &nbsp; &nbsp;<ion-icon slot="start" name="star"></ion-icon>
+          <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
         </p>
         <p *ngSwitchCase="4">
-          &nbsp; &nbsp; &nbsp;<ion-icon slot="start" name="star"></ion-icon>
+          <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
         </p>
         <p *ngSwitchCase="5">
-          &nbsp; &nbsp; &nbsp;<ion-icon slot="start" name="star"></ion-icon>
+          <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>
           <ion-icon slot="start" name="star"></ion-icon>

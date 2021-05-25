@@ -29,6 +29,9 @@ export class EmployeesComponent implements OnInit {
     private utilityService: UtilityService) { }
 
   ngOnInit() {
+  }
+
+  ionViewWillEnter() {
     const user = this.authService.userData;
     this.uid = user.uid;
 
@@ -90,7 +93,7 @@ export class EmployeesComponent implements OnInit {
     this.utilityService.closeAlert();
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     this.employeesSubscription.unsubscribe();
   }
 }

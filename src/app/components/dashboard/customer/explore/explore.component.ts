@@ -34,6 +34,10 @@ export class ExploreComponent implements OnInit {
   }
 
   ngOnInit() {
+    
+  }
+  
+  ionViewWillEnter() {
     this.userUid = this.authService.userData.uid;
     this.getBusinessList();
   }
@@ -46,13 +50,6 @@ export class ExploreComponent implements OnInit {
       for(let businessKey in businessList){
         businessList[businessKey].key = businessKey;
         this.businessList.push(businessList[businessKey]);
-        
-        for(let employeeKey in businessList[businessKey].employees){
-          this.clientsInTurnCount = 0;
-          let turnsCount = businessList[businessKey].employees[employeeKey].clientsInTurn;
-          this.clientsInTurnCount += turnsCount;
-          this.updateClientsInTurn(businessKey, this.clientsInTurnCount);
-        }
       }
     });
   }
@@ -95,7 +92,7 @@ export class ExploreComponent implements OnInit {
     this.router.navigate(['/business-details'], this.navExtras);
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     this.businessSubscription.unsubscribe();
   }
 

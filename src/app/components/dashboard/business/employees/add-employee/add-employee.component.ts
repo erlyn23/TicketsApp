@@ -18,6 +18,9 @@ export class AddEmployeeComponent implements OnInit{
         private repositoryService: RepositoryService<null>){}
 
     ngOnInit():void{
+        
+    }
+    ionViewWillEnter() {
         const user = this.authService.userData;
         this.userUid = user.uid;
     }

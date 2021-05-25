@@ -7,7 +7,7 @@
     <ion-grid>
         <ion-row>
             <ion-col size="12">
-                <ion-title>Bienvenido/a, 
+                <ion-title style="text-align: center;">Bienvenido/a, 
                   <br>{{userName}}</ion-title>
             </ion-col>
         </ion-row>
@@ -27,7 +27,6 @@
           <ion-label>
             <ion-title (click)="goToBusinessDetails(business)" style="font-size: 15px;">
               {{business.businessName}}
-              <div>Clientes en turno: {{business.clientsInTurn}}</div>
               <div *ngIf="business.isOpened">Abierto ahora</div>
               <div *ngIf="!business.isOpened">Cerrado</div>
             </ion-title>

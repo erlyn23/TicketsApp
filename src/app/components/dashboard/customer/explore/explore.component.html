@@ -17,7 +17,6 @@
       <ion-label>
         <ion-title style="font-size: 15px;" (click)="goToBusinessDetails(business)">
           {{business.businessName}}
-          <div>Clientes en turno: {{business.clientsInTurn}}</div>
           <div *ngIf="business.isOpened">Abierto ahora</div>
           <div *ngIf="!business.isOpened">Cerrado</div>
         </ion-title>
@@ -37,7 +36,6 @@
       <ion-label>
         <ion-title style="font-size: 15px;" (click)="goToBusinessDetails(business)">
           {{business.businessName}}
-          <div>Clientes en turno: {{business.clientsInTurn}}</div>
           <div *ngIf="business.isOpened">Abierto ahora</div>
           <div *ngIf="!business.isOpened">Cerrado</div>
         </ion-title>

@@ -6,7 +6,6 @@ import { environment } from 'src/environments/environment';
 import { IEmployee } from 'src/app/core/models/employee.interface';
 import { UtilityService } from 'src/app/services/utility.service';
 import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
-import { RepositoryService } from 'src/app/services/repository.service';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
 
@@ -32,7 +31,7 @@ export class BusinessDetailsPage implements OnInit {
     else this.router.navigate(['/dashboard']);
     
     this.initMap();
-    this.getEmployees();
+    this.getEmployees(); 
   }
 
   getEmployees(){
@@ -73,7 +72,7 @@ export class BusinessDetailsPage implements OnInit {
     this.router.navigate([page]);
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     this.employees$.unsubscribe();
   }
 

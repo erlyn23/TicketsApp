@@ -29,6 +29,10 @@ export class HomeComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
+    
+  }
+
+  ionViewWillEnter() {
     this.userUid = this.authService.userData.uid;
 
     this.getUserData();
@@ -92,6 +96,9 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnDestroy() {
+  }
+  
+  ionViewWillLeave() {
     this.user$.unsubscribe();
     this.business$.unsubscribe();
   }

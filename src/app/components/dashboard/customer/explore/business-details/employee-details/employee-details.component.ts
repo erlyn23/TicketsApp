@@ -23,13 +23,6 @@ export class EmployeeDetailsComponent implements OnInit{
     @Input() additionalKey: string;
 
     @ViewChild('slideCtrl') slideCtrl: IonSlides;
-    @ViewChild('commentsSlide') commentsSlide: IonSlides;
-
-    commentsOpts ={
-        direction: 'vertical',
-        autoplay: false,
-        speed: 400,
-    }
 
     employeeDetailPage: string = 'employeeInfo';
 
@@ -61,6 +54,9 @@ export class EmployeeDetailsComponent implements OnInit{
     }
 
     ngOnInit():void{
+        
+    }
+    ionViewWillEnter() {
         const user = this.authService.userData;
         this.userUid = user.uid;
         
@@ -118,10 +114,10 @@ export class EmployeeDetailsComponent implements OnInit{
             }
             document.getElementById("stars-content").remove();
             
-            let thanks = document.createElement('h3');
+            let thanks = document.createElement('span');
             thanks.style.color = "black";
             thanks.innerText = "Gracias por tu calificación";
-            document.getElementsByClassName('rating-content')[1].appendChild(thanks);
+            document.getElementsByClassName('rating-content')[0].appendChild(thanks);
         });
     }
 
@@ -169,33 +165,37 @@ export class EmployeeDetailsComponent implements OnInit{
 
     employeeClientTurnObject: AngularFireObject<ITurn>;
     searchClientEmployeeTurn(){
-        this.employeeClientTurnObject = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
-        const employeeClientTurn$ = this.employeeClientTurnObject.valueChanges().subscribe(result=>{
+        this.employeeClientTurnObject = this.angularFireDatabase.object(`clientsInTurn`);
+        const employeeClientTurn$ = this.employeeClientTurnObject.snapshotChanges().subscribe(result=>{
             if(result !== null){
-                this.searchEmployeeToUnreserveTurn(result.employeeKey);
-                employeeClientTurn$.unsubscribe();
-            }else{
-                this.utilityService.presentToast('El turno no está reservado en este negocio', 'error-toast');
+                const data = result.payload.val();
+                for(let businessKey in data){
+                    if(data[businessKey][this.userUid] !== undefined){
+                        this.searchEmployeeToUnreserveTurn(data[businessKey][this.userUid].employeeKey, businessKey);
+                        employeeClientTurn$.unsubscribe();
+                        break;
+                    }
+                }
             }
         });
     }
 
-    searchEmployeeToUnreserveTurn(employeeKey: string){
-        const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${this.additionalKey}/employees/${employeeKey}`);
+    searchEmployeeToUnreserveTurn(employeeKey: string, businessKey: string){
+        const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${businessKey}/employees/${employeeKey}`);
         const employee$ = employeeToUnsubscribeObjectRef.valueChanges().subscribe(result=>{
-            this.unreserveTurn(employeeKey, result.clientsInTurn)
+            this.unreserveTurn(employeeKey, businessKey, result.clientsInTurn)
             employee$.unsubscribe();
         });
     }
 
-    unreserveTurn(employeeKey: string, previousQuantity: number){
+    unreserveTurn(employeeKey: string, businessKey: string, previousQuantity: number){
         this.repositoryService.updateElement(`users/${this.userUid}`, {
             isInTurn: false
         }).then(()=>{
-           this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${employeeKey}`,{
+           this.repositoryService.updateElement(`businessList/${businessKey}/employees/${employeeKey}`,{
             clientsInTurn: previousQuantity - 1
            }).then(()=>{
-            this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`);
+            this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${this.userUid}`);
            });
         });
     }
@@ -216,19 +216,11 @@ export class EmployeeDetailsComponent implements OnInit{
         }
     }
 
-    upComment(){
-        this.commentsSlide.slidePrev();
-    }
-
-    downComment(){
-        this.commentsSlide.slideNext();
-    }
-
     closeModal(){
         this.utilityServie.closeModal();  
     }
 
-    ngOnDestroy(): void {
+    ionViewWillLeave() {
         this.employeeSubscription.unsubscribe();
         this.userSubscription.unsubscribe();
     }

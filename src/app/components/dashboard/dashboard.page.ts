@@ -30,7 +30,10 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
+  }
+
+  async ionViewWillEnter() {
     this.isBusiness = JSON.parse((await Storage.get({key: 'role'})).value);
   }
 }

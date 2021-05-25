@@ -21,126 +21,114 @@
     
     <ion-slides [options]="slideOpts" #slideCtrl (ionSlideDidChange)="setSegment($event)" pager="false">
         <ion-slide>
-            <ion-grid>
-                <ion-row>
-                    <ion-col size="12">
-                        <div class="clients-in-turn-content">
-                            <h3>Especialidad</h3>
-                            <h5>{{dbEmployee.employeeSpecialty}}</h5>
-                        </div>
-                    </ion-col>
-                </ion-row>
-                <ion-row>
-                    <ion-col size="12">
-                        <div class="rating-content">
-                            <h3>Calificación actual</h3>
-                            <span [ngSwitch]="dbEmployee.rating">
-                            <p *ngSwitchCase="1">
+            <ion-list>
+                <ion-item lines="none">
+                    <ion-label><b>Especialidad:</b> {{dbEmployee.employeeSpecialty}}</ion-label>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label><b>Calificación actual: </b>
+                        <span [ngSwitch]="dbEmployee.rating">
+                            <span *ngSwitchCase="1">
                                 <i class="fas fa-star"></i>
-                            </p>
-                            <p *ngSwitchCase="2">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </p>
-                            <p *ngSwitchCase="3">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </p>
-                            <p *ngSwitchCase="4">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </p>
-                            <p *ngSwitchCase="5">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </p>
-                            <p *ngSwitchDefault>
-                                <span style="color: lightgray; text-shadow: none; font-size: 20px;"><em>Este empleado aún no ha sido calificado</em></span>
-                            </p>
                             </span>
-                        </div>
-                        <div class="rating-content">
-                            <h3>Calificar</h3>
-                            <div id="stars-content">
-                                <i class="far fa-star" (click)="rateEmployee(1)"></i>
-                                <i class="far fa-star" (click)="rateEmployee(2)"></i>
-                                <i class="far fa-star" (click)="rateEmployee(3)"></i>
-                                <i class="far fa-star" (click)="rateEmployee(4)"></i>
-                                <i class="far fa-star" (click)="rateEmployee(5)"></i>
-                            </div>
-                        </div>
-                        <div class="clients-in-turn-content">
-                            <h3>Total de clientes en turno</h3>
-                            <h5>{{dbEmployee.clientsInTurn}}</h5>
-                        </div>
-                        <div class="reserve-turn">
-                            <h3>Reservar turno</h3>
-                            <form>
-                                <ion-item>
-                                    <ion-label>Fecha de reserva</ion-label>
-                                    <ion-datetime display-format="DD/MM/YYYY" 
-                                    [(ngModel)]="reserveDate" name="reserveDate"
-                                    doneText="Aceptar" 
-                                    cancelText="Cancelar"></ion-datetime>
-                                </ion-item>
-                            </form>
-                            <button class="auth-btn" (click)="reserveTurn(clientPhoto, dbEmployee.clientsInTurn)" *ngIf="!isInTurn">
-                                Reservar
-                            </button>
-                            <button class="auth-btn cancel-btn" (click)="searchClientEmployeeTurn()" *ngIf="isInTurn">
-                                Cancelar reserva anterior
-                            </button>
-                        </div>
-                    </ion-col>
-                </ion-row>
-            </ion-grid>
+                            <span *ngSwitchCase="2">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                            <span *ngSwitchCase="3">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                            <span *ngSwitchCase="4">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                            <span *ngSwitchCase="5">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                            <span *ngSwitchDefault>
+                                <span style="color: gray; text-shadow: none;"><em>No calificado</em></span>
+                            </span>
+                        </span>    
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label><b>Calificar:</b>
+                        <span id="stars-content">
+                            <i class="far fa-star" (click)="rateEmployee(1)"></i>
+                            <i class="far fa-star" (click)="rateEmployee(2)"></i>
+                            <i class="far fa-star" (click)="rateEmployee(3)"></i>
+                            <i class="far fa-star" (click)="rateEmployee(4)"></i>
+                            <i class="far fa-star" (click)="rateEmployee(5)"></i>
+                        </span>
+                        <div class="rating-content"></div>
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label>
+                        <b>Total de clientes en turno:</b> {{dbEmployee.clientsInTurn}}
+                    </ion-label>
+                </ion-item>
+                <ion-item lines="none">
+                    <div class="reserve-turn">
+                        <h3>Reservar turno</h3>
+                        <form>
+                            <ion-item>
+                                <ion-label>Fecha de reserva</ion-label>
+                                <ion-datetime display-format="DD/MM/YYYY" 
+                                [(ngModel)]="reserveDate" name="reserveDate"
+                                doneText="Aceptar" 
+                                cancelText="Cancelar"></ion-datetime>
+                            </ion-item>
+                        </form>
+                        <button class="auth-btn" (click)="reserveTurn(clientPhoto, dbEmployee.clientsInTurn)" *ngIf="!isInTurn">
+                            Reservar
+                        </button>
+                        <button class="auth-btn cancel-btn" (click)="searchClientEmployeeTurn()" *ngIf="isInTurn">
+                            Cancelar reserva anterior
+                        </button>
+                    </div>
+                </ion-item>
+            </ion-list>
         </ion-slide>
-        
         <ion-slide>
             <div *ngIf="employeeDetailPage === 'employeeComments'" class="employee-comments-container">
-                <div class="comment-inputs">
-                    <form>
-                        <ion-grid>
-                            <ion-row>
-                                <ion-col size="9">
-                                    <textarea type="text" class="auth-input" [(ngModel)]="comment" name="comment" placeholder="Escribe un comentario"></textarea>
-                                </ion-col>
-                                <ion-col size="3">
-                                    <button class="send-comment-btn" (click)="doComment()">
-                                        <ion-icon slot="center" name="paper-plane-outline"></ion-icon>
-                                    </button>
-                                </ion-col>
-                            </ion-row>
-                        </ion-grid>
-                    </form>
-                </div>
-                <div class="comments-content">
-                    <ion-slides [options]="commentsOpts" #commentsSlide class="comments-slide">
-                        <ion-slide *ngFor="let comment of employeeComments">
-                            <div class="comments-card">
-                                <ion-card-title>{{comment.user}}</ion-card-title>
-                                <ion-card-content>
-                                    <p>{{comment.comment}}</p>
-                                    <p class="right"><small>{{comment.commentDate}}</small></p>
-                                </ion-card-content>
+                <ion-item lines="full">
+                    <div class="comment-inputs">
+                        <form>
+                            <ion-grid>
+                                <ion-row>
+                                    <ion-col size="9">
+                                        <textarea type="text" class="auth-input" [(ngModel)]="comment" name="comment" placeholder="Escribe un comentario"></textarea>
+                                    </ion-col>
+                                    <ion-col size="3">
+                                        <button class="send-comment-btn" (click)="doComment()">
+                                            <ion-icon slot="center" name="paper-plane-outline"></ion-icon>
+                                        </button>
+                                    </ion-col>
+                                </ion-row>
+                            </ion-grid>
+                        </form>
+                    </div>
+                </ion-item>
+                <ion-list class="comments-container">
+                    <ion-item lines="none" *ngFor="let comment of employeeComments">
+                        <div class="comments-card">
+                            <ion-card-title>{{comment.user}}</ion-card-title>
+                            <div style="word-break: break-all;">
+                                <p>{{comment.comment}}</p>
+                                <p class="right"><small>{{comment.commentDate}}</small></p>
                             </div>
-                        </ion-slide>
-                    </ion-slides>
-                    <ion-fab horizontal="start" style="margin-top: -45px;">
-                        <ion-fab-button side="end" (click)="upComment()">
-                            <ion-icon name="arrow-up"></ion-icon>
-                        </ion-fab-button>
-                        <ion-fab-button side="start" (click)="downComment()">
-                            <ion-icon name="arrow-down"></ion-icon>
-                        </ion-fab-button>
-                    </ion-fab>
-                </div>
+                        </div>
+                    </ion-item>
+                </ion-list>
             </div>
         </ion-slide>
     </ion-slides>

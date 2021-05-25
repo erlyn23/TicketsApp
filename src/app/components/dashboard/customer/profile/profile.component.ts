@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit {
     this.updateProfileForm = this.formBuilder.group({
       fullName: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]]
     });
-    this.getUserData();
+    this.getUserData(); 
   }
 
   user$: Subscription;
@@ -69,7 +69,7 @@ export class ProfileComponent implements OnInit {
     await this.authService.signOut();
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     this.user$.unsubscribe();
   }
 }

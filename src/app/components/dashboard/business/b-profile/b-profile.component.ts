@@ -150,7 +150,7 @@ export class BProfileComponent implements OnInit {
     await this.authService.signOut();
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave() {
     this.business$.unsubscribe();
   }
 

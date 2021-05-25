@@ -95,7 +95,7 @@ export class FavouritesComponent implements OnInit {
 
   ionViewWillLeave() {
     this.businessSubscription.unsubscribe();
-    this.businessListSubscription.unsubscribe();
+    if(this.businessListSubscription !== undefined) this.businessListSubscription.unsubscribe();
   }
 
 }
