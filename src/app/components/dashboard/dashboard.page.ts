@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Plugins } from '@capacitor/core';
-import { Platform } from '@ionic/angular';
+import { IonTabs, Platform } from '@ionic/angular';
 import { AuthService } from 'src/app/services/auth.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
@@ -12,6 +12,12 @@ const { Storage } = Plugins;
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit {
+
+  @ViewChild('customerTabs') customerTabs: IonTabs; 
+  @ViewChildren('businessTabs') businessTabs: QueryList<IonTabs>;
+ 
+  private businessTabsChild: IonTabs;
+
 
   userUid: string;
   isBusiness: boolean;
@@ -31,9 +37,17 @@ export class DashboardPage implements OnInit {
   }
 
   ngOnInit() {
+    
   }
 
-  async ionViewWillEnter() {
+  async ngAfterViewInit() {
     this.isBusiness = JSON.parse((await Storage.get({key: 'role'})).value);
+    if(!this.isBusiness) this.customerTabs.select('home');
+    else{
+      this.businessTabs.changes.subscribe((tab: QueryList<IonTabs>)=>{
+        this.businessTabsChild = tab.first;
+        this.businessTabsChild.select('b-home');
+      });
+    }
   }
 }

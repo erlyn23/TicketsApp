@@ -31,8 +31,9 @@ export class RegisterBusinessComponent implements OnInit {
       }
     }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.initForm();
+    await this.utilityService.presentToast("Enciende la ubicación para acceder al mapa", 'success-toast');
     this.initMap();
   }
 

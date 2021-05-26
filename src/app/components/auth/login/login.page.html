@@ -8,8 +8,8 @@
       </ion-col>
     </ion-row>
     <ion-row>
-      <ion-col size="12" style="text-align: center; margin-top: -50px">
-          <img src="../../../../assets/img/LogoPNG.png" width="250" height="150">
+      <ion-col size="12" style="text-align: center; margin-top: 20px;">
+        <img src="../../../../assets/img/logo-login.png">
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -51,15 +51,11 @@
     </ion-row>
   </ion-grid>
   <div class="aditional-footer">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="6">
-          <a [routerLink]="['register-types']">Registrarme</a>
-        </ion-col>
-        <ion-col size="6" style="text-align: right;">
-          <a [routerLink]="['/revocer-password']">Olvidé mi contraseña</a>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+    <ion-fab vertical="end" horizontal="start">
+      <a [routerLink]="['register-types']">Registrarme</a>
+    </ion-fab>
+    <ion-fab vertical="end" horizontal="end">
+      <a [routerLink]="['/revocer-password']">Olvidé mi contraseña</a>
+    </ion-fab>
   </div>
 </ion-content>

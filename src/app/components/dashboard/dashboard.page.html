@@ -1,7 +1,5 @@
-<ion-tabs *ngIf="!isBusiness">
-  
+<ion-tabs *ngIf="!isBusiness" #customerTabs>
   <ion-tab-bar>
-    
     <ion-tab-button tab="home">
       <ion-icon name="home"></ion-icon>
       <ion-label>Inicio</ion-label>
@@ -21,14 +19,11 @@
       <ion-icon name="person-circle-outline"></ion-icon>
       <ion-label>Perfil</ion-label>
     </ion-tab-button>
-
   </ion-tab-bar>
-
 </ion-tabs>
 
-<ion-tabs *ngIf="isBusiness">
+<ion-tabs *ngIf="isBusiness" #businessTabs>
   <ion-tab-bar>
-    
     <ion-tab-button tab="b-home">
       <ion-icon name="home"></ion-icon>
       <ion-label>Inicio</ion-label>
@@ -43,7 +38,5 @@
       <ion-icon name="person-circle-outline"></ion-icon>
       <ion-label>Perfil</ion-label>
     </ion-tab-button>
-
   </ion-tab-bar>
-
 </ion-tabs>
