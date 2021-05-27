@@ -71,7 +71,7 @@ export class BProfileComponent implements OnInit {
   makeSwitch(initLong: number, initLat: number){
     this.isEdit = true;
     this.initMap(initLong, initLat);
-    document.getElementById("mapbox-container").style.display = "block";
+    document.getElementById("edit-form").style.display = "block";
   }
 
   initMap(initLong: number, initLat:number):void{
@@ -137,7 +137,7 @@ export class BProfileComponent implements OnInit {
           this.utilityService.closeLoading();
           await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
           this.isEdit = false;
-          document.getElementById("mapbox-container").style.display = "none";
+          document.getElementById("edit-form").style.display = "none";
         });
       }).catch(async error=>{
         console.log(error);

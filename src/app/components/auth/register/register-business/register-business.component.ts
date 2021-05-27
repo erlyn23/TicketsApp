@@ -31,7 +31,7 @@ export class RegisterBusinessComponent implements OnInit {
 
   async ngOnInit() {
     this.initForm();
-    await this.utilityService.presentToast("Enciende la ubicación para acceder al mapa", 'success-toast');
+    await this.utilityService.presentToast("Enciende la ubicación y reinicia la app para acceder al mapa", 'success-toast');
     let watch = this.geolocation.watchPosition();
     watch.subscribe((coords:Geoposition)=>{
       this.initMap(coords);
@@ -59,7 +59,6 @@ export class RegisterBusinessComponent implements OnInit {
       zoom: 15,
     });
     const marker = new MapBox.Marker().setLngLat([coordinates.coords.longitude, coordinates.coords.latitude]).addTo(map);
-
     this.registerForm.get('longitude').setValue(marker._lngLat.lng);
     this.registerForm.get('latitude').setValue(marker._lngLat.lat);
 
