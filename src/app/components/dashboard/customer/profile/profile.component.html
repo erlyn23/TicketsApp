@@ -3,8 +3,23 @@
       <img class="profile" src="../../../../assets/img/user_icon.png" (click)="openChangePhotoPopover()" height="100" *ngIf="userPhoto === undefined">
       <img [src]="userPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="userPhoto !== undefined">
     </div>
+    
+    <ion-list *ngIf="!isEdit && user !== undefined" class="animate__animated animate__bounceIn">
+      <ion-item color="primary" lines="none" class="centered-text">
+        <ion-label><b>Nombre:</b> {{user.fullName}}</ion-label>
+      </ion-item>
+      <ion-item color="primary" lines="none" class="centered-text">
+        <ion-label><b>Correo:</b> {{user.email}}</ion-label>
+      </ion-item>
+      <ion-item color="primary" lines="none" class="centered-text">
+        <button class="auth-btn" (click)="isEdit = true">Editar perfil</button>
+      </ion-item>
+      <ion-item color="primary" lines="none" class="centered-text">
+        <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
+      </ion-item>
+    </ion-list>
   
-    <div class="register-form-container animate__animated animate__bounceIn">
+    <div class="register-form-container animate__animated animate__bounceIn" *ngIf="isEdit">
       <div class="form-container">
         <form [formGroup]="updateProfileForm">
   

@@ -1,3 +1,11 @@
+ion-list{
+    background: var(--ion-color-primary);
+}
+
+.centered-text{
+    text-align: center;
+}
+
 .photo-container{
     width: 100%;
     display: flex;
@@ -13,6 +21,10 @@
         border-bottom-right-radius: 50% 50%;
         border-bottom-left-radius: 50% 50%;
     }
+}
+
+.auth-btn{
+    margin: 10px auto;
 }
 
 .register-form-container{

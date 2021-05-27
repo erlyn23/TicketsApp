@@ -29,25 +29,25 @@ export class LoginPage implements OnInit {
 
   private initForm():void{
     this.loginForm = this.formBuilder.group({
-      email: [""],
-      password: [""]
+      email: ["", [Validators.required]],
+      password: ["", [Validators.required]]
     });
   }
 
   async signIn(){
-    
-    await this.utilityService.presentLoading();
-    const user: IAuth = { email: this.loginForm.value.email, password: this.loginForm.value.password };
-    
-    await this.authService.signIn(user).then(result=>{
-      
-      this.loginForm.reset();
-      this.utilityService.closeLoading();
-    
-    }).catch(error=>{
-      
-      this.utilityService.closeLoading();
-    });
+    if(this.loginForm.valid){
+      await this.utilityService.presentLoading();
+      const user: IAuth = { email: this.loginForm.value.email, password: this.loginForm.value.password };
+  
+      await this.authService.signIn(user).then(result=>{
+        this.loginForm.reset();
+        this.utilityService.closeLoading();
+      }).catch(error=>{  
+        this.utilityService.closeLoading();
+      });
+    }else{
+      await this.utilityService.presentToast('Debes escribir tu correo y contraseña', 'error-toast');
+    }
   }
 
   async signInWithFacebook(){

@@ -21,26 +21,25 @@
         <ion-reorder-group id="reorder-parent" (ionItemReorder)="reorderTurns($event)" disabled="true">
             <ion-list *ngFor="let turn of turns, let i = index">
                 <ion-reorder>
-                    <ion-item lines="none" color="primary">
+                    <ion-item lines="none" color="primary" style="text-align: center; padding: 0 30px">
                         <ion-avatar>
                             <img src="../../../../../assets/img/user_icon.png"
                                 alt="" *ngIf="turn.clientPhoto === undefined">
                                 <img [src]="turn.clientPhoto"
                                 alt="" *ngIf="turn.clientPhoto !== undefined">
-                        </ion-avatar>&nbsp;&nbsp;&nbsp;
+                        </ion-avatar>
                         <ion-label>
-                            <span>{{turn.clientName}}</span>&nbsp;
-                            <span>#{{i+1}}</span>
-                            <ion-button fill="clear" style="color: white;" (click)="openCancelTurn(turn)">
-                                <ion-icon slot="icon-only" name="close-circle"></ion-icon>
-                            </ion-button>
+                            <p>{{turn.clientName}} <span>#{{i+1}}</span></p>
                             <div>
-                                {{turn.employeeName}}
+                                <p>{{turn.employeeName}}</p>
                             </div>
                             <div>
                                 <small>{{turn.reserveDate | date: 'short'}}</small>
                             </div>
                         </ion-label>
+                        <ion-button fill="clear" style="color: white;" (click)="openCancelTurn(turn)">
+                            <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+                        </ion-button>
                     </ion-item>
                 </ion-reorder>
             </ion-list>

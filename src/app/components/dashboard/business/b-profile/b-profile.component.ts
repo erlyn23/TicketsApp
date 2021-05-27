@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Query, QueryList, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IUser } from 'src/app/core/models/user.interface';
@@ -14,6 +14,8 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { PhotoPopoverComponent } from 'src/app/components/core/photo-popover/photo-popover.component';
 import { AngularFireStorage } from '@angular/fire/storage';
 import { ChangePasswordComponent } from 'src/app/components/core/change-password/change-password.component';
+import { NumericValueAccessor } from '@ionic/angular';
+import { MapComponent } from 'src/app/components/core/map/map.component';
 
 @Component({
   selector: 'app-b-profile',
@@ -24,16 +26,16 @@ export class BProfileComponent implements OnInit {
 
   registerForm: FormGroup;
   businessPhoto: string = "";
+  user: IUser;
+  isEdit: boolean = false;
+
+  @ViewChild('businessMap') businessMap: QueryList<any>;
+
   constructor(private formBuilder: FormBuilder,
     private repositoryService: RepositoryService<IUser>,
     private authService: AuthService,
     private utilityService: UtilityService,
-    private angularFireDatabase: AngularFireDatabase,
-    private router: Router) { 
-      const user = this.authService.userData;
-      if(user){
-        this.router.navigate(['/dashboard'])
-      }
+    private angularFireDatabase: AngularFireDatabase) { 
     }
 
   ngOnInit() {
@@ -53,8 +55,7 @@ export class BProfileComponent implements OnInit {
       if(result.photo != undefined) {
         this.businessPhoto = result.photo;
       }
-
-      this.initMap(result.long, result.latitude);
+      this.user = result;
     });
   }
 
@@ -65,6 +66,12 @@ export class BProfileComponent implements OnInit {
       longitude: ["", [Validators.required]],
       latitude: ["", [Validators.required]]
     });
+  }
+
+  makeSwitch(initLong: number, initLat: number){
+    this.isEdit = true;
+    this.initMap(initLong, initLat);
+    document.getElementById("mapbox-container").style.display = "block";
   }
 
   initMap(initLong: number, initLat:number):void{
@@ -129,6 +136,8 @@ export class BProfileComponent implements OnInit {
         }).then(async ()=>{
           this.utilityService.closeLoading();
           await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
+          this.isEdit = false;
+          document.getElementById("mapbox-container").style.display = "none";
         });
       }).catch(async error=>{
         console.log(error);

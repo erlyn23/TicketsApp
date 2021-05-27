@@ -7,9 +7,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import * as MapBox from 'mapbox-gl';
 import * as MapBoxGeoCoder from '@mapbox/mapbox-gl-geocoder';
 import { environment } from 'src/environments/environment';
-import { Plugins } from '@capacitor/core';
-
-const { Geolocation } = Plugins;
+import { Geolocation, Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-register-business',
@@ -23,8 +21,8 @@ export class RegisterBusinessComponent implements OnInit {
   constructor(private formBuilder: FormBuilder,
     private authService: AuthService,
     private utilityService: UtilityService,
+    private geolocation: Geolocation,
     private router: Router) { 
-      
       const user = this.authService.userData;
       if(user){
         this.router.navigate(['/dashboard'])
@@ -34,7 +32,10 @@ export class RegisterBusinessComponent implements OnInit {
   async ngOnInit() {
     this.initForm();
     await this.utilityService.presentToast("Enciende la ubicación para acceder al mapa", 'success-toast');
-    this.initMap();
+    let watch = this.geolocation.watchPosition();
+    watch.subscribe((coords:Geoposition)=>{
+      this.initMap(coords);
+    });
   }
 
   private initForm():void{
@@ -49,8 +50,7 @@ export class RegisterBusinessComponent implements OnInit {
     });
   }
 
-  async initMap(){
-    const coordinates = await Geolocation.getCurrentPosition();
+  async initMap(coordinates:Geoposition){
     MapBox.accessToken = environment.mapToken;
     const map = new MapBox.Map({
       container: 'mapbox-container',

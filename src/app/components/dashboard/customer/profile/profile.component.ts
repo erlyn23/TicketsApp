@@ -18,6 +18,9 @@ export class ProfileComponent implements OnInit {
 
   userPhoto: string = "";
   updateProfileForm: FormGroup;
+
+  user: IUser;
+  isEdit: boolean = false;
   constructor(private utilityService: UtilityService,
     private formBuilder: FormBuilder,
     private repositoryService: RepositoryService<IUser>,
@@ -36,6 +39,7 @@ export class ProfileComponent implements OnInit {
     this.user$ = userObject.valueChanges().subscribe(result=>{
       this.updateProfileForm.controls.fullName.setValue(result.fullName);
       this.userPhoto = result.photo;
+      this.user = result;
     });
   }
 
@@ -51,6 +55,7 @@ export class ProfileComponent implements OnInit {
         fullName: this.updateProfileForm.value.fullName
       }).then(async ()=>{
         await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
+        this.isEdit = false;
       });
     }else{
       await this.utilityService.presentToast('Debes llenar los datos', 'error-toast');
