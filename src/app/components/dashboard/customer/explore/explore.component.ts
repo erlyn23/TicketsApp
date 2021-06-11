@@ -22,7 +22,7 @@ export class ExploreComponent implements OnInit {
   businessList: IBusiness[] = [];
   objectRef: AngularFireObject<IBusiness[]>;
 
-  businessSubscription: Subscription = new Subscription();
+  businessSubscription: Subscription[] = [];
 
   navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0 } };
   searchBusiness: IBusiness[] = [];
@@ -71,10 +71,10 @@ export class ExploreComponent implements OnInit {
         this.map.addControl(new mapBox.NavigationControl());
 
         this.watch = this.geolocation.watchPosition();
-
-        this.watch.subscribe((location: Geoposition)=>{
+        const locationPosition$ = this.watch.subscribe((location: Geoposition)=>{
           this.listenMap(location.coords.latitude, location.coords.longitude);
         });
+        this.businessSubscription.push(locationPosition$);
       });
     })
   }
@@ -89,7 +89,7 @@ export class ExploreComponent implements OnInit {
 
   getBusinessList(){
     this.objectRef = this.repositoryService.getAllElements(`businessList`);
-    this.businessSubscription = this.objectRef.snapshotChanges().subscribe(result=>{
+    const businessList$ = this.objectRef.snapshotChanges().subscribe(result=>{
       const businessList = result.payload.val();
       this.businessList = [];
       for(let businessKey in businessList){
@@ -98,6 +98,7 @@ export class ExploreComponent implements OnInit {
         this.createMarkersInMap(businessList[businessKey]);
       }
     });
+    this.businessSubscription.push(businessList$);
   }
 
   createMarkersInMap(business: IBusiness){
@@ -182,7 +183,9 @@ export class ExploreComponent implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.businessSubscription.unsubscribe();
+    this.businessSubscription.forEach(subscription=>{
+      subscription.unsubscribe();
+    });
   }
 
 }
