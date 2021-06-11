@@ -51,7 +51,9 @@ export class BProfileComponent implements OnInit {
       this.registerForm.controls.businessName.setValue(result.businessName);
       this.registerForm.controls.longitude.setValue(result.long);
       this.registerForm.controls.latitude.setValue(result.latitude); 
-      
+      this.registerForm.controls.openTime.setValue(result.openTime);
+      this.registerForm.controls.closeTime.setValue(result.closeTime);
+
       if(result.photo != undefined) {
         this.businessPhoto = result.photo;
       }
@@ -63,6 +65,8 @@ export class BProfileComponent implements OnInit {
     this.registerForm = this.formBuilder.group({
       fullName: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       businessName: ["", [Validators.required]],
+      openTime: ["", [Validators.required]],
+      closeTime: ["", [Validators.required]],
       longitude: ["", [Validators.required]],
       latitude: ["", [Validators.required]]
     });
@@ -74,15 +78,16 @@ export class BProfileComponent implements OnInit {
     document.getElementById("edit-form").style.display = "block";
   }
 
+  map: MapBox.Map;
   initMap(initLong: number, initLat:number):void{
     MapBox.accessToken = environment.mapToken;
-    const map = new MapBox.Map({
+    this.map = new MapBox.Map({
       container: 'mapbox-container',
       style: 'mapbox://styles/mapbox/streets-v11', 
       center: [initLong, initLat], 
       zoom: 15,
     });
-    const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
+    const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(this.map);
 
     this.registerForm.get('longitude').setValue(marker._lngLat.lng);
     this.registerForm.get('latitude').setValue(marker._lngLat.lat);
@@ -93,10 +98,10 @@ export class BProfileComponent implements OnInit {
       placeholder: 'Dirección del negocio',
       marker: false
     });
-    map.addControl(geocoder);
+    this.map.addControl(geocoder);
 
-    map.addControl(new MapBox.NavigationControl());
-    map.on('click', (e)=>{
+    this.map.addControl(new MapBox.NavigationControl());
+    this.map.on('click', (e)=>{
       const currentLng = e.lngLat.lng;
       const currentLat = e.lngLat.lat;
       marker.setLngLat([currentLng, currentLat]);
@@ -124,6 +129,8 @@ export class BProfileComponent implements OnInit {
       email: this.authService.userData.email,
       password: '',
       businessName: this.registerForm.value.businessName,
+      openTime: this.registerForm.value.openTime,
+      closeTime: this.registerForm.value.closeTime,
       latitude: this.registerForm.value.latitude,
       long: this.registerForm.value.longitude,
       isBusiness: true };
@@ -132,10 +139,13 @@ export class BProfileComponent implements OnInit {
         await this.repositoryService.updateElement(`businessList/${this.authService.userData.uid}`, {
           latitude: user.latitude,
           long: user.long,
+          openTime: user.openTime,
+          closeTime: user.closeTime,
           businessName: user.businessName
         }).then(async ()=>{
           this.utilityService.closeLoading();
           await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
+          this.map.remove();
           this.isEdit = false;
           document.getElementById("edit-form").style.display = "none";
         });

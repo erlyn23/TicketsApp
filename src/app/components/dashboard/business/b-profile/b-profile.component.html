@@ -1,6 +1,6 @@
 <ion-content color="primary">
   <div class="photo-container">
-    <img class="profile" src="../../../../assets/img/user_icon.png" (click)="openChangePhotoPopover()" height="100" *ngIf="businessPhoto === undefined || businessPhoto === ''">
+    <img class="profile" src="../../../../assets/icon/Recurso12.png" (click)="openChangePhotoPopover()" height="100" *ngIf="businessPhoto === undefined || businessPhoto === ''">
     <img [src]="businessPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="businessPhoto !== ''">
   </div>
 
@@ -14,6 +14,9 @@
     </ion-item>
     <ion-item color="primary" lines="none" class="centered-text">
       <ion-label><b>Correo:</b> {{user.email}}</ion-label>
+    </ion-item>
+    <ion-item color="primary" lines="none" class="centered-text">
+      <ion-label><b>Horario:</b> {{user.openTime}} a {{user.closeTime}}</ion-label>
     </ion-item>
     <ion-item color="primary" lines="none" class="centered-text">
       <button class="auth-btn" (click)="makeSwitch(user.long, user.latitude)">Editar perfil</button>
@@ -38,6 +41,22 @@
           <div *ngIf="isValidField('businessName') === 'invalid-field'">
             <p *ngIf="registerForm.get('businessName').errors?.required">Debes escribir el nombre de tu negocio</p>
           </div>
+
+          <ion-item color="primary" lines="none">
+            <p style="color: var(--ion-color-primary-contrast)">Hora de apertura</p>
+            <input type="time" formControlName="openTime" class="auth-input" [class]="isValidField('openTime')">
+          </ion-item>
+          <div *ngIf="isValidField('openTime') === 'invalid-field'">
+            <p *ngIf="registerForm.get('openTime').errors?.required">La hora de apertura es obligatoria</p>
+          </div>
+          <ion-item color="primary" lines="none">
+            <p style="color: var(--ion-color-primary-contrast)">Hora de cierre</p>
+            <input type="time" formControlName="closeTime" class="auth-input" [class]="isValidField('closeTime')">
+          </ion-item>
+          <div *ngIf="isValidField('closeTime') === 'invalid-field'">
+            <p *ngIf="registerForm.get('closeTime').errors?.required">La hora de cierre es obligatoria</p>
+          </div>
+
       </form>
       <app-map></app-map>
       <ion-list class="animate__animated animate__bounceIn">

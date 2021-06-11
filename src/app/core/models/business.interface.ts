@@ -5,6 +5,8 @@ export interface IBusiness{
     businessName: string;
     latitude: number;
     long: number;
+    openTime: string;
+    closeTime: string;
     clientsInTurn: number;
     businessPhoto: string;
     employees: IEmployee[];

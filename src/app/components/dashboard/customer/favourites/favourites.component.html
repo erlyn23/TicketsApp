@@ -28,7 +28,7 @@
             <span class="business-title">{{business.businessName}}</span>
             <div class="business-status" style="color: var(--ion-color-success);" *ngIf="business.isOpened">Abierto</div>
             <div class="business-status" style="color: var(--ion-color-danger);" *ngIf="!business.isOpened">Cerrado</div>
-            <div class="business-schedule">10pm a 3am</div>
+            <div class="business-schedule">{{business.openTime}} a {{business.closeTime}}</div>
           </span>
         </ion-label>
         <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
@@ -49,7 +49,7 @@
             <span class="business-title">{{business.businessName}}</span>
             <div class="business-status" style="color: var(--ion-color-success);" *ngIf="business.isOpened">Abierto</div>
             <div class="business-status" style="color: var(--ion-color-danger);" *ngIf="!business.isOpened">Cerrado</div>
-            <div class="business-schedule">10pm a 3am</div>
+            <div class="business-schedule">{{business.openTime}} a {{business.closeTime}}</div>
           </span>
         </ion-label>
         <ion-button fill="clear" color="danger" (click)="deleteBusinessFromFavouriteList(business)">

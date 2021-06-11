@@ -23,6 +23,21 @@
             <p *ngIf="registerForm.get('businessName').errors?.required">Debes escribir el nombre de tu negocio</p>
           </div>
 
+          <ion-item color="primary" lines="none">
+            <p style="color: var(--ion-color-primary-contrast)">Hora de apertura</p>
+            <input type="time" formControlName="openTime" class="auth-input" [class]="isValidField('openTime')">
+          </ion-item>
+          <div *ngIf="isValidField('openTime') === 'invalid-field'">
+            <p *ngIf="registerForm.get('openTime').errors?.required">La hora de apertura es obligatoria</p>
+          </div>
+          <ion-item color="primary" lines="none">
+            <p style="color: var(--ion-color-primary-contrast)">Hora de cierre</p>
+            <input type="time" formControlName="closeTime" class="auth-input" [class]="isValidField('closeTime')">
+          </ion-item>
+          <div *ngIf="isValidField('closeTime') === 'invalid-field'">
+            <p *ngIf="registerForm.get('closeTime').errors?.required">La hora de cierre es obligatoria</p>
+          </div>
+
           <app-map></app-map>
 
           <input type="text" formControlName="email" class="auth-input" [class]="isValidField('email')" placeholder="&#xF0E0; Correo electrónico">

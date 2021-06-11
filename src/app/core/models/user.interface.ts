@@ -4,6 +4,8 @@ export interface IUser{
     email: string;
     password: string;
     businessName?: string;
+    openTime?: string;
+    closeTime?: string;
     long?: number;
     latitude?: number;
     photo?: string;

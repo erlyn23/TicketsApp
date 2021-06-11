@@ -185,11 +185,15 @@ export class AuthService {
         isBusiness: user.isBusiness,
         latitude: user.latitude,
         long: user.long,
-        businessName: user.businessName
+        businessName: user.businessName,
+        openTime: user.openTime,
+        closeTime: user.closeTime
       }
 
       const businessInfo = {
         businessName: user.businessName,
+        openTime: user.openTime,
+        closeTime: user.closeTime,
         latitude: user.latitude,
         long: user.long,
         clientsInTurn: 0,

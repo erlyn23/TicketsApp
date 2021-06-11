@@ -7,7 +7,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import * as MapBox from 'mapbox-gl';
 import * as MapBoxGeoCoder from '@mapbox/mapbox-gl-geocoder';
 import { environment } from 'src/environments/environment';
-import { Geolocation, Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-register-business',
@@ -41,6 +41,8 @@ export class RegisterBusinessComponent implements OnInit {
       fullName: ["", [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
       email: ["", [Validators.required, Validators.pattern(this.emailPattern)]],
       businessName: ["", [Validators.required]],
+      openTime: ["", [Validators.required]],
+      closeTime: ["", [Validators.required]],
       longitude: ["", [Validators.required]],
       latitude: ["", [Validators.required]],
       password: ["", [Validators.required, Validators.minLength(8), Validators.maxLength(16), Validators.pattern(this.passwordPattern)]],
@@ -104,12 +106,15 @@ export class RegisterBusinessComponent implements OnInit {
       if(this.registerForm.value.password === this.registerForm.value.confirmPassword){
         
         const user: IUser = { fullName: this.registerForm.value.fullName,
-        email: this.registerForm.value.email,
-        password: this.registerForm.value.password,
-        businessName: this.registerForm.value.businessName,
-        latitude: this.registerForm.value.latitude,
-        long: this.registerForm.value.longitude,
-        isBusiness: true };
+          email: this.registerForm.value.email,
+          password: this.registerForm.value.password,
+          businessName: this.registerForm.value.businessName,
+          openTime: this.registerForm.value.openTime,
+          closeTime: this.registerForm.value.closeTime,
+          latitude: this.registerForm.value.latitude,
+          long: this.registerForm.value.longitude,
+          isBusiness: true 
+        };
         
         await this.authService.registerUser(user).then(async ()=>{
           
