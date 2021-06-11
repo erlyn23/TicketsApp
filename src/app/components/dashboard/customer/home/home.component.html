@@ -1,8 +1,11 @@
 <ion-content>
     <div class="photo-container">
-        <img class="profile" src="../../../../assets/img/user_icon.png" height="100" *ngIf="userPhoto === undefined">
+        <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="userPhoto === undefined">
         <img [src]="userPhoto" class="profile" alt="" *ngIf="userPhoto !== undefined">
-        <span>Hola, {{userName}}</span>
+        <div class="user-names">
+          <span>Hola, {{userName}}</span>
+          <span style="font-weight: normal; color: gray;">#{{userId}}</span>
+        </div>
     </div>
 
     <div class="title-bar">
@@ -13,7 +16,8 @@
         <ion-item lines="none" *ngFor="let business of businessTopThreeList, let i = index">
           <ion-thumbnail>
             <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
-            <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+            <img *ngIf="business.businessPhoto == '' && business.isOpened" src="./../../../../../assets/icon/Recurso14.png" alt="">
+            <img *ngIf="business.businessPhoto == '' && !business.isOpened" src="./../../../../../assets/icon/Recurso22.png" alt="">
           </ion-thumbnail>
           <ion-label>
             <span (click)="goToBusinessDetails(business)" style="font-size: 15px;">

@@ -1,45 +1,58 @@
-<ion-content color="primary">
-    <ion-grid>
-      <ion-row>
-        <ion-col size="12">
-          <ion-searchbar placeholder="Buscar negocio" [(ngModel)]="searchFilter" name="searchFilter" 
-          (ionChange)="searchForBusiness($event, businessList)"></ion-searchbar>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  
-    <ion-list color="primary" *ngIf="searchBusiness.length === 0 && searchFilter.length === 0">
-      <ion-item color="primary" lines="none" *ngFor="let business of businessList, let i = index">
+<ion-header>
+  <ion-toolbar color="primary"> 
+    <img *ngIf="!isSearch" width="60%" src="../../../../../assets/img/logo-login.png" alt="logo">
+    <ion-searchbar *ngIf="isSearch" placeholder="Buscar negocio" [(ngModel)]="searchFilter" name="searchFilter" 
+        (ionChange)="searchForBusiness($event, businessList)"></ion-searchbar>
+    <ion-button slot="end" fill="clear" style="color: var(--ion-color-primary-contrast)" (click)="toggleSearch()">
+      <ion-icon *ngIf="!isSearch" slot="icon-only" name="search"></ion-icon>
+      <ion-icon *ngIf="isSearch" slot="icon-only" name="close-circle"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="title-bar">
+      <span>Favoritos</span>
+    </div>
+
+
+    <ion-list *ngIf="searchBusiness.length === 0 && searchFilter.length === 0">
+      <ion-item lines="none" *ngFor="let business of businessList, let i = index">
         <ion-thumbnail>
           <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
-          <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+          <img *ngIf="business.businessPhoto == '' && business.isOpened" src="./../../../../../assets/icon/Recurso14.png" alt="">
+          <img *ngIf="business.businessPhoto == '' && !business.isOpened" src="./../../../../../assets/icon/Recurso22.png" alt="">
         </ion-thumbnail>
         <ion-label>
-          <ion-title (click)="goToBusinessDetails(business)" style="font-size: 15px;">
-            {{business.businessName}}
-            <div *ngIf="business.isOpened">Abierto ahora</div>
-            <div *ngIf="!business.isOpened">Cerrado</div>
-          </ion-title>
+          <span (click)="goToBusinessDetails(business)" style="font-size: 15px;">
+            <span class="business-title">{{business.businessName}}</span>
+            <div class="business-status" style="color: var(--ion-color-success);" *ngIf="business.isOpened">Abierto</div>
+            <div class="business-status" style="color: var(--ion-color-danger);" *ngIf="!business.isOpened">Cerrado</div>
+            <div class="business-schedule">10pm a 3am</div>
+          </span>
         </ion-label>
         <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <ion-icon color="danger" slot="icon-only" name="trash"></ion-icon>
         </ion-button>
       </ion-item>
     </ion-list>
-    <ion-list color="primary" *ngIf="searchBusiness.length > 0 && searchFilter.length > 0">
-      <ion-item color="primary" lines="none" *ngFor="let business of searchBusiness, let i = index">
+    
+    <ion-list *ngIf="searchBusiness.length > 0 && searchFilter.length > 0">
+      <ion-item lines="none" *ngFor="let business of searchBusiness, let i = index">
         <ion-thumbnail>
           <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
-          <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+          <img *ngIf="business.businessPhoto == '' && business.isOpened" src="./../../../../../assets/icon/Recurso14.png" alt="">
+          <img *ngIf="business.businessPhoto == '' && !business.isOpened" src="./../../../../../assets/icon/Recurso22.png" alt="">
         </ion-thumbnail>
         <ion-label>
-          <ion-title (click)="goToBusinessDetails(business)" style="font-size: 15px;">
-            {{business.businessName}}
-            <div *ngIf="business.isOpened">Abierto ahora</div>
-            <div *ngIf="!business.isOpened">Cerrado</div>
-          </ion-title>
+          <span (click)="goToBusinessDetails(business)" style="font-size: 15px;">
+            <span class="business-title">{{business.businessName}}</span>
+            <div class="business-status" style="color: var(--ion-color-success);" *ngIf="business.isOpened">Abierto</div>
+            <div class="business-status" style="color: var(--ion-color-danger);" *ngIf="!business.isOpened">Cerrado</div>
+            <div class="business-schedule">10pm a 3am</div>
+          </span>
         </ion-label>
-        <ion-button fill="clear" (click)="deleteBusinessFromFavouriteList(business)">
+        <ion-button fill="clear" color="danger" (click)="deleteBusinessFromFavouriteList(business)">
             <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-button>
       </ion-item>

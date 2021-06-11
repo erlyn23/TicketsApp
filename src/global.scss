@@ -87,6 +87,18 @@
   }
 }
 
+.title-bar{
+  width: 100%;
+  min-height: 1px;
+  text-align: center;
+  background-color: #003A4D;
+  padding: 10px;
+  span{
+      color: white;
+      font-size: 20px;
+  }
+}
+
 /* Core CSS required for Ionic components to work properly */
 @import "~@ionic/angular/css/core.css";
 

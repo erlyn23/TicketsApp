@@ -201,7 +201,11 @@ export class AuthService {
         this.router.navigate([LOGIN_ROUTE]);
       });
     }else{
+      
+      const userId: number = Math.floor(Math.random() * (15000 - 1000)) + 1000;
+      
       const userWithoutBusiness = {
+        userId: userId,
         fullName: user.fullName,
         email: user.email,
         isBusiness: user.isBusiness,

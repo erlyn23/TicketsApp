@@ -23,6 +23,7 @@ export class FavouritesComponent implements OnInit {
   navExtras: NavigationExtras = { state: { business: null } };
 
   searchBusiness: IBusiness[] = [];
+  isSearch: boolean = false;
 
   constructor(private repositoryService: RepositoryService<IBusiness[]>,
     private angularFireDatabase: AngularFireDatabase,
@@ -79,6 +80,14 @@ export class FavouritesComponent implements OnInit {
     }
   }
 
+  toggleSearch(){
+    if(!this.isSearch) this.isSearch = true;
+    else {
+      this.isSearch = false;
+      this.searchFilter = "";
+      this.searchBusiness = [];
+    }
+  }
   async deleteBusinessFromFavouriteList(business: IBusiness){
     await this.repositoryService.deleteElement(`favourites/${this.userUid}/${business.key}`).then(async ()=>{
       await this.utilityService.presentToast('Negocio eliminado de favoritos', 'success-toast');

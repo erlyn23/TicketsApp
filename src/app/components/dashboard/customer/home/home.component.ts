@@ -17,6 +17,7 @@ export class HomeComponent implements OnInit {
 
   userPhoto: string = "";
   userName: string = "";
+  userId: number = 0;
 
   userUid: string = "";
 
@@ -46,6 +47,7 @@ export class HomeComponent implements OnInit {
     this.user$ = angularFireObject.valueChanges().subscribe(result=>{
       this.userPhoto = result.photo;
       this.userName = result.fullName;
+      this.userId = result.userId;
     });
   }
   businessTopThreeList: IBusiness[] = [];

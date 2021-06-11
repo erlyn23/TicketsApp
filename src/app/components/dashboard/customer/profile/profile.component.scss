@@ -1,17 +1,30 @@
 ion-list{
-    background: var(--ion-color-primary);
+    background: var(--ion-color-primary-contrast);
+    ion-item{
+        background: var(--ion-color-primary-contrast);
+    }
 }
 
 .centered-text{
     text-align: center;
+    font-size: 20px;
+}
+
+.user-display-name{
+    text-align: center;
+    font-size: 35px;
+    color: var(--ion-color-primary);
+    font-weight: bold;
+    text-shadow: 3px 3px 10px gray;
 }
 
 .photo-container{
+    background-color: var(--ion-color-primary);
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
+    padding: 5px 0;
     
     .profile{
         width: 200px;
@@ -23,8 +36,20 @@ ion-list{
     }
 }
 
+.auth-input{
+    border-color: var(--ion-color-primary);
+    color: var(--ion-color-primary);
+    &::placeholder{
+        color: var(--ion-color-primary);
+    }
+    &:focus::placeholder{
+        color: transparent;
+    }
+}
+
 .auth-btn{
     margin: 10px auto;
+    box-shadow: 7px 6px 10px gray;
 }
 
 .register-form-container{

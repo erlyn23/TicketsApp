@@ -1,21 +1,21 @@
-<ion-content color="primary">
+<ion-content>
     <div class="photo-container">
-      <img class="profile" src="../../../../assets/img/user_icon.png" (click)="openChangePhotoPopover()" height="100" *ngIf="userPhoto === undefined">
+      <img class="profile" src="../../../../assets/icon/Recurso12.png" (click)="openChangePhotoPopover()" height="100" *ngIf="userPhoto === undefined">
       <img [src]="userPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="userPhoto !== undefined">
+      <ion-button style="margin-top: 158px; margin-left: -30px;" fill="clear" (click)="isEdit = true">
+        <ion-icon slot="icon-only" src="../../../../assets/icon/edit_profile_icon.svg"></ion-icon>
+      </ion-button>
     </div>
     
     <ion-list *ngIf="!isEdit && user !== undefined" class="animate__animated animate__bounceIn">
-      <ion-item color="primary" lines="none" class="centered-text">
-        <ion-label><b>Nombre:</b> {{user.fullName}}</ion-label>
+      <ion-item lines="none" class="user-display-name">
+        <ion-label>{{user.fullName}}</ion-label>
       </ion-item>
-      <ion-item color="primary" lines="none" class="centered-text">
-        <ion-label><b>Correo:</b> {{user.email}}</ion-label>
+      <ion-item lines="none" class="user-display-name">
+        <ion-label style="color: gray; font-weight: normal; font-size: 30px;">ID: #{{user.userId}}</ion-label>
       </ion-item>
-      <ion-item color="primary" lines="none" class="centered-text">
-        <button class="auth-btn" (click)="isEdit = true">Editar perfil</button>
-      </ion-item>
-      <ion-item color="primary" lines="none" class="centered-text">
-        <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
+      <ion-item lines="none" class="centered-text">
+        <ion-label><b>Correo: &nbsp;</b> <span style="color: gray">{{user.email}}</span></ion-label>
       </ion-item>
     </ion-list>
   
@@ -29,11 +29,16 @@
               <p *ngIf="updateProfileForm.get('fullName').errors?.minlength">Debes escribir al menos 3 letras</p>
               <p *ngIf="updateProfileForm.get('fullName').errors?.maxlength">Debes escribir menos de 50 letras</p>
             </div>
-            
-          <button class="auth-btn" (click)="updateProfile()">Guardar cambios</button><br>
-          <button class="auth-btn" (click)="openChangePassword()">Cambiar contraseña</button><br>
-          <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
         </form>
       </div>
     </div>
+
+    <ion-fab vertical="bottom" style="width: 100%; text-align: center;" *ngIf="!isEdit">
+      <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
+    </ion-fab>
+    <ion-fab vertical="bottom" style="width: 100%; text-align: center;" *ngIf="isEdit">
+      <button class="auth-btn" (click)="updateProfile()">Guardar cambios</button><br>
+      <button class="auth-btn" (click)="openChangePassword()">Cambiar contraseña</button><br>
+      <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
+    </ion-fab>
   </ion-content>

@@ -63,11 +63,11 @@ export class UtilityService {
       cssClass: 'custom-info-alert',
       backdropDismiss: false,
       buttons: [{
-        text: 'Aceptar',
-        handler: confirmHandler
-      },{
         text: 'Cancelar',
         handler: cancelHandler
+      },{
+        text: 'Aceptar',
+        handler: confirmHandler
       }]
     });
 

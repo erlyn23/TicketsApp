@@ -10,46 +10,54 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="primary">
+<ion-content>
 
   <div id="clientsMap" style="height: 300px;">
     &nbsp;
   </div>
 
-  <ion-list color="primary" *ngIf="searchBusiness.length === 0 && searchFilter.length === 0">
-    <ion-item color="primary" lines="none" *ngFor="let business of businessList, let i = index">
+  <div class="title-bar">
+    <span>Más cercanos</span>
+  </div>
+
+  <ion-list *ngIf="searchBusiness.length === 0 && searchFilter.length === 0">
+    <ion-item lines="none" *ngFor="let business of businessList, let i = index">
       <ion-thumbnail>
         <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
-        <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+        <img *ngIf="business.businessPhoto == '' && business.isOpened" src="./../../../../../assets/icon/Recurso14.png" alt="">
+        <img *ngIf="business.businessPhoto == '' && !business.isOpened" src="./../../../../../assets/icon/Recurso22.png" alt="">
       </ion-thumbnail>
       <ion-label>
-        <ion-title style="font-size: 15px;" (click)="goToBusinessDetails(business)">
-          {{business.businessName}}
-          <div *ngIf="business.isOpened">Abierto ahora</div>
-          <div *ngIf="!business.isOpened">Cerrado</div>
-        </ion-title>
+        <span (click)="goToBusinessDetails(business)" style="font-size: 15px;">
+          <span class="business-title">{{business.businessName}}</span>
+          <div class="business-status" style="color: var(--ion-color-success);" *ngIf="business.isOpened">Abierto</div>
+          <div class="business-status" style="color: var(--ion-color-danger);" *ngIf="!business.isOpened">Cerrado</div>
+          <div class="business-schedule">10pm a 3am</div>
+        </span>
       </ion-label>
-      <ion-button fill="clear" (click)="addBusinessToFavouriteList(business)">
-        <ion-icon slot="icon-only" name="star"></ion-icon>
+      <ion-button fill="clear" (click)="searchFromExistingFavourite(business.key)">
+        <ion-icon color="warning" slot="icon-only" name="star"></ion-icon>
       </ion-button>
     </ion-item>
   </ion-list>
 
-  <ion-list color="primary" *ngIf="searchBusiness.length > 0 && searchFilter.length > 0">
-    <ion-item color="primary" lines="none" *ngFor="let business of searchBusiness, let i = index">
+  <ion-list *ngIf="searchBusiness.length > 0 && searchFilter.length > 0">
+    <ion-item lines="none" *ngFor="let business of searchBusiness, let i = index">
       <ion-thumbnail>
         <img *ngIf="business.businessPhoto != ''" [src]="business.businessPhoto" />
-        <img *ngIf="business.businessPhoto == ''" src="./../../../../../assets/img/business-default.png" alt="">
+        <img *ngIf="business.businessPhoto == '' && business.isOpened" src="./../../../../../assets/icon/Recurso14.png" alt="">
+        <img *ngIf="business.businessPhoto == '' && !business.isOpened" src="./../../../../../assets/icon/Recurso22.png" alt="">
       </ion-thumbnail>
       <ion-label>
-        <ion-title style="font-size: 15px;" (click)="goToBusinessDetails(business)">
-          {{business.businessName}}
-          <div *ngIf="business.isOpened">Abierto ahora</div>
-          <div *ngIf="!business.isOpened">Cerrado</div>
-        </ion-title>
+        <span (click)="goToBusinessDetails(business)" style="font-size: 15px;">
+          <span class="business-title">{{business.businessName}}</span>
+          <div class="business-status" style="color: var(--ion-color-success);" *ngIf="business.isOpened">Abierto</div>
+          <div class="business-status" style="color: var(--ion-color-danger);" *ngIf="!business.isOpened">Cerrado</div>
+          <div class="business-schedule">10pm a 3am</div>
+        </span>
       </ion-label>
-      <ion-button fill="clear" (click)="addBusinessToFavouriteList(business)">
-        <ion-icon slot="icon-only" name="star"></ion-icon>
+      <ion-button fill="clear" (click)="searchFromExistingFavourite(business.key)">
+        <ion-icon color="warning" slot="icon-only" name="star"></ion-icon>
       </ion-button>
     </ion-item>
   </ion-list>

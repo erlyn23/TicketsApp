@@ -32,10 +32,8 @@ export class RegisterBusinessComponent implements OnInit {
   async ngOnInit() {
     this.initForm();
     await this.utilityService.presentToast("Enciende la ubicación y reinicia la app para acceder al mapa", 'success-toast');
-    let watch = this.geolocation.watchPosition();
-    watch.subscribe((coords:Geoposition)=>{
-      this.initMap(coords);
-    });
+    let position = await this.geolocation.getCurrentPosition();
+    this.initMap(position);
   }
 
   private initForm():void{
@@ -51,6 +49,7 @@ export class RegisterBusinessComponent implements OnInit {
   }
 
   async initMap(coordinates:Geoposition){
+    await this.utilityService.presentLoading();
     MapBox.accessToken = environment.mapToken;
     const map = new MapBox.Map({
       container: 'mapbox-container',
@@ -58,26 +57,30 @@ export class RegisterBusinessComponent implements OnInit {
       center: [coordinates.coords.longitude, coordinates.coords.latitude], 
       zoom: 15,
     });
-    const marker = new MapBox.Marker().setLngLat([coordinates.coords.longitude, coordinates.coords.latitude]).addTo(map);
-    this.registerForm.get('longitude').setValue(marker._lngLat.lng);
-    this.registerForm.get('latitude').setValue(marker._lngLat.lat);
+    map.on('load', ()=>{
+      this.utilityService.closeLoading();
+      const marker = new MapBox.Marker().setLngLat([coordinates.coords.longitude, coordinates.coords.latitude]).addTo(map);
+      this.registerForm.get('longitude').setValue(marker._lngLat.lng);
+      this.registerForm.get('latitude').setValue(marker._lngLat.lat);
+  
+      const geocoder = new MapBoxGeoCoder({
+        accessToken: environment.mapToken,
+        mapboxgl: MapBox,
+        placeholder: 'Dirección del negocio',
+        marker: false
+      });
+      map.addControl(geocoder);
+  
+      map.addControl(new MapBox.NavigationControl());
 
-    const geocoder = new MapBoxGeoCoder({
-      accessToken: environment.mapToken,
-      mapboxgl: MapBox,
-      placeholder: 'Dirección del negocio',
-      marker: false
-    });
-    map.addControl(geocoder);
-
-    map.addControl(new MapBox.NavigationControl());
-    map.on('click', (e)=>{
-      const currentLng = e.lngLat.lng;
-      const currentLat = e.lngLat.lat;
-      marker.setLngLat([currentLng, currentLat]);
-
-      this.registerForm.get('longitude').setValue(currentLng);
-      this.registerForm.get('latitude').setValue(currentLat);
+      map.on('click', (e)=>{
+        const currentLng = e.lngLat.lng;
+        const currentLat = e.lngLat.lat;
+        marker.setLngLat([currentLng, currentLat]);
+  
+        this.registerForm.get('longitude').setValue(currentLng);
+        this.registerForm.get('latitude').setValue(currentLat);
+      });
     });
   }
 

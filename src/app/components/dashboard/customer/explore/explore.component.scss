@@ -9,8 +9,28 @@ ion-toolbar{
     }
 }
 ion-list{
-    background: var(--ion-color-primary);
+    background: var(--ion-color-primary-contrast);
+    ion-item{
+        background: var(--ion-color-primary-contrast);
+        ion-label{
+            margin-left: 20px;
+            .business-title{
+                font-size: 20px;
+            }
+            .business-status{
+                font-weight: bold;
+            }
+            .business-schedule{
+                color: gray;
+                font-weight: bold;
+            }
+        }
+    }
 }
 ion-button{
     color: white;
+}
+
+ion-content{
+    background: var(--ion-color-primary-contrast);
 }

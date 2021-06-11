@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireObject } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { NavigationExtras, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { RepositoryService } from 'src/app/services/repository.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import * as mapBox from 'mapbox-gl';
-import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
+import { Geolocation, Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
 import { NavController } from '@ionic/angular';
 
@@ -22,7 +22,7 @@ export class ExploreComponent implements OnInit {
   businessList: IBusiness[] = [];
   objectRef: AngularFireObject<IBusiness[]>;
 
-  businessSubscription: Subscription;
+  businessSubscription: Subscription = new Subscription();
 
   navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0 } };
   searchBusiness: IBusiness[] = [];
@@ -31,6 +31,7 @@ export class ExploreComponent implements OnInit {
   constructor(private repositoryService: RepositoryService<IBusiness[]>,
     private utilityService: UtilityService,
     private authService: AuthService,
+    private angularFireDatabase: AngularFireDatabase,
     private geolocation: Geolocation,
     private router: Router) {
   }
@@ -43,40 +44,46 @@ export class ExploreComponent implements OnInit {
     this.userUid = this.authService.userData.uid;
 
     let currentLocation = this.geolocation.getCurrentPosition();
-    currentLocation.then(async (location: Geoposition)=>{
-      await this.initMap(location.coords.latitude, location.coords.longitude)
+    currentLocation.then((location: Geoposition)=>{
+      this.initMap(location.coords.latitude, location.coords.longitude)
     });
   }
 
   marker: mapBox.Marker;
   map: mapBox.Map;
-  async initMap(initLat: number, initLng: number){
-    await this.utilityService.presentLoading();
-    mapBox.accessToken = environment.mapToken;
+  watch: Observable<Geoposition | PositionError>;
+  initMap(initLat: number, initLng: number){
+    this.utilityService.presentLoading().then(()=>{
+      mapBox.accessToken = environment.mapToken;
+      
       this.map = new mapBox.Map({
-      container: 'clientsMap',
-      style: 'mapbox://styles/mapbox/streets-v11', 
-      center: [initLng, initLat], 
-      zoom: 15,
-      interactive: false
-    });
-
-    this.map.on('load', ()=>{
-      this.getBusinessList();
-      this.utilityService.closeLoading();
-      this.marker = new mapBox.Marker({color:'red'}).setLngLat([initLng, initLat]).addTo(this.map);
-      this.map.addControl(new mapBox.NavigationControl());
-
-      let watch = this.geolocation.watchPosition();
-
-      watch.subscribe((location: Geoposition)=>{
-        this.listenMap(location.coords.latitude, location.coords.longitude);
+        container: 'clientsMap',
+        style: 'mapbox://styles/mapbox/streets-v11', 
+        center: [initLng, initLat], 
+        zoom: 15,
+        interactive: false
       });
-    });
+
+      this.map.on('load', ()=>{
+        this.utilityService.closeLoading();
+        this.getBusinessList();
+        this.marker = new mapBox.Marker({color:'red'}).setLngLat([initLng, initLat]).addTo(this.map);
+        this.map.addControl(new mapBox.NavigationControl());
+
+        this.watch = this.geolocation.watchPosition();
+
+        this.watch.subscribe((location: Geoposition)=>{
+          this.listenMap(location.coords.latitude, location.coords.longitude);
+        });
+      });
+    })
   }
 
   listenMap(lat: number, long: number){
-    this.map.setCenter([long, lat]);
+    this.map.flyTo({
+      center: [long, lat],
+      speed: 3
+    });
     this.marker.setLngLat([long, lat]);
   }
 
@@ -96,9 +103,14 @@ export class ExploreComponent implements OnInit {
   createMarkersInMap(business: IBusiness){
     const marker = new mapBox.Marker().setLngLat([business.long, business.latitude])
     .setPopup(new mapBox.Popup()
-    .setHTML(`<ion-title id="businessPopUp-${business.key}">${business.businessName}</ion-title>`))
+    .setHTML(`<ion-title style='color: black'>${business.businessName}</ion-title>
+    <ion-button fill='clear' style='color: var(--ion-color-primary)' id='businessPopUp-${business.key}'>Ver detalles</ion-button>`))
     .addTo(this.map); 
 
+    this.onDetailsMarkerClick(business);
+  }
+
+  onDetailsMarkerClick(business: IBusiness){
     const searchLabel = setInterval(()=>{
       let labelPopUp = document.getElementById(`businessPopUp-${business.key}`);
       if(labelPopUp !== null){
@@ -133,8 +145,21 @@ export class ExploreComponent implements OnInit {
     }
   }
 
-  async addBusinessToFavouriteList(business: IBusiness){
-    await this.repositoryService.setElement(`favourites/${this.userUid}/${business.key}`, {businessKey: business.key}).then(async ()=>{
+  searchFromExistingFavourite(businessKey: string){
+    const favourite: AngularFireObject<any> = this.angularFireDatabase.object(`favourites/${this.userUid}/${businessKey}`);
+    const favouriteBusiness$ = favourite.valueChanges().subscribe(async result=>{
+      if(result){
+        await this.utilityService.presentToast('Este negocio ya está en tus favoritos', 'error-toast');
+        favouriteBusiness$.unsubscribe();
+      }else{
+        this.addBusinessToFavouriteList(businessKey);
+        favouriteBusiness$.unsubscribe();
+      }
+    });
+  }
+
+  async addBusinessToFavouriteList(businessKey: string){
+    await this.repositoryService.setElement(`favourites/${this.userUid}/${businessKey}`, {businessKey: businessKey}).then(async ()=>{
       await this.utilityService.presentToast('Negocio añadido a favoritos', 'success-toast');
     }).catch(async err=>{
       console.log(err);
