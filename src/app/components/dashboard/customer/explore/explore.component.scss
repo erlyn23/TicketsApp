@@ -1,6 +1,12 @@
-ion-searchbar{
-    --background: var(--ion-color-primary-contrast); 
-    color: black;
+ion-toolbar{
+    padding: 20px !important;
+    img{
+        margin-top: 7px;
+    }
+    ion-searchbar{
+        --background: var(--ion-color-primary-contrast); 
+        color: black;
+    }
 }
 ion-list{
     background: var(--ion-color-primary);

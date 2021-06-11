@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireObject } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { NavigationExtras, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
@@ -25,6 +25,7 @@ export class HomeComponent implements OnInit {
   constructor(private authService: AuthService, 
     private repositoryService: RepositoryService<IUser>,
     private businessRepoService: RepositoryService<IBusiness[]>,
+    private angularFireDatabase: AngularFireDatabase,
     private utilityService: UtilityService,
     private router: Router) { }
 
@@ -80,8 +81,21 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  async addBusinessToFavouriteList(business: IBusiness){
-    await this.repositoryService.setElement(`favourites/${this.userUid}/${business.key}`, {businessKey: business.key}).then(async ()=>{
+  searchFromExistingFavourite(businessKey: string){
+    const favourite: AngularFireObject<any> = this.angularFireDatabase.object(`favourites/${this.userUid}/${businessKey}`);
+    const favouriteBusiness$ = favourite.valueChanges().subscribe(async result=>{
+      if(result){
+        await this.utilityService.presentToast('Este negocio ya está en tus favoritos', 'error-toast');
+        favouriteBusiness$.unsubscribe();
+      }else{
+        this.addBusinessToFavouriteList(businessKey);
+        favouriteBusiness$.unsubscribe();
+      }
+    });
+  }
+
+  addBusinessToFavouriteList(businessKey: string){
+    this.repositoryService.setElement(`favourites/${this.userUid}/${businessKey}`, {businessKey: businessKey}).then(async ()=>{
       await this.utilityService.presentToast('Negocio añadido a favoritos', 'success-toast');
     }).catch(async err=>{
       console.log(err);

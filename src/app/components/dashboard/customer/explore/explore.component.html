@@ -1,12 +1,20 @@
-<ion-content color="primary">
-  <ion-grid>
-    <ion-row>
-      <ion-col size="12">
-        <ion-searchbar placeholder="Buscar negocio" [(ngModel)]="searchFilter" name="searchFilter" 
+<ion-header>
+  <ion-toolbar color="primary"> 
+    <img *ngIf="!isSearch" width="60%" src="../../../../../assets/img/logo-login.png" alt="logo">
+    <ion-searchbar *ngIf="isSearch" placeholder="Buscar negocio" [(ngModel)]="searchFilter" name="searchFilter" 
         (ionChange)="searchForBusiness($event, businessList)"></ion-searchbar>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+    <ion-button slot="end" fill="clear" style="color: var(--ion-color-primary-contrast)" (click)="toggleSearch()">
+      <ion-icon *ngIf="!isSearch" slot="icon-only" name="search"></ion-icon>
+      <ion-icon *ngIf="isSearch" slot="icon-only" name="close-circle"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary">
+
+  <div id="clientsMap" style="height: 300px;">
+    &nbsp;
+  </div>
 
   <ion-list color="primary" *ngIf="searchBusiness.length === 0 && searchFilter.length === 0">
     <ion-item color="primary" lines="none" *ngFor="let business of businessList, let i = index">

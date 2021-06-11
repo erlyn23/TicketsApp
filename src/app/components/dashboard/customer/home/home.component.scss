@@ -1,10 +1,10 @@
 .photo-container{
     width: 100%;
-    margin-bottom: 30px;
+    padding-left: 30px;
+    padding-bottom: 10px;
+    padding-top: 10px;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
+    background-color: var(--ion-color-primary);
     
     .profile{
         width: 150px;
@@ -14,11 +14,53 @@
         border-bottom-right-radius: 50% 50%;
         border-bottom-left-radius: 50% 50%;
     }
+
+    span{
+        font-size: 30px;
+        font-weight: bold;
+        color: white;
+        text-shadow: 3px 3px 15px black;
+        margin-top: 30px;
+        margin-left: 30px;
+    }
 }
 
-ion-list{
-    background: var(--ion-color-primary);
+.title-bar{
+    width: 100%;
+    min-height: 1px;
+    text-align: center;
+    background-color: #003A4D;
+    padding: 10px;
+
+    span{
+        color: white;
+        font-size: 20px;
+    }
 }
-ion-button{
-    color: white;
+
+ion-content{
+    background: var(--ion-color-primary-contrast) !important;
+    ion-list{
+        background: var(--ion-color-primary-contrast);
+    }
+    ion-button{
+        color: white;
+    }
+    ion-item{
+        background: var(--ion-color-primary-contrast);
+        ion-label{
+            margin-left: 20px;
+            .business-title{
+                font-size: 20px;
+            }
+            .business-status{
+                font-weight: bold;
+            }
+            .business-schedule{
+                color: gray;
+                font-weight: bold;
+            }
+        }
+    }
 }
+
