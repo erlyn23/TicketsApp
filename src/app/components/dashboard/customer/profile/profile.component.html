@@ -34,6 +34,7 @@
     </div>
 
     <ion-fab vertical="bottom" style="width: 100%; text-align: center;" *ngIf="!isEdit">
+      <button class="auth-btn" (click)="openMyTurn()">Ver mi turno</button>
       <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
     </ion-fab>
     <ion-fab vertical="bottom" style="width: 100%; text-align: center;" *ngIf="isEdit">

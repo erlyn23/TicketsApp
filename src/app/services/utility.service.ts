@@ -110,4 +110,18 @@ export class UtilityService {
   closePopover(){
     this.popoverCtrl.dismiss();
   }
+
+
+  //CAMBIAR ESTO EN UN FUTURO
+  businessName: string = "";
+
+  setBusinessName(businessName: string){
+    this.businessName = businessName;
+  }
+
+  getBusinessName(){
+    return this.businessName;
+  }
+
+  //CAMBIAR ESTO EN UN FUTURO
 }

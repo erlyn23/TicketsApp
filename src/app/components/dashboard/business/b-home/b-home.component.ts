@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireObject } from '@angular/fire/database';
+import { IonReorderGroup } from '@ionic/angular';
+import { ItemReorderEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
@@ -13,6 +15,8 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./b-home.component.scss'],
 })
 export class BHomeComponent implements OnInit {
+
+  @ViewChild('turnsReorder') turnsReorder: IonReorderGroup;
 
   turnRef: AngularFireObject<ITurn>;
   turn$: Subscription;
@@ -57,10 +61,22 @@ export class BHomeComponent implements OnInit {
     });
   }
 
-  reorderTurns(ev) {
-    const itemMove = this.turns.splice(ev.detail.from, 1)[0];
-    this.turns.splice(ev.detail.to, 0, itemMove);
-    ev.detail.complete();
+
+  async reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
+    const sortedTurns = ev.detail.complete(this.turns);
+    await this.updateClientTurn(this.turns);
+    return sortedTurns;
+  }
+
+  async updateClientTurn(turns: ITurn[]){
+    await this.utilityService.presentLoading();
+    turns.forEach((turn, index)=>{
+      this.repositoryService.updateElement(`clientsInTurn/${turn.businessKey}/${turn.clientKey}`,{
+        turnNum: index + 1
+      }).then(()=>{
+        this.utilityService.closeLoading();
+      }).catch(()=> this.utilityService.closeLoading());
+    });
   }
 
   toggleReorder(){

@@ -134,13 +134,16 @@ export class EmployeeDetailsComponent implements OnInit{
                 isInTurn: true
             }).then(async ()=>{
 
-                let turnInfo = {
+                let turnInfo: ITurn = {
                     employeeName: this.data.fullName,
                     clientName: this.authService.userData.displayName,
                     clientKey: this.authService.userData.uid,
                     clientPhoto: clientPhoto,
                     employeeKey: this.data.key,
-                    reserveDate: this.reserveDate
+                    reserveDate: this.reserveDate,
+                    businessName: this.utilityService.getBusinessName(),
+                    turnNum: previousQuantity + 1,
+                    businessKey: this.additionalKey
                 };
 
                 if(clientPhoto === undefined) delete turnInfo['clientPhoto'];

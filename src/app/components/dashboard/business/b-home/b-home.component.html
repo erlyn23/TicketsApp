@@ -18,19 +18,19 @@
                 </h1>
             </ion-col>
         </ion-row>
-        <ion-reorder-group id="reorder-parent" (ionItemReorder)="reorderTurns($event)" disabled="true">
-            <ion-reorder *ngFor="let turn of turns, let i = index">
+        <ion-reorder-group #turnsReorder id="reorder-parent" (ionItemReorder)="reorderTurns($event)" disabled="true">
+            <ion-reorder *ngFor="let turn of turns" >
                 <ion-row>
                     <ion-col size="4">
-                        <img src="../../../../../assets/img/user_icon.png" class="avatar"
+                        <img src="../../../../../assets/icon/Recurso12.png" class="avatar"
                                 alt="" *ngIf="turn.clientPhoto === undefined">
                         <img [src]="turn.clientPhoto" class="avatar"
                                 alt="" *ngIf="turn.clientPhoto !== undefined">
                     </ion-col>
                     <ion-col size="6" style="text-align: center;">
-                        <p>{{turn.clientName}} <span>#{{i+1}}</span></p>
+                        <p>{{turn.clientName}} <span>#{{turn.turnNum}}</span></p>
                         <p>{{turn.employeeName}}</p>
-                        <p><small>{{turn.reserveDate | date: 'short'}}</small></p>
+                        <p><small>{{turn.reserveDate | date}}</small></p>
                     </ion-col>
                     <ion-col size="2" style="display: flex; justify-content: center; align-items: center;">
                         <ion-button size="large" fill="clear" style="color: white;" (click)="openCancelTurn(turn)">

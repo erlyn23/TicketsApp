@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireObject } from '@angular/fire/database';
+import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ChangePasswordComponent } from 'src/app/components/core/change-password/change-password.component';
 import { PhotoPopoverComponent } from 'src/app/components/core/photo-popover/photo-popover.component';
+import { ITurn } from 'src/app/core/models/turn.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { RepositoryService } from 'src/app/services/repository.service';
@@ -21,9 +22,13 @@ export class ProfileComponent implements OnInit {
 
   user: IUser;
   isEdit: boolean = false;
+
+  userUid: string = this.authService.userData.uid;
+
   constructor(private utilityService: UtilityService,
     private formBuilder: FormBuilder,
     private repositoryService: RepositoryService<IUser>,
+    private angularFireDatabase: AngularFireDatabase,
     private authService: AuthService) { }
 
   ngOnInit() {
@@ -35,7 +40,7 @@ export class ProfileComponent implements OnInit {
 
   user$: Subscription;
   getUserData(){
-    const userObject: AngularFireObject<IUser> = this.repositoryService.getAllElements(`users/${this.authService.userData.uid}`);
+    const userObject: AngularFireObject<IUser> = this.repositoryService.getAllElements(`users/${this.userUid}`);
     this.user$ = userObject.valueChanges().subscribe(result=>{
       this.updateProfileForm.controls.fullName.setValue(result.fullName);
       this.userPhoto = result.photo;
@@ -51,7 +56,7 @@ export class ProfileComponent implements OnInit {
 
   async updateProfile(){
     if(this.updateProfileForm.valid){
-      await this.repositoryService.updateElement(`users/${this.authService.userData.uid}`, {
+      await this.repositoryService.updateElement(`users/${this.userUid}`, {
         fullName: this.updateProfileForm.value.fullName
       }).then(async ()=>{
         await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
@@ -60,6 +65,28 @@ export class ProfileComponent implements OnInit {
     }else{
       await this.utilityService.presentToast('Debes llenar los datos', 'error-toast');
     }
+  }
+
+  openMyTurn(){
+    const turnsObject: AngularFireObject<ITurn> = this.angularFireDatabase.object(`clientsInTurn`);
+    const turn$ = turnsObject.snapshotChanges().subscribe(async result=>{
+      if(result !== null){
+        const turns = result.payload.val();
+      
+        for(let businessKey in turns){
+          for(let userKey in turns[businessKey]){
+            if(userKey === this.userUid){
+              let myTurn: ITurn = turns[businessKey][userKey];
+              await this.utilityService.presentSimpleAlert(`${myTurn.businessName}`, 
+              `<div>Empleado: ${myTurn.employeeName}</div> 
+              <div>Número de turno: ${myTurn.turnNum}</div>`);
+              turn$.unsubscribe();
+              break;
+            }
+          }
+        }
+      }
+    });
   }
 
   async openChangePassword(){

@@ -65,6 +65,7 @@ export class BusinessDetailsPage implements OnInit {
   }
 
   async openReserveModal(employee: IEmployee){
+    this.utilityService.setBusinessName(this.business.businessName);
     await this.utilityService.openModal(EmployeeDetailsComponent, employee, this.business.key);
   }
 
