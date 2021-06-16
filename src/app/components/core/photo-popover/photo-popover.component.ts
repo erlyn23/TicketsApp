@@ -4,6 +4,8 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { Plugins } from '@capacitor/core';
 import { RepositoryService } from 'src/app/services/repository.service';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 const { Storage } = Plugins;
 
@@ -37,7 +39,7 @@ export class PhotoPopoverComponent implements OnInit{
 
         this.utilityService.presentAlertWithActions('Confirmar', '¿Estás seguro de querer subir esta foto?',
         async ()=>
-        {   await this.utilityService.presentLoading(); 
+        {
             this.savePhotoInDb(image, filePath, isBusiness); 
         },
         ()=>{ 
@@ -45,28 +47,32 @@ export class PhotoPopoverComponent implements OnInit{
         })
     }
 
+
+    percentage: number = 0;
     async savePhotoInDb(image, filePath, isBusiness){
         const fileRef = this.angularFireStorage.ref(filePath);
         const uploadTask = this.angularFireStorage.upload(filePath, image);
-        const uploadPhoto$ = uploadTask.percentageChanges().subscribe(percent=>{
-            if(percent === 100){
-                const uid = this.authService.userData.uid;
-                const uploadedPhoto$ = fileRef.getDownloadURL().subscribe(result=>{
-                    this.repositoryService.updateElement(`users/${uid}`,{photo: result}).then(()=>{
-                        if(isBusiness === 'true') this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: result});
-                        this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
-                        this.utilityService.closeLoading();
-                        this.utilityService.closePopover();
-                        uploadedPhoto$.unsubscribe();
-                    }).catch(err=>{
-                        console.log(err);
-                        this.utilityService.presentToast('Ha ocurrido un error al subir la foto', 'error-toast');
-                        this.utilityService.closeLoading();
-                        this.utilityService.closePopover();
-                    });
+
+        uploadTask.snapshotChanges().pipe(finalize(()=>{
+            const uid = this.authService.userData.uid;
+            const uploadedPhoto$ = fileRef.getDownloadURL().subscribe(result=>{
+                this.repositoryService.updateElement(`users/${uid}`,{photo: result}).then(()=>{
+                    if(isBusiness === 'true') this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: result});
+                    this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
+                    this.utilityService.closePopover();
+                    this.percentage = 0;
+                    uploadedPhoto$.unsubscribe();
+                }).catch(err=>{
+                    console.log(err);
+                    this.percentage = 0;
+                    this.utilityService.presentToast('Ha ocurrido un error al subir la foto', 'error-toast');
+                    this.utilityService.closePopover();
                 });
-                uploadPhoto$.unsubscribe();
-            }
+            });
+        })).subscribe();
+
+        uploadTask.percentageChanges().subscribe(percentage=>{
+            this.percentage = Math.round(percentage ? percentage : 0) / 100;
         });
     }
 }

@@ -101,7 +101,8 @@ export class UtilityService {
       cssClass: 'custom-popover',
       translucent: true,
       mode: 'ios',
-      animated: true
+      animated: true,
+      backdropDismiss: false
     });
 
     (await popover).present();

@@ -18,6 +18,7 @@ import { BProfileComponent } from './business/b-profile/b-profile.component';
 import { ChangePasswordComponent } from '../core/change-password/change-password.component';
 import { ProfileComponent } from './customer/profile/profile.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
+import { PhotoPopoverComponent } from '../core/photo-popover/photo-popover.component';
 
 @NgModule({
   imports: [
@@ -38,6 +39,7 @@ import { FavouritesComponent } from './customer/favourites/favourites.component'
     AddEmployeeComponent,
     BEmployeeDetailsComponent,
     BProfileComponent,
+    PhotoPopoverComponent,
     ChangePasswordComponent]
 })
 export class DashboardPageModule {}
