@@ -143,6 +143,7 @@ export class EmployeeDetailsComponent implements OnInit{
             }).then(async ()=>{
 
                 let turnInfo: ITurn = {
+                    key: `${businessPreviousQuantity + 1}`,
                     employeeName: this.data.fullName,
                     clientName: this.authService.userData.displayName,
                     clientKey: this.authService.userData.uid,
@@ -192,7 +193,7 @@ export class EmployeeDetailsComponent implements OnInit{
                 for(let businessKey in data){
                     for(let turnKey in data[businessKey])
                     {
-                        if(data[businessKey][turnKey].clientKey !== undefined){
+                        if(data[businessKey][turnKey].clientKey === this.userUid){
                             this.searchBusinessToUnreserveTurn(data[businessKey][turnKey].employeeKey, businessKey);
                             employeeClientTurn$.unsubscribe();
                             break;

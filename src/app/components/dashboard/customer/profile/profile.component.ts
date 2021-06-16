@@ -73,18 +73,23 @@ export class ProfileComponent implements OnInit {
       if(result !== null){
         const turns = result.payload.val();
       
+        let turnFounded = 0;
+
         for(let businessKey in turns){
-          for(let userKey in turns[businessKey]){
-            if(userKey === this.userUid){
-              let myTurn: ITurn = turns[businessKey][userKey];
+          for(let turnKey in turns[businessKey]){
+            if(turns[businessKey][turnKey].clientKey === this.userUid){
+              let myTurn: ITurn = turns[businessKey][turnKey];
               await this.utilityService.presentSimpleAlert(`${myTurn.businessName}`, 
               `<div>Empleado: ${myTurn.employeeName}</div> 
               <div>Número de turno: ${myTurn.turnNum}</div>`);
+              turnFounded = 1;
               turn$.unsubscribe();
               break;
             }
           }
         }
+
+        if(turnFounded === 0) await this.utilityService.presentToast('No tienes turno reservado', 'error-toast');
       }
     });
   }

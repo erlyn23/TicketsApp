@@ -69,26 +69,6 @@ export class BHomeComponent implements OnInit {
     });
   }
 
-
-  async reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
-    this.turns = ev.detail.complete(this.turns);
-    
-    await this.updateClientTurn(this.turns);
-  }
-
-  async updateClientTurn(turns: ITurn[]){
-
-    await this.utilityService.presentLoading();
-
-    for(let i = 0; i < turns.length; i++){
-      let turn = turns[i];
-      turn.turnNum = i + 1;
-      this.repositoryService.setElement(`clientsInTurn/${turns[i].businessKey}/${i + 1}`, turn)
-      .then(()=> this.utilityService.closeLoading())
-      .catch((err)=> this.utilityService.closeLoading());
-    }
-  }
-
   async toggleReorder(){
     const reorderParent = document.getElementById('reorder-parent');
 
@@ -105,28 +85,67 @@ export class BHomeComponent implements OnInit {
   async openCancelTurn(turn: ITurn){
     await this.utilityService.presentAlertWithActions('Confirmar',
     '¿Estás seguro de querer eliminar este turno?',
-    ()=>{ this.getPreviousQuantity(turn) },
+    ()=>{ this.getBusinessPreviousQuantity(turn) },
     ()=>{ this.utilityService.closeAlert() });
   }
 
-  getPreviousQuantity(turn: ITurn){
-    const object: AngularFireObject<IEmployee> = this.repositoryService.getAllElements(`businessList/${this.businessKey}/employees/${turn.employeeKey}`);
-    const employee$ = object.valueChanges().subscribe(result=>{
+  getBusinessPreviousQuantity(turn: ITurn){
+    const businessObject: AngularFireObject<IBusiness> = this.repositoryService.getAllElements(`businessList/${this.businessKey}`);
+    const business$ = businessObject.valueChanges().subscribe(result=>{
       if(result != null){
-        this.cancelTurn(turn, result.clientsInTurn);
+        this.getEmployeePreviousQuantity(turn, result.clientsInTurn);
+        business$.unsubscribe();
+      }
+    });
+  }
+
+  getEmployeePreviousQuantity(turn: ITurn, businessPreviousQuantity: number){
+    const object: AngularFireObject<IEmployee> = this.repositoryService.getAllElements(`businessList/${this.businessKey}/employees/${turn.employeeKey}`);
+    const employee$ = object.valueChanges().subscribe(async result=>{
+      if(result != null){
+        await this.cancelTurn(turn, businessPreviousQuantity, result.clientsInTurn);
         employee$.unsubscribe();
       }
     });
   }
 
-  cancelTurn(turn: ITurn, previousQuantity: number){
+  async cancelTurn(turn: ITurn, businessPreviousQuantity: number, employeePreviousQuantity: number){
     this.repositoryService.updateElement(`users/${turn.clientKey}`, {
       isInTurn: false
     }).then(()=>{
-      this.repositoryService.updateElement(`businessList/${this.businessKey}/employees/${turn.employeeKey}`,{
-        clientsInTurn: previousQuantity - 1
+      this.repositoryService.updateElement(`businessList/${this.businessKey}`,{
+        clientsInTurn: businessPreviousQuantity - 1
+      }).then(()=>{
+        this.repositoryService.updateElement(`businessList/${this.businessKey}/employees/${turn.employeeKey}`,{
+          clientsInTurn: employeePreviousQuantity - 1
+        }).then(async ()=>{
+          await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.key}`);
+          await this.updateClientTurn();
+        });
       });
-      this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.employeeKey}/${turn.turnNum}`);
+    });
+  }
+
+  async reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
+    this.turns = ev.detail.complete(this.turns);
+    
+    await this.updateClientTurn();
+  }
+
+  async updateClientTurn(){
+    await this.utilityService.presentLoading();
+    const tempTurns = this.turns;
+    
+    this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}`).then(()=>{
+      tempTurns.forEach((turn, index) =>{
+        let turnNum = index + 1;
+        turn.key = `${turnNum}`;
+        turn.turnNum = turnNum;
+  
+        this.repositoryService.setElement(`clientsInTurn/${this.businessKey}/${turnNum}`, turn)
+        .then(()=> this.utilityService.closeLoading())
+        .catch((err)=> this.utilityService.closeLoading());
+      });
     });
   }
 

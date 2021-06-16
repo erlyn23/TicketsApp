@@ -8,6 +8,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { EmployeeDetailsComponent } from './employee-details/employee-details.component';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 
 @Component({
   selector: 'app-business-details',
@@ -22,6 +23,7 @@ export class BusinessDetailsPage implements OnInit {
   employees$: Subscription;
   constructor(private utilityService: UtilityService, 
     private angularFireDatabase: AngularFireDatabase,
+    private geolocation: Geolocation,
     private router: Router) {
   }
 
@@ -30,7 +32,10 @@ export class BusinessDetailsPage implements OnInit {
     if(navigationExtras != null) this.business = navigationExtras;
     else this.router.navigate(['/dashboard']);
     
-    this.initMap();
+    let currentLocation = this.geolocation.getCurrentPosition();
+    currentLocation.then((location: Geoposition)=>{
+      this.initMap(location.coords.latitude, location.coords.longitude)
+    });
     this.getEmployees(); 
   }
 
@@ -47,19 +52,19 @@ export class BusinessDetailsPage implements OnInit {
     });
   }
 
-  initMap():void{
+  initMap(latitude: number, longitude:number):void{
     MapBox.accessToken = environment.mapToken;
     const initLong = this.business.long;
     const initLat = this.business.latitude;
 
     const map = new MapBox.Map({
-      container: 'mapbox-container',
+      container: 'map-box',
       style: 'mapbox://styles/mapbox/streets-v11', 
       center: [initLong, initLat], 
       zoom: 15,
     });
     const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
-    
+    const clientMarker = new MapBox.Marker({color: 'red'}).setLngLat([longitude, latitude]).addTo(map);
     map.addControl(new MapBox.NavigationControl());
     map.scrollZoom.disable()
   }
