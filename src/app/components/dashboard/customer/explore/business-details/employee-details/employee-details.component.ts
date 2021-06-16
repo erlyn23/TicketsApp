@@ -2,6 +2,7 @@ import { OnInit, Component, Input, ViewChild } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { IonSlides } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { IBusiness } from 'src/app/core/models/business.interface';
 import { IEmployeeComments } from 'src/app/core/models/employee-comments.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
@@ -9,8 +10,7 @@ import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { RepositoryService } from 'src/app/services/repository.service';
 import { UtilityService } from 'src/app/services/utility.service';
-
-
+ 
 @Component({
     selector: 'app-employee-details',
     templateUrl: './employee-details.component.html',
@@ -121,7 +121,15 @@ export class EmployeeDetailsComponent implements OnInit{
         });
     }
 
-    async reserveTurn(clientPhoto: string, previousQuantity: number){
+    searchForBusinessPreviousQuantity(clientPhoto: string, previousQuantity: number){
+        const businessObject: AngularFireObject<IBusiness> = this.angularFireDatabase.object(`businessList/${this.additionalKey}`);
+        const business$ = businessObject.valueChanges().subscribe(async result=>{
+            await this.reserveTurn(clientPhoto, result.clientsInTurn, previousQuantity);
+            business$.unsubscribe();
+        });
+    }
+
+    async reserveTurn(clientPhoto: string, businessPreviousQuantity: number, previousQuantity: number){
         const actualDate = new Date();
         const sendedDate = new Date(this.reserveDate);
         actualDate.setHours(0,0,0,0);
@@ -130,7 +138,7 @@ export class EmployeeDetailsComponent implements OnInit{
         if(sendedDate < actualDate) await this.utilityService.presentToast('La fecha debe ser igual o adelantada a la de hoy', 'error-toast');
         else{
             await this.utilityService.presentLoading();
-            await this.repositoryService.updateElement(`users/${this.userUid}`, {
+            this.repositoryService.updateElement(`users/${this.userUid}`, {
                 isInTurn: true
             }).then(async ()=>{
 
@@ -142,28 +150,37 @@ export class EmployeeDetailsComponent implements OnInit{
                     employeeKey: this.data.key,
                     reserveDate: this.reserveDate,
                     businessName: this.utilityService.getBusinessName(),
-                    turnNum: previousQuantity + 1,
+                    turnNum: businessPreviousQuantity + 1,
                     businessKey: this.additionalKey
                 };
-
                 if(clientPhoto === undefined) delete turnInfo['clientPhoto'];
 
-                await this.repositoryService.updateElement(`clientsInTurn/${this.additionalKey}/${this.userUid}`, turnInfo).then(async ()=>{
-                    await this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
-                        clientsInTurn: previousQuantity + 1
-                    }).then(async ()=>{
-                        this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
-                        this.utilityService.closeLoading();
-                    });
-                }).catch(err=>{
-                    this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
-                    this.utilityService.closeLoading();
+                this.repositoryService.updateElement(`clientsInTurn/${this.additionalKey}/${businessPreviousQuantity + 1}`, turnInfo).then(()=>{
+                    this.repositoryService.updateElement(`businessList/${this.additionalKey}`,{
+                        clientsInTurn: businessPreviousQuantity + 1
+                    }).then(()=>{
+                        this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${this.data.key}`,{
+                            clientsInTurn: previousQuantity + 1
+                        }).then(async ()=>{
+                            await this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
+                            this.utilityService.closeLoading();
+                        });
+                    }).catch(async err=>{
+                        await this.showErrorMessage();   
+                    })
+                }).catch(async err=>{
+                    
                 });
-            }).catch(err=>{
-                this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
-                this.utilityService.closeLoading();
+            }).catch(async err=>{
+                await this.showErrorMessage();
             });
         }
+    }
+
+    async showErrorMessage()
+    {
+        await this.utilityService.presentToast('Ha ocurrido un error al reservar turno', 'error-toast');
+        this.utilityService.closeLoading();
     }
 
     employeeClientTurnObject: AngularFireObject<ITurn>;
@@ -173,33 +190,56 @@ export class EmployeeDetailsComponent implements OnInit{
             if(result !== null){
                 const data = result.payload.val();
                 for(let businessKey in data){
-                    if(data[businessKey][this.userUid] !== undefined){
-                        this.searchEmployeeToUnreserveTurn(data[businessKey][this.userUid].employeeKey, businessKey);
-                        employeeClientTurn$.unsubscribe();
-                        break;
+                    for(let turnKey in data[businessKey])
+                    {
+                        if(data[businessKey][turnKey].clientKey !== undefined){
+                            this.searchBusinessToUnreserveTurn(data[businessKey][turnKey].employeeKey, businessKey);
+                            employeeClientTurn$.unsubscribe();
+                            break;
+                        }
                     }
                 }
             }
         });
     }
 
-    searchEmployeeToUnreserveTurn(employeeKey: string, businessKey: string){
+    searchBusinessToUnreserveTurn(employeeKey: string, businessKey: string)
+    {
+        const previousQuantities: number[] = [];
+        const businessObject: AngularFireObject<IBusiness> = this.angularFireDatabase.object(`businessList/${businessKey}`);
+        const business$ = businessObject.valueChanges().subscribe(result=>{
+            previousQuantities.push(result.clientsInTurn);
+            this.searchEmployeeToUnreserveTurn(employeeKey, businessKey, previousQuantities);
+            business$.unsubscribe();
+        });
+    }
+
+    searchEmployeeToUnreserveTurn(employeeKey: string, businessKey: string, previousQuantities: number[]){
         const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${businessKey}/employees/${employeeKey}`);
         const employee$ = employeeToUnsubscribeObjectRef.valueChanges().subscribe(result=>{
-            this.unreserveTurn(employeeKey, businessKey, result.clientsInTurn)
+            previousQuantities.push(result.clientsInTurn);
+            this.unreserveTurn(employeeKey, businessKey, previousQuantities);
             employee$.unsubscribe();
         });
     }
 
-    unreserveTurn(employeeKey: string, businessKey: string, previousQuantity: number){
+    unreserveTurn(employeeKey: string, businessKey: string, previousQuantities: number[]){
+
+        const businessPreviousQuantity = previousQuantities[0];
+        const employeePreviousQuantity = previousQuantities[1];
+
         this.repositoryService.updateElement(`users/${this.userUid}`, {
             isInTurn: false
         }).then(()=>{
-           this.repositoryService.updateElement(`businessList/${businessKey}/employees/${employeeKey}`,{
-            clientsInTurn: previousQuantity - 1
-           }).then(()=>{
-            this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${this.userUid}`);
-           });
+            this.repositoryService.updateElement(`businessList/${businessKey}`,{
+                clientsInTurn: businessPreviousQuantity - 1
+            }).then(()=>{
+                this.repositoryService.updateElement(`businessList/${businessKey}/employees/${employeeKey}`,{
+                    clientsInTurn: employeePreviousQuantity - 1
+                }).then(()=>{
+                    this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${businessPreviousQuantity}`);
+                });
+            });
         });
     }
 

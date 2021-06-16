@@ -1,27 +1,26 @@
-<ion-content color="primary">
+<ion-content>
   <div class="photo-container">
     <img class="profile" src="../../../../assets/icon/Recurso12.png" (click)="openChangePhotoPopover()" height="100" *ngIf="businessPhoto === undefined || businessPhoto === ''">
     <img [src]="businessPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="businessPhoto !== ''">
   </div>
 
-
   <ion-list *ngIf="!isEdit && user !== undefined" class="animate__animated animate__bounceIn">
-    <ion-item color="primary" lines="none" class="centered-text">
-      <ion-label><b>Nombre:</b> {{user.fullName}}</ion-label>
+    <ion-item lines="none" class="user-display-name">
+      <ion-label>{{user.fullName}}</ion-label>
     </ion-item>
-    <ion-item color="primary" lines="none" class="centered-text">
-      <ion-label><b>Nombre del negocio:</b> {{user.businessName}}</ion-label>
+    <ion-item lines="none" class="user-display-name">
+      <ion-label style="color: gray; font-weight: normal; font-size: 30px;">{{user.businessName}}</ion-label>
     </ion-item>
-    <ion-item color="primary" lines="none" class="centered-text">
-      <ion-label><b>Correo:</b> {{user.email}}</ion-label>
+    <ion-item lines="none" class="centered-text">
+      <ion-label><b>Correo</b>&nbsp;<span style="color: gray">{{user.email}}</span></ion-label>
     </ion-item>
-    <ion-item color="primary" lines="none" class="centered-text">
-      <ion-label><b>Horario:</b> {{user.openTime}} a {{user.closeTime}}</ion-label>
+    <ion-item lines="none" class="centered-text">
+      <ion-label><b>Horario:</b>&nbsp;<span style="color: gray">{{user.openTime}} a {{user.closeTime}}</span></ion-label>
     </ion-item>
-    <ion-item color="primary" lines="none" class="centered-text">
+    <ion-item lines="none" class="centered-text">
       <button class="auth-btn" (click)="makeSwitch(user.long, user.latitude)">Editar perfil</button>
     </ion-item>
-    <ion-item color="primary" lines="none" class="centered-text">
+    <ion-item lines="none" class="centered-text">
       <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
     </ion-item>
   </ion-list>
@@ -42,15 +41,15 @@
             <p *ngIf="registerForm.get('businessName').errors?.required">Debes escribir el nombre de tu negocio</p>
           </div>
 
-          <ion-item color="primary" lines="none">
-            <p style="color: var(--ion-color-primary-contrast)">Hora de apertura</p>
+          <ion-item lines="none">
+            <p style="color: var(--ion-color-primary)">Hora de apertura</p>
             <input type="time" formControlName="openTime" class="auth-input" [class]="isValidField('openTime')">
           </ion-item>
           <div *ngIf="isValidField('openTime') === 'invalid-field'">
             <p *ngIf="registerForm.get('openTime').errors?.required">La hora de apertura es obligatoria</p>
           </div>
-          <ion-item color="primary" lines="none">
-            <p style="color: var(--ion-color-primary-contrast)">Hora de cierre</p>
+          <ion-item lines="none">
+            <p style="color: var(--ion-color-primary)">Hora de cierre</p>
             <input type="time" formControlName="closeTime" class="auth-input" [class]="isValidField('closeTime')">
           </ion-item>
           <div *ngIf="isValidField('closeTime') === 'invalid-field'">
@@ -60,13 +59,13 @@
       </form>
       <app-map></app-map>
       <ion-list class="animate__animated animate__bounceIn">
-        <ion-item color="primary" lines="none" class="centered-text" *ngIf="isEdit">
+        <ion-item lines="none" class="centered-text" *ngIf="isEdit">
           <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid">Guardar cambios</button>
         </ion-item>
-        <ion-item color="primary" lines="none" class="centered-text" *ngIf="isEdit">
+        <ion-item lines="none" class="centered-text" *ngIf="isEdit">
           <button class="auth-btn" (click)="openChangePassword()">Cambiar contraseña</button>
         </ion-item>
-        <ion-item color="primary" lines="none" class="centered-text" *ngIf="isEdit">
+        <ion-item lines="none" class="centered-text" *ngIf="isEdit">
           <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
         </ion-item>
       </ion-list>

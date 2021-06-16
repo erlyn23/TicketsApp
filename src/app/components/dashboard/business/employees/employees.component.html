@@ -1,47 +1,23 @@
-<ion-content color="primary">
-  <ion-list color="primary">
-    <ion-item color="primary" lines="full" *ngFor="let employee of employeesList, let i = index">
+<ion-content>
+  <div class="title-bar">
+    <span>Empleados</span>
+  </div>
+  <ion-list>
+    <ion-item lines="none" *ngFor="let employee of employeesList, let i = index">
       <ion-label style="text-align: center;">
         <ion-title (click)="goToEmployeeDetails(employee)">{{employee.fullName}}</ion-title>
         <div>
           <p>{{employee.employeeSpecialty}}</p>
         </div>
-        <div [ngSwitch]="employee.rating">
-        <p *ngSwitchCase="1">
-          <ion-icon slot="start" name="star"></ion-icon> 
-        </p>
-        <p *ngSwitchCase="2">
-          <ion-icon slot="start" name="star"></ion-icon> 
-          <ion-icon slot="start" name="star"></ion-icon>
-        </p>
-        <p *ngSwitchCase="3">
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-        </p>
-        <p *ngSwitchCase="4">
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-        </p>
-        <p *ngSwitchCase="5">
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-          <ion-icon slot="start" name="star"></ion-icon>
-        </p>
-        </div>
       </ion-label>
-      <ion-button fill="clear" (click)="openDeleteConfirm(employee)">
+      <ion-button fill="clear" style="color: var(--ion-color-danger)" (click)="openDeleteConfirm(employee)">
         <ion-icon slot="icon-only" name="trash"></ion-icon>
       </ion-button>
     </ion-item>
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="openAddEmployeeModal()">
+    <ion-fab-button color="secondary" (click)="openAddEmployeeModal()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

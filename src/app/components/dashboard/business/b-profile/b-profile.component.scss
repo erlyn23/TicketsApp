@@ -1,5 +1,5 @@
 ion-list{
-    background: var(--ion-color-primary);
+    background: var(--ion-color-primary-contrast);
 }
 
 .photo-container{
@@ -7,7 +7,8 @@ ion-list{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 10px;
+    padding: 10px 0;
+    background: var(--ion-color-primary);
     
     .profile{
         width: 200px;
@@ -19,8 +20,19 @@ ion-list{
     }
 }
 
+.user-display-name{
+    text-align: center;
+    font-size: 35px;
+    color: var(--ion-color-primary);
+    font-weight: bold;
+    text-shadow: 3px 3px 10px gray;
+}
+
 .auth-btn{
     margin: 10px auto;
+}
+.auth-input{
+    border-color: var(--ion-color-primary);
 }
 
 .centered-text{

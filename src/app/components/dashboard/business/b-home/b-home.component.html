@@ -1,44 +1,41 @@
-<ion-content color="primary">
-    <ion-grid>
-        <ion-row>
-            <ion-col size="12" style="text-align: center;">
-                <h1>Estado del negocio</h1>
-                <ion-item color="primary" lines="none">
-                    <ion-toggle color="secondary" [(ngModel)]="isOpened" name="isOpened" (ionChange)="updateBusinessStatus($event)"></ion-toggle>
-                    <ion-label>&nbsp; Negocio abierto</ion-label>
-                </ion-item>
-            </ion-col>
-        </ion-row>
-        <ion-row>
-            <ion-col size="12" style="text-align: center;" >
-                <h1>Listado de turnos 
-                    <button class="auth-btn" (click)="toggleReorder()">
-                        <ion-icon size="large" id="toggle-icon" slot="icon-only" name="reorder-three-outline"></ion-icon>
-                    </button>
-                </h1>
-            </ion-col>
-        </ion-row>
+<ion-content>
+    <div class="photo-container">
+        <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="business.businessPhoto === ''">
+        <img [src]="userPhoto" class="profile" alt="" *ngIf="business.businessPhoto !== ''">
+        <div class="user-names">
+          <span>{{business.businessName}}</span>
+          <span style="font-weight: normal;">
+            <small>Abierto</small> &nbsp;<ion-toggle style="padding: 4px" color="secondary" [(ngModel)]="business.isOpened" (ionChange)="updateBusinessStatus($event)"></ion-toggle>
+          </span>
+        </div>
+    </div>
+    <div class="title-bar">
+        <span>Listado de turnos</span>
+        <button class="toggle-order-button" (click)="toggleReorder()">
+            <ion-icon id="toggle-icon" slot="icon-only" name="reorder-three-outline"></ion-icon>
+        </button>  
+    </div>
+    <ion-list style="background: var(--ion-color-primary-contrast);">
         <ion-reorder-group #turnsReorder id="reorder-parent" (ionItemReorder)="reorderTurns($event)" disabled="true">
-            <ion-reorder *ngFor="let turn of turns" >
-                <ion-row>
-                    <ion-col size="4">
+            <ion-reorder *ngFor="let turn of turns, let i = index">
+                <ion-item lines="none">
+                    <ion-thumbnail>
                         <img src="../../../../../assets/icon/Recurso12.png" class="avatar"
                                 alt="" *ngIf="turn.clientPhoto === undefined">
                         <img [src]="turn.clientPhoto" class="avatar"
                                 alt="" *ngIf="turn.clientPhoto !== undefined">
-                    </ion-col>
-                    <ion-col size="6" style="text-align: center;">
-                        <p>{{turn.clientName}} <span>#{{turn.turnNum}}</span></p>
-                        <p>{{turn.employeeName}}</p>
-                        <p><small>{{turn.reserveDate | date}}</small></p>
-                    </ion-col>
-                    <ion-col size="2" style="display: flex; justify-content: center; align-items: center;">
-                        <ion-button size="large" fill="clear" style="color: white;" (click)="openCancelTurn(turn)">
-                            <ion-icon slot="icon-only" name="close-circle"></ion-icon>
-                        </ion-button>
-                    </ion-col>
-                </ion-row>
+                    </ion-thumbnail>
+                    <ion-label>
+                        <span class="client-name">{{turn.clientName}} <span>#{{turn.turnNum}}</span></span>
+                        <div>{{turn.employeeName}}</div>
+                        <div><small>{{turn.reserveDate | date}}</small></div>
+                    </ion-label>
+                    <ion-button size="large" fill="clear" style="color: var(--ion-color-danger);" (click)="openCancelTurn(turn)">
+                        <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+                    </ion-button>
+                </ion-item>
             </ion-reorder>
         </ion-reorder-group>
-    </ion-grid>
+    </ion-list>
+    
 </ion-content> 
