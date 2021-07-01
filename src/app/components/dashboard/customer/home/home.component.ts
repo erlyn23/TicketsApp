@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
 
   userUid: string = "";
 
-  navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0 } };
+  navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0, origin: '' } };
 
   constructor(private authService: AuthService, 
     private repositoryService: RepositoryService<IUser>,
@@ -58,7 +58,7 @@ export class HomeComponent implements OnInit {
     this.business$ = this.businessObject.snapshotChanges().subscribe(result=>{
       const businessList = result.payload.val();
       this.businessTopThreeList = [];
-      if(businessList.length > 3){
+      if(result.payload.numChildren() > 3){
         let sortable = [];
         for(let businessKey in businessList){
           businessList[businessKey].key = businessKey;
@@ -72,12 +72,6 @@ export class HomeComponent implements OnInit {
           if(sortable[0][0] === businessKey) this.businessTopThreeList[0] = businessList[businessKey];
           if(sortable[1][0] === businessKey) this.businessTopThreeList[1] = businessList[businessKey];
           if(sortable[2][0] === businessKey) this.businessTopThreeList[2] = businessList[businessKey];
-        }
-      }else{
-
-        for(let businessKey in businessList){
-          businessList[businessKey].key = businessKey;
-          this.businessTopThreeList.push(businessList[businessKey]);
         }
       }
     });
@@ -108,6 +102,7 @@ export class HomeComponent implements OnInit {
   goToBusinessDetails(business: IBusiness){
     this.navExtras.state.business = business;
     this.navExtras.state.clientsInTurn = business.clientsInTurn;
+    this.navExtras.state.origin = 'home';
     this.router.navigate(['/business-details'], this.navExtras);
   }
 

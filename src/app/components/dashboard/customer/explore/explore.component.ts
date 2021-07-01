@@ -24,7 +24,7 @@ export class ExploreComponent implements OnInit {
 
   businessSubscription: Subscription[] = [];
 
-  navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0 } };
+  navExtras: NavigationExtras = { state: { business: null, clientsInTurn: 0, origin: '' } };
   searchBusiness: IBusiness[] = [];
   isSearch: boolean = false;
 
@@ -170,6 +170,7 @@ export class ExploreComponent implements OnInit {
 
   goToBusinessDetails(business: IBusiness){
     this.navExtras.state.business = business;
+    this.navExtras.state.origin = 'explore';
     this.router.navigate(['/business-details'], this.navExtras);
   }
 

@@ -9,6 +9,7 @@ import { EmployeeDetailsComponent } from './employee-details/employee-details.co
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { Subscription } from 'rxjs';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-business-details',
@@ -21,14 +22,38 @@ export class BusinessDetailsPage implements OnInit {
   employees: IEmployee[] = [];
 
   employees$: Subscription;
+
+  backOrigin: string;
+
   constructor(private utilityService: UtilityService, 
     private angularFireDatabase: AngularFireDatabase,
+    private platform: Platform,
     private geolocation: Geolocation,
     private router: Router) {
+      this.platform.backButton.subscribeWithPriority(7, ()=>{
+        const navigationExtras = this.router.getCurrentNavigation().extras.state?.origin;
+        this.backOrigin = navigationExtras;
+        if(navigationExtras != null){
+          switch(navigationExtras)
+          {
+            case 'explore':
+              this.router.navigate(['dashboard/explore']);  
+            break;
+            case 'home':
+              this.router.navigate(['dashboard/home']);
+            break;
+            case 'favourites':
+              this.router.navigate(['dashboard/favourites']);
+            break;
+          }
+        }
+      });
   }
 
   ngOnInit() {
     const navigationExtras = this.router.getCurrentNavigation().extras.state?.business;
+    const backOrigin = this.router.getCurrentNavigation().extras.state?.origin;
+    this.backOrigin = backOrigin;
     if(navigationExtras != null) this.business = navigationExtras;
     else this.router.navigate(['/dashboard']);
     
@@ -74,8 +99,19 @@ export class BusinessDetailsPage implements OnInit {
     await this.utilityService.openModal(EmployeeDetailsComponent, employee, this.business.key);
   }
 
-  goToPage(page: string){
-    this.router.navigate([page]);
+  goToPage(){
+      switch(this.backOrigin)
+      {
+        case 'explore':
+          this.router.navigate(['dashboard/explore']);  
+        break;
+        case 'home':
+          this.router.navigate(['dashboard/home']);
+        break;
+        case 'favourites':
+          this.router.navigate(['dashboard/favourites']);
+        break;
+      }
   }
 
   ionViewWillLeave() {

@@ -20,7 +20,7 @@ export class FavouritesComponent implements OnInit {
 
   businessSubscription: Subscription;
 
-  navExtras: NavigationExtras = { state: { business: null } };
+  navExtras: NavigationExtras = { state: { business: null, origin: '' } };
 
   searchBusiness: IBusiness[] = [];
   isSearch: boolean = false;
@@ -99,6 +99,7 @@ export class FavouritesComponent implements OnInit {
 
   goToBusinessDetails(business: IBusiness){
     this.navExtras.state.business = business;
+    this.navExtras.state.origin = 'favourites';
     this.router.navigate(['/business-details'], this.navExtras);
   }
 
