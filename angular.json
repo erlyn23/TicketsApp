@@ -35,7 +35,9 @@
               "src/theme/variables.scss",
               "src/global.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/blueimp-canvas-to-blob/js/canvas-to-blob.min.js"
+            ]
           },
           "configurations": {
             "production": {

@@ -19,6 +19,7 @@ import { ChangePasswordComponent } from '../core/change-password/change-password
 import { ProfileComponent } from './customer/profile/profile.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
 import { PhotoPopoverComponent } from '../core/photo-popover/photo-popover.component';
+import { UpdateEmployeeComponent } from './business/employees/update-employee/update-employee.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { PhotoPopoverComponent } from '../core/photo-popover/photo-popover.compo
     BEmployeeDetailsComponent,
     BProfileComponent,
     PhotoPopoverComponent,
-    ChangePasswordComponent]
+    ChangePasswordComponent,
+    UpdateEmployeeComponent]
 })
 export class DashboardPageModule {}

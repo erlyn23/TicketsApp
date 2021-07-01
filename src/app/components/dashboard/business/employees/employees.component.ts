@@ -8,6 +8,7 @@ import { RepositoryService } from 'src/app/services/repository.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AddEmployeeComponent } from './add-employee/add-employee.component';
 import { BEmployeeDetailsComponent } from './b-employee-details/b-employee-details.component';
+import { UpdateEmployeeComponent } from './update-employee/update-employee.component';
 
 @Component({
   selector: 'app-employees',
@@ -53,6 +54,10 @@ export class EmployeesComponent implements OnInit {
 
   async openAddEmployeeModal(){
     await this.utilityService.openModal(AddEmployeeComponent);
+  }
+
+  async openUpdateEmployeeModal(employee: IEmployee){
+    await this.utilityService.openModal(UpdateEmployeeComponent, employee);
   }
 
   async openDeleteConfirm(employee: IEmployee){

@@ -59,12 +59,35 @@ export class ProfileComponent implements OnInit {
       await this.repositoryService.updateElement(`users/${this.userUid}`, {
         fullName: this.updateProfileForm.value.fullName
       }).then(async ()=>{
+
+        if(this.user.isInTurn){
+          this.updateTurnNameInList();
+        }
         await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
         this.isEdit = false;
       });
     }else{
       await this.utilityService.presentToast('Debes llenar los datos', 'error-toast');
     }
+  }
+
+  updateTurnNameInList(){
+    const turnsObject: AngularFireObject<any> = this.angularFireDatabase.object('clientsInTurn');
+    const turn$ = turnsObject.snapshotChanges().subscribe(result=>{
+      const turnList = result.payload.val();
+
+      for(let businessKey in turnList){
+        for(let turnKey in turnList[businessKey]){
+          if(turnList[businessKey][turnKey].clientKey === this.userUid){
+            this.repositoryService.updateElement(`clientsInTurn/${businessKey}/${turnKey}`,{
+              clientName: this.updateProfileForm.value.fullName
+            });
+            turn$.unsubscribe();
+            break;
+          }
+        }
+      }
+    });
   }
 
   openMyTurn(){

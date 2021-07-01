@@ -6,6 +6,7 @@ import { Plugins } from '@capacitor/core';
 import { RepositoryService } from 'src/app/services/repository.service';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { Ng2ImgMaxService } from 'ng2-img-max';
 
 const { Storage } = Plugins;
 
@@ -19,6 +20,7 @@ export class PhotoPopoverComponent implements OnInit{
     constructor(private utilityService: UtilityService,
         private angularFireStorage: AngularFireStorage,
         private authService: AuthService,
+        private ng2ImgMax: Ng2ImgMaxService,
         private repositoryService: RepositoryService<string>){ }
 
     ngOnInit():void{
@@ -40,7 +42,14 @@ export class PhotoPopoverComponent implements OnInit{
         this.utilityService.presentAlertWithActions('Confirmar', '¿Estás seguro de querer subir esta foto?',
         async ()=>
         {
-            this.savePhotoInDb(image, filePath, isBusiness); 
+            const resize$ = this.ng2ImgMax.resizeImage(image, 300, 300).subscribe(result => {
+                    this.savePhotoInDb(result, filePath, isBusiness); 
+                    resize$.unsubscribe();
+                },
+                error => {
+                    console.log('Oh no!', error);
+                }
+            );
         },
         ()=>{ 
             this.utilityService.closeAlert(); 

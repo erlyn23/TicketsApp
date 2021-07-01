@@ -10,6 +10,9 @@
           <p>{{employee.employeeSpecialty}}</p>
         </div>
       </ion-label>
+      <ion-button fill="clear" style="color: var(--ion-color-primary)" (click)="openUpdateEmployeeModal(employee)">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
       <ion-button fill="clear" style="color: var(--ion-color-danger)" (click)="openDeleteConfirm(employee)">
         <ion-icon slot="icon-only" name="trash"></ion-icon>
       </ion-button>
