@@ -71,22 +71,25 @@ export class EmployeesComponent implements OnInit {
     const turnsRef: AngularFireObject<ITurn> = this.angularFireDatabase.object(`clientsInTurn/${this.uid}`);
     const turns$ = turnsRef.snapshotChanges().subscribe(result=>{
       const data = result.payload.val();
-      for(let key in data){
-        if(data[key].employeeKey === employeeKey){
-          this.utilityService.presentToast('Este empletado tiene turnos, no puedes eliminarlo', 'error-toast');
-          turns$.unsubscribe();
-          break;
-        }else{
-          this.repositoryService.deleteElement(`businessList/${this.uid}/employees/${employeeKey}`).then(async ()=>{
-            await this.utilityService.presentToast('Empleado eliminado correctamente', 'success-toast');
+      if(data !== null)
+      {
+        for(let key in data){
+          if(data[key].employeeKey === employeeKey){
+            this.utilityService.presentToast('Este empletado tiene turnos, no puedes eliminarlo', 'error-toast');
             turns$.unsubscribe();
-          }).catch(async err=>{
-            await this.utilityService.presentToast('Ha ocurrido un error interno', 'error-toast');
-            turns$.unsubscribe();
-          });
-          break;
+            break;
+          }
         }
+      }else{
+        this.repositoryService.deleteElement(`businessList/${this.uid}/employees/${employeeKey}`).then(async ()=>{
+          await this.utilityService.presentToast('Empleado eliminado correctamente', 'success-toast');
+          turns$.unsubscribe();
+        }).catch(async err=>{
+          await this.utilityService.presentToast('Ha ocurrido un error interno', 'error-toast');
+          turns$.unsubscribe();
+        });
       }
+      
     });
   }
 
