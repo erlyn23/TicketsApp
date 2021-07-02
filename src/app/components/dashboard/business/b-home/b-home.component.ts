@@ -121,6 +121,7 @@ export class BHomeComponent implements OnInit {
         }).then(async ()=>{
           await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.key}`);
           await this.updateClientTurn();
+          this.utilityService.closeLoading();
         });
       });
     });
