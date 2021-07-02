@@ -1,0 +1,27 @@
+<ion-content>
+  <div class="title-bar">
+    <span>Servicios</span>
+  </div>
+  <ion-list>
+    <ion-item lines="none" *ngFor="let service of services">
+      <ion-label style="text-align: center;">
+        <ion-title>{{service.service}}</ion-title>
+        <div>
+          <p>RD${{service.price}}</p>
+        </div>
+      </ion-label>
+      <ion-button fill="clear" style="color: var(--ion-color-primary)" (click)="openUpdateModal(service)">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" style="color: var(--ion-color-danger)" (click)="openDeleteConfirm(service)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" (click)="openAddServiceModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

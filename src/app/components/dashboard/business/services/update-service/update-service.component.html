@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+          <ion-button (click)="closeWindow()">
+              <ion-icon slot="start" name="arrow-back"></ion-icon>
+          </ion-button>
+      </ion-buttons>
+      <ion-title>Modificar servicio</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="serviceForm">
+      <input type="text" class="auth-input"  formControlName="service" placeholder="Nombre del servicio">
+      <input type="text" class="auth-input" formControlName="price" placeholder="Precio">
+      <button class="auth-btn" (click)="saveChanges()">Guardar cambios</button>
+  </form>
+</ion-content>

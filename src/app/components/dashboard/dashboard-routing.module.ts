@@ -4,6 +4,7 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { BHomeComponent } from './business/b-home/b-home.component';
 import { BProfileComponent } from './business/b-profile/b-profile.component';
 import { EmployeesComponent } from './business/employees/employees.component';
+import { ServicesComponent } from './business/services/services.component';
 import { ExploreComponent } from './customer/explore/explore.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
 import { HomeComponent } from './customer/home/home.component';
@@ -46,6 +47,11 @@ const routes: Routes = [
         path: 'employees',
         canActivate: [AuthGuard],
         component: EmployeesComponent,
+      },
+      {
+        path: 'services',
+        canActivate: [AuthGuard],
+        component: ServicesComponent
       },
       {
         path: 'b-profile',
