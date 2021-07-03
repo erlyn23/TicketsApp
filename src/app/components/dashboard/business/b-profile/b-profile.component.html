@@ -4,7 +4,7 @@
     <img [src]="businessPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="businessPhoto !== ''">
   </div>
 
-  <ion-list *ngIf="!isEdit && user !== undefined" class="animate__animated animate__bounceIn">
+  <ion-list *ngIf="!isEdit && user !== undefined" >
     <ion-item lines="none" class="user-display-name">
       <ion-label>{{user.fullName}}</ion-label>
     </ion-item>
@@ -25,7 +25,7 @@
     </ion-item>
   </ion-list>
 
-  <div id="edit-form" class="register-form-container animate__animated animate__bounceIn">
+  <div id="edit-form" class="register-form-container">
     <div class="form-container">
       <form [formGroup]="registerForm" *ngIf="isEdit">
 
@@ -58,7 +58,7 @@
 
       </form>
       <app-map></app-map>
-      <ion-list class="animate__animated animate__bounceIn">
+      <ion-list>
         <ion-item lines="none" class="centered-text" *ngIf="isEdit">
           <button class="auth-btn" (click)="registerUser()" [disabled]="registerForm.invalid">Guardar cambios</button>
         </ion-item>

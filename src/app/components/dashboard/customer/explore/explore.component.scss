@@ -11,7 +11,10 @@ ion-toolbar{
 ion-list{
     background: var(--ion-color-primary-contrast);
     ion-item{
-        background: var(--ion-color-primary-contrast);
+        --background: white;
+        margin: 10px;
+        border-radius: 10px;
+        box-shadow: 3px 3px 5px 3px lightgray;
         ion-label{
             margin-left: 20px;
             .business-title{
