@@ -9,4 +9,5 @@ export interface ITurn{
     businessName: string;
     turnNum: number;
     businessKey: string;
+    serviceKey: string
 }

@@ -1,4 +1,5 @@
 import { IEmployee } from "./employee.interface";
+import { IServices } from "./services.interface";
 
 export interface IBusiness{
     key?: string;

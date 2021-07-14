@@ -59,10 +59,6 @@ export class ProfileComponent implements OnInit {
       await this.repositoryService.updateElement(`users/${this.userUid}`, {
         fullName: this.updateProfileForm.value.fullName
       }).then(async ()=>{
-
-        if(this.user.isInTurn){
-          this.updateTurnNameInList();
-        }
         await this.utilityService.presentToast('Usuario modificado correctamente', 'success-toast');
         this.isEdit = false;
       });

@@ -1,10 +1,11 @@
-import { OnInit, Component, Input, ViewChild } from '@angular/core';
+import { OnInit, Component, Input, ViewChild, OnDestroy } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { IonSlides } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import { IEmployeeComments } from 'src/app/core/models/employee-comments.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
+import { IServices } from 'src/app/core/models/services.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
@@ -17,7 +18,7 @@ import { UtilityService } from 'src/app/services/utility.service';
     styleUrls: ['./employee-details.component.scss']
 })
 
-export class EmployeeDetailsComponent implements OnInit{
+export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     
     @Input() data: IEmployee;
     @Input() additionalKey: string;
@@ -27,42 +28,75 @@ export class EmployeeDetailsComponent implements OnInit{
     employeeDetailPage: string = 'employeeInfo';
 
     objectRef: AngularFireObject<IEmployee>;
+    servicesRef: AngularFireObject<IServices>;
+    userRef: AngularFireObject<IUser>;
 
     dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: [], employeeSpecialty: ''};
+    services: IServices[] = [];
 
     userUid: string;
-    userRef: AngularFireObject<IUser>;
     isInTurn: boolean = false; 
 
     reserveDate: string = (new Date()).toISOString();
+    serviceKey: string = "";
 
     comment: string;
     employeeComments: IEmployeeComments[];
 
 
     employeeSubscription: Subscription;
-    userSubscription: Subscription;
 
     clientPhoto: string;
-
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
-    private userRepoService: RepositoryService<IUser>,
+    private servicesRepoService: RepositoryService<IServices>,
     private utilityService: UtilityService,
     private angularFireDatabase: AngularFireDatabase,
     private authService: AuthService){
     }
 
     ngOnInit():void{
-        
-    }
-    ionViewWillEnter() {
         const user = this.authService.userData;
         this.userUid = user.uid;
         
         this.getEmployeeDetails();
-        this.getCurrentUserTurn();
         this.getClientPhoto();
+        this.getBusiness();
+        this.searchForPreviousTurn();
+    }
+
+    user$: Subscription;
+    searchForPreviousTurn(){
+        const userObject: AngularFireObject<IUser> = this.angularFireDatabase.object(`users/${this.userUid}`);
+        this.user$ = userObject.valueChanges().subscribe(async result=>{
+            if(result.turnKeys !== undefined){
+                for(let businessKey in result.turnKeys){
+                    if(this.additionalKey === result.turnKeys[businessKey].businessTurnKey){
+                        this.isInTurn = true;
+                        break;
+                    }
+                    else{
+                        this.isInTurn = false;
+                        break;
+                    }
+                }
+            }else{
+                this.isInTurn = false;
+            }
+        });
+    }
+
+    getBusiness(){
+        this.servicesRef = this.servicesRepoService.getAllElements(`services/${this.additionalKey}`);
+        const services$ = this.servicesRef.snapshotChanges().subscribe(result=>{
+            const services = result.payload.val();
+            this.services = [];
+            for(let serviceKey in services){
+                services[serviceKey].key = serviceKey;
+                this.services.push(services[serviceKey]);
+            }
+            services$.unsubscribe();
+        });
     }
 
     getEmployeeDetails(){
@@ -81,13 +115,6 @@ export class EmployeeDetailsComponent implements OnInit{
         const user$ = object.valueChanges().subscribe(result=>{
             this.clientPhoto = result.photo;
             user$.unsubscribe();
-        });
-    }
-
-    getCurrentUserTurn(){
-        this.userRef = this.userRepoService.getAllElements(`users/${this.userUid}`);
-        this.userSubscription = this.userRef.valueChanges().subscribe(result=>{
-            this.isInTurn = result.isInTurn;
         });
     }
 
@@ -136,10 +163,11 @@ export class EmployeeDetailsComponent implements OnInit{
         sendedDate.setHours(0,0,0,0);
 
         if(sendedDate < actualDate) await this.utilityService.presentToast('La fecha debe ser igual o adelantada a la de hoy', 'error-toast');
+        else if(this.serviceKey.length === 0) await this.utilityService.presentToast('Debes elegir un servicio', 'error-toast');
         else{
             await this.utilityService.presentLoading();
-            this.repositoryService.updateElement(`users/${this.userUid}`, {
-                isInTurn: true
+            this.repositoryService.setElement(`users/${this.userUid}/turnKeys/${this.additionalKey}`, {
+                businessTurnKey: this.additionalKey
             }).then(async ()=>{
 
                 let turnInfo: ITurn = {
@@ -152,7 +180,8 @@ export class EmployeeDetailsComponent implements OnInit{
                     reserveDate: this.reserveDate,
                     businessName: this.utilityService.getBusinessName(),
                     turnNum: businessPreviousQuantity + 1,
-                    businessKey: this.additionalKey
+                    businessKey: this.additionalKey,
+                    serviceKey: this.serviceKey
                 };
                 if(clientPhoto === undefined) delete turnInfo['clientPhoto'];
 
@@ -170,7 +199,7 @@ export class EmployeeDetailsComponent implements OnInit{
                         await this.showErrorMessage();   
                     })
                 }).catch(async err=>{
-                    
+                    await this.showErrorMessage();
                 });
             }).catch(async err=>{
                 await this.showErrorMessage();
@@ -229,9 +258,7 @@ export class EmployeeDetailsComponent implements OnInit{
         const businessPreviousQuantity = previousQuantities[0];
         const employeePreviousQuantity = previousQuantities[1];
 
-        this.repositoryService.updateElement(`users/${this.userUid}`, {
-            isInTurn: false
-        }).then(()=>{
+        this.repositoryService.deleteElement(`users/${this.userUid}/turnKeys/${this.additionalKey}`).then(()=>{
             this.repositoryService.updateElement(`businessList/${businessKey}`,{
                 clientsInTurn: businessPreviousQuantity - 1
             }).then(()=>{
@@ -264,8 +291,8 @@ export class EmployeeDetailsComponent implements OnInit{
         this.utilityServie.closeModal();  
     }
 
-    ionViewWillLeave() {
+    ngOnDestroy():void{
+        this.user$.unsubscribe();
         this.employeeSubscription.unsubscribe();
-        this.userSubscription.unsubscribe();
     }
 }

@@ -78,7 +78,9 @@
                 </ion-item>
                 <ion-item lines="none">
                     <div class="reserve-turn">
-                        <h3>Reservar turno</h3>
+                        <div class="title-bar">
+                            <span>Reservar turno</span>
+                        </div>
                         <form>
                             <ion-item>
                                 <ion-label>Fecha de reserva</ion-label>
@@ -87,6 +89,18 @@
                                 doneText="Aceptar" 
                                 cancelText="Cancelar"></ion-datetime>
                             </ion-item>
+                            <h3>Servicios</h3>
+                            <ion-list>
+                                <ion-radio-group [(ngModel)]="serviceKey" name="serviceKey" >
+                                    <ion-item lines="none" *ngFor="let service of services">
+                                        <div>
+                                            <div>{{service.service}}</div>
+                                            <div>RD${{service.price}}</div>
+                                        </div>
+                                        <ion-radio slot="start" [value]="service.key"></ion-radio>
+                                    </ion-item>
+                                </ion-radio-group>
+                            </ion-list>
                         </form>
                         <button class="auth-btn" (click)="searchForBusinessPreviousQuantity(clientPhoto, dbEmployee.clientsInTurn)" *ngIf="!isInTurn">
                             Reservar

@@ -1,3 +1,8 @@
+export interface BusinessTurn{
+    key?: string;
+    businessTurnKey: string;
+}
+
 export interface IUser{
     userId?: number;
     fullName: string;
@@ -10,5 +15,5 @@ export interface IUser{
     latitude?: number;
     photo?: string;
     isBusiness?: boolean;
-    isInTurn?: boolean;
+    turnKeys?: BusinessTurn[];
 }
