@@ -1,0 +1,25 @@
+<ion-content>
+    <div class="title-bar">
+        <span>Mis turnos</span>
+    </div>
+
+    <ion-list>
+        <ion-item lines="none" *ngFor="let turn of turns, let i = index">
+            <div class="turn-num">#{{turn.turnNum}}</div>
+            <div class="turn-info-container">
+                <div><b>Negocio:</b> {{turn.businessName}}</div>
+                <div><b>Empleado:</b> {{turn.employeeName}}</div>
+                <div><b>Servicio:</b> {{services[i]?.service}}</div>
+                <div><b>Precio:</b> RD${{services[i]?.price}}</div>
+                <div>
+                    <ion-button fill="clear" color="primary"> 
+                        <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
+                    </ion-button>
+                    <ion-button fill="clear" color="danger">
+                        <ion-icon name="close-circle" slot="icon-only"></ion-icon>
+                    </ion-button>
+                </div>
+            </div>
+        </ion-item>
+    </ion-list>
+</ion-content>

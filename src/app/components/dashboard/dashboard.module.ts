@@ -23,6 +23,7 @@ import { UpdateEmployeeComponent } from './business/employees/update-employee/up
 import { ServicesComponent } from './business/services/services.component';
 import { AddServiceComponent } from './business/services/add-service/add-service.component';
 import { UpdateServiceComponent } from './business/services/update-service/update-service.component';
+import { TurnsComponent } from './customer/turns/turns.component';
 
 @NgModule({
   imports: [
@@ -49,6 +50,7 @@ import { UpdateServiceComponent } from './business/services/update-service/updat
     BProfileComponent,
     PhotoPopoverComponent,
     ChangePasswordComponent,
+    TurnsComponent
     ]
 })
 export class DashboardPageModule {}

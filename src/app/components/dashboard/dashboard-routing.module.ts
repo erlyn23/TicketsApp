@@ -9,6 +9,7 @@ import { ExploreComponent } from './customer/explore/explore.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
 import { HomeComponent } from './customer/home/home.component';
 import { ProfileComponent } from './customer/profile/profile.component';
+import { TurnsComponent } from './customer/turns/turns.component';
 
 import { DashboardPage } from './dashboard.page';
 
@@ -27,6 +28,11 @@ const routes: Routes = [
         path: 'explore',
         canActivate: [AuthGuard],
         component: ExploreComponent,
+      },
+      {
+        path: 'turns',
+        canActivate: [AuthGuard],
+        component: TurnsComponent
       },
       {
         path: 'favourites',

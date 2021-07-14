@@ -67,19 +67,17 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
     user$: Subscription;
     searchForPreviousTurn(){
-        const userObject: AngularFireObject<IUser> = this.angularFireDatabase.object(`users/${this.userUid}`);
-        this.user$ = userObject.valueChanges().subscribe(async result=>{
-            if(result.turnKeys !== undefined){
-                for(let businessKey in result.turnKeys){
-                    if(this.additionalKey === result.turnKeys[businessKey].businessTurnKey){
-                        this.isInTurn = true;
-                        break;
-                    }
-                    else{
-                        this.isInTurn = false;
-                        break;
+        const userObject: AngularFireObject<IUser> = this.angularFireDatabase.object(`users/${this.userUid}/turnKeys`);
+        this.user$ = userObject.snapshotChanges().subscribe(async result=>{
+            const turnKeysList = result.payload.val();
+            if(result!== undefined){
+                let founded: number = 0;
+                for(let businessKey in turnKeysList){
+                    if(this.additionalKey === businessKey){
+                        founded++;
                     }
                 }
+                this.isInTurn = (founded > 0);
             }else{
                 this.isInTurn = false;
             }
@@ -215,57 +213,81 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
     employeeClientTurnObject: AngularFireObject<ITurn>;
     searchClientEmployeeTurn(){
-        this.employeeClientTurnObject = this.angularFireDatabase.object(`clientsInTurn`);
+        this.employeeClientTurnObject = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}`);
         const employeeClientTurn$ = this.employeeClientTurnObject.snapshotChanges().subscribe(result=>{
             if(result !== null){
                 const data = result.payload.val();
-                for(let businessKey in data){
-                    for(let turnKey in data[businessKey])
-                    {
-                        if(data[businessKey][turnKey].clientKey === this.userUid){
-                            this.searchBusinessToUnreserveTurn(data[businessKey][turnKey].employeeKey, businessKey);
-                            employeeClientTurn$.unsubscribe();
-                            break;
-                        }
+                for(let turnKey in data){
+                    if(data[turnKey].clientKey === this.userUid){
+                        this.searchBusinessToUnreserveTurn(data[turnKey].employeeKey, turnKey);
+                        employeeClientTurn$.unsubscribe();
+                        break;
                     }
                 }
             }
         });
     }
 
-    searchBusinessToUnreserveTurn(employeeKey: string, businessKey: string)
+    searchBusinessToUnreserveTurn(employeeKey: string, turnKey: string)
     {
         const previousQuantities: number[] = [];
-        const businessObject: AngularFireObject<IBusiness> = this.angularFireDatabase.object(`businessList/${businessKey}`);
+        const businessObject: AngularFireObject<IBusiness> = this.angularFireDatabase.object(`businessList/${this.additionalKey}`);
         const business$ = businessObject.valueChanges().subscribe(result=>{
             previousQuantities.push(result.clientsInTurn);
-            this.searchEmployeeToUnreserveTurn(employeeKey, businessKey, previousQuantities);
+            this.searchEmployeeToUnreserveTurn(employeeKey, previousQuantities, turnKey);
             business$.unsubscribe();
         });
     }
 
-    searchEmployeeToUnreserveTurn(employeeKey: string, businessKey: string, previousQuantities: number[]){
-        const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${businessKey}/employees/${employeeKey}`);
+    searchEmployeeToUnreserveTurn(employeeKey: string, previousQuantities: number[], turnKey: string){
+        const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${this.additionalKey}/employees/${employeeKey}`);
         const employee$ = employeeToUnsubscribeObjectRef.valueChanges().subscribe(result=>{
             previousQuantities.push(result.clientsInTurn);
-            this.unreserveTurn(employeeKey, businessKey, previousQuantities);
+            this.unreserveTurn(employeeKey, previousQuantities, turnKey);
             employee$.unsubscribe();
         });
     }
 
-    unreserveTurn(employeeKey: string, businessKey: string, previousQuantities: number[]){
+    unreserveTurn(employeeKey: string, previousQuantities: number[], turnKey: string){
 
         const businessPreviousQuantity = previousQuantities[0];
         const employeePreviousQuantity = previousQuantities[1];
 
         this.repositoryService.deleteElement(`users/${this.userUid}/turnKeys/${this.additionalKey}`).then(()=>{
-            this.repositoryService.updateElement(`businessList/${businessKey}`,{
+            this.repositoryService.updateElement(`businessList/${this.additionalKey}`,{
                 clientsInTurn: businessPreviousQuantity - 1
             }).then(()=>{
-                this.repositoryService.updateElement(`businessList/${businessKey}/employees/${employeeKey}`,{
+                this.repositoryService.updateElement(`businessList/${this.additionalKey}/employees/${employeeKey}`,{
                     clientsInTurn: employeePreviousQuantity - 1
                 }).then(()=>{
-                    this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${businessPreviousQuantity}`);
+                    this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}/${turnKey}`);
+                    this.updateTurns();
+                });
+            });
+        });
+    }
+
+    turns: ITurn[] =[];
+    updateTurns(){
+        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${this.additionalKey}`);
+        const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
+            const data = result.payload.val();
+
+            for(let turnKey in data){
+                data[turnKey].key = turnKey;
+                this.turns.push(data[turnKey]);
+            }
+
+            turns$.unsubscribe();
+            const tempTurns = this.turns;
+            
+            this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}`).then(()=>{
+                tempTurns.forEach((turn, index) =>{
+                    let turnNum = index + 1;
+                    turn.key = `${turnNum}`;
+                    turn.turnNum = turnNum;
+            
+                    this.repositoryService.setElement(`clientsInTurn/${this.additionalKey}/${turnNum}`, turn);
                 });
             });
         });

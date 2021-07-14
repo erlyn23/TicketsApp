@@ -51,17 +51,28 @@ export class BusinessDetailsPage implements OnInit {
   }
 
   ngOnInit() {
+    
     const navigationExtras = this.router.getCurrentNavigation().extras.state?.business;
+    
     const backOrigin = this.router.getCurrentNavigation().extras.state?.origin;
     this.backOrigin = backOrigin;
-    if(navigationExtras != null) this.business = navigationExtras;
-    else this.router.navigate(['/dashboard']);
     
-    let currentLocation = this.geolocation.getCurrentPosition();
-    currentLocation.then((location: Geoposition)=>{
-      this.initMap(location.coords.latitude, location.coords.longitude)
-    });
+    if(navigationExtras != null) this.business = navigationExtras;
+    else this.goToDashboard();
+    
+    if(this.business !== null){
+      let currentLocation = this.geolocation.getCurrentPosition();
+      currentLocation.then(async (location: Geoposition)=>{
+        await this.utilityService.presentLoading();
+        this.initMap(location.coords.latitude, location.coords.longitude)
+      });
+    }else this.goToDashboard();
+    
     this.getEmployees(); 
+  }
+
+  goToDashboard(){
+    this.router.navigate(['/dashboard']);
   }
 
   getEmployees(){
@@ -77,13 +88,19 @@ export class BusinessDetailsPage implements OnInit {
     });
   }
 
-  initMap(latitude: number, longitude:number):void{
+  async initMap(latitude: number, longitude:number){
     MapBox.accessToken = environment.mapToken;
     const initLong = this.business.long;
     const initLat = this.business.latitude;
 
+    let newMapContent = document.createElement('div');
+    newMapContent.id = 'map-content';
+    newMapContent.innerHTML = "&nbsp;";
+    newMapContent.style.height = '400px';
+    document.getElementById('page-content').appendChild(newMapContent);
+
     const map = new MapBox.Map({
-      container: 'map-box',
+      container: 'map-content',
       style: 'mapbox://styles/mapbox/streets-v11', 
       center: [initLong, initLat], 
       zoom: 15,
@@ -91,7 +108,10 @@ export class BusinessDetailsPage implements OnInit {
     const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
     const clientMarker = new MapBox.Marker({color: 'red'}).setLngLat([longitude, latitude]).addTo(map);
     map.addControl(new MapBox.NavigationControl());
-    map.scrollZoom.disable()
+    map.scrollZoom.disable();
+    map.on('load', ()=>{
+      this.utilityService.closeLoading();
+    });
   }
 
   async openReserveModal(employee: IEmployee){
@@ -115,7 +135,7 @@ export class BusinessDetailsPage implements OnInit {
   }
 
   ionViewWillLeave() {
-    this.employees$.unsubscribe();
+    this.employees$?.unsubscribe();
   }
 
 }

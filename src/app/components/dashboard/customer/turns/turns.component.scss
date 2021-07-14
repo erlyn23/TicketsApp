@@ -1,0 +1,25 @@
+ion-list{
+    background: var(--ion-color-primary-contrast);
+    ion-item{
+        --background: white;
+        margin: 10px;
+        border-radius: 10px;
+        box-shadow: 3px 3px 5px 3px lightgray;
+    }
+}
+
+.turn-num{
+    height: 100%;
+    font-size: 35px;
+    font-weight: bold;
+    padding: 25px;
+    border-right: solid 1px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.turn-info-container{
+    margin-left: 10px;
+    padding: 10px;
+}

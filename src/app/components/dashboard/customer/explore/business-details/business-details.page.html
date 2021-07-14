@@ -9,7 +9,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content style="--background: var(--ion-color-primary-contrast)">
+<ion-content id="page-content" style="--background: var(--ion-color-primary-contrast)">
   <img *ngIf="business != null && business.businessPhoto.length > 0" [src]="business.businessPhoto" alt="" class="business-cover">
 
   <ion-grid fixed>
@@ -40,8 +40,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-
-  <div id="map-box" style="height: 400px;">
-    &nbsp;
-  </div>
 </ion-content>
