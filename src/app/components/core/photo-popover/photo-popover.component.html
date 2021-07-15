@@ -1,5 +1,5 @@
 <ion-content style="background: var(--ion-color-primary-contrast);">
-    <ion-grid *ngIf="percentage === 0">
+    <ion-grid *ngIf="!isCharging">
       <ion-row>
         <ion-col size="12">
           <label style="width: 100%; height: 100%; margin-top: 30px; color: var(--ion-color-primary)" fill="clear">
@@ -16,12 +16,12 @@
       </ion-row>
     </ion-grid>
 
-    <ion-list style="background: white;" *ngIf="percentage !== 0">
+    <ion-list style="background: white;" *ngIf="isCharging">
       <div class="loading-title">
         <ion-label>Cargando foto, por favor espera...</ion-label>
       </div>
       <ion-item lines="none">
-        <ion-progress-bar *ngIf="percentage !== 0" color="primary" [value]="percentage"></ion-progress-bar>
+        <ion-progress-bar *ngIf="isCharging" color="primary" [value]="percentage"></ion-progress-bar>
       </ion-item>
     </ion-list>
   </ion-content>

@@ -1,13 +1,21 @@
 <ion-content>
     <div class="photo-container">
-        <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="business.businessPhoto === ''">
-        <img [src]="userPhoto" class="profile" alt="" *ngIf="business.businessPhoto !== ''">
-        <div class="user-names">
-          <span>{{business.businessName}}</span>
-          <span style="font-weight: normal;">
-            <small>Abierto</small> &nbsp;<ion-toggle style="padding: 4px" color="secondary" [(ngModel)]="business.isOpened" (ionChange)="updateBusinessStatus($event)"></ion-toggle>
-          </span>
-        </div>
+        <ion-grid>
+            <ion-row>
+                <ion-col size="6"> 
+                    <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="business.businessPhoto === '' || business.businessPhoto === undefined">
+                    <img [src]="business.businessPhoto" class="profile" alt="" *ngIf="business.businessPhoto !== undefined">
+                </ion-col>
+                <ion-col size="6">
+                    <div class="user-names">
+                        <span>{{business.businessName}}</span>
+                        <span style="font-weight: normal;">
+                          <small>Abierto</small> &nbsp;<ion-toggle style="padding: 4px" color="secondary" [(ngModel)]="business.isOpened" (ionChange)="updateBusinessStatus($event)"></ion-toggle>
+                        </span>
+                      </div>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
     </div>
     <div class="title-bar">
         <span>Listado de turnos</span>

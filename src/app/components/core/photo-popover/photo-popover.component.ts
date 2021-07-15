@@ -4,7 +4,6 @@ import { AuthService } from 'src/app/services/auth.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { Plugins } from '@capacitor/core';
 import { RepositoryService } from 'src/app/services/repository.service';
-import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { Ng2ImgMaxService } from 'ng2-img-max';
 
@@ -17,6 +16,7 @@ const { Storage } = Plugins;
 })
 export class PhotoPopoverComponent implements OnInit{
     
+    isCharging: Boolean = false;
     constructor(private utilityService: UtilityService,
         private angularFireStorage: AngularFireStorage,
         private authService: AuthService,
@@ -59,6 +59,7 @@ export class PhotoPopoverComponent implements OnInit{
 
     percentage: number = 0;
     async savePhotoInDb(image, filePath, isBusiness){
+        this.isCharging = true;
         const fileRef = this.angularFireStorage.ref(filePath);
         const uploadTask = this.angularFireStorage.upload(filePath, image);
 
@@ -82,6 +83,7 @@ export class PhotoPopoverComponent implements OnInit{
 
         uploadTask.percentageChanges().subscribe(percentage=>{
             this.percentage = Math.round(percentage ? percentage : 0) / 100;
+            if(this.percentage === 100) this.isCharging = false;
         });
     }
 }
