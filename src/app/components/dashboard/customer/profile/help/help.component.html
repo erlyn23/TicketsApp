@@ -11,4 +11,36 @@
     <div class="title-bar">
         <span>Reportar negocio</span>
     </div>
+    <form [formGroup]="helpForm">
+        <input type="text" class="auth-input" formControlName="businessName" [class]="isValidField('businessName')" placeholder="Nombre del negocio">
+        <div *ngIf="isValidField('businessName') === 'invalid-field'" style="text-align: center;">
+            <p *ngIf="helpForm.get('businessName').errors?.required" style="color: var(--ion-color-danger);">Debes escribir el nombre del negocio</p>
+        </div>
+        <ion-list>
+            <ion-radio-group formControlName="helpType">
+                <ion-item lines="none">
+                    <ion-label>La dirección del negocio no es la correcta</ion-label>
+                    <ion-radio value="La dirección del negocio no es la correcta"></ion-radio>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label>La foto del perfil no coincide con el negocio</ion-label>
+                    <ion-radio value="La foto del perfil no coincide con el negocio"></ion-radio>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label>El negocio no es higiénico</ion-label>
+                    <ion-radio value="El negocio no es higiénico"></ion-radio>
+                </ion-item>
+                <ion-item lines="none">
+                    <ion-label>El empleado no siguió las medidas sanitarias</ion-label>
+                    <ion-radio value="El empleado no siguió las medidas sanitarias"></ion-radio>
+                </ion-item>
+            </ion-radio-group>
+        </ion-list>
+        <textarea formControlName="anotherReason" class="auth-input" cols="30" rows="05" style="resize: none;" placeholder="Escribe otra razón"></textarea>
+        <div style="text-align: center;">
+            <button class="auth-btn" (click)="sendHelp()">
+                <span>Enviar</span>
+            </button>
+        </div>
+    </form>
 </ion-content>

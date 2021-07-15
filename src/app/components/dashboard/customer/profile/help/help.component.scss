@@ -4,3 +4,20 @@ ion-toolbar{
         margin-top: 7px;
     }
 }
+
+.auth-input{
+    border-color: var(--ion-color-primary);
+    margin:10px;
+    width: 95%;
+    &::placeholder{
+        color: var(--ion-color-primary);
+    }
+}
+
+ion-list{
+    ion-item{
+        ion-label{
+            color: var(--ion-color-primary);
+        }
+    }
+}

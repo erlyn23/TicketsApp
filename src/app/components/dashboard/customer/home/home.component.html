@@ -1,11 +1,19 @@
 <ion-content>
     <div class="photo-container">
-        <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="userPhoto === undefined">
-        <img [src]="userPhoto" class="profile" alt="" *ngIf="userPhoto !== undefined">
-        <div class="user-names">
-          <span>Hola, {{userName}}</span>
-          <span style="font-weight: normal; color: gray;">#{{userId}}</span>
-        </div>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="userPhoto === undefined">
+              <img [src]="userPhoto" class="profile" alt="" *ngIf="userPhoto !== undefined">
+            </ion-col>
+            <ion-col size="7">
+              <div>
+                <div>Hola, {{userName}}</div>
+                <div style="font-weight: normal; color: gray;">#{{userId}}</div>
+              </div>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
     </div>
 
     <div class="title-bar">
