@@ -112,9 +112,7 @@ export class BHomeComponent implements OnInit {
   }
 
   async cancelTurn(turn: ITurn, businessPreviousQuantity: number, employeePreviousQuantity: number){
-    this.repositoryService.updateElement(`users/${turn.clientKey}`, {
-      isInTurn: false
-    }).then(()=>{
+    this.repositoryService.deleteElement(`users/${turn.clientKey}/turnKeys/${this.businessKey}`).then(()=>{
       this.repositoryService.updateElement(`businessList/${this.businessKey}`,{
         clientsInTurn: businessPreviousQuantity - 1
       }).then(()=>{
