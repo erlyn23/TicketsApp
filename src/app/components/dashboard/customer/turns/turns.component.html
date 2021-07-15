@@ -1,3 +1,9 @@
+<ion-header>
+    <ion-toolbar color="primary"> 
+      <img width="60%" src="../../../../../assets/img/logo-login.png" alt="logo">
+    </ion-toolbar>
+</ion-header>
+
 <ion-content>
     <div class="title-bar">
         <span>Mis turnos</span>
@@ -11,11 +17,12 @@
                 <div><b>Empleado:</b> {{turn.employeeName}}</div>
                 <div><b>Servicio:</b> {{services[i]?.service}}</div>
                 <div><b>Precio:</b> RD${{services[i]?.price}}</div>
+                <div><b>Fecha:</b> {{turn.reserveDate | date:'dd/MM/YYYY'}}</div>
                 <div>
-                    <ion-button fill="clear" color="primary"> 
+                    <ion-button fill="clear" color="primary" (click)="goToBusinessDetails(turn.businessKey)"> 
                         <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
                     </ion-button>
-                    <ion-button fill="clear" color="danger">
+                    <ion-button fill="clear" color="danger" (click)="confirmCancelTurn(turn.businessKey)">
                         <ion-icon name="close-circle" slot="icon-only"></ion-icon>
                     </ion-button>
                 </div>

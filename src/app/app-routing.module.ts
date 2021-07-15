@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { FavouritesComponent } from './components/dashboard/customer/favourites/favourites.component';
 import { HomeComponent } from './components/dashboard/customer/home/home.component';
+import { EditAccountComponent } from './components/dashboard/customer/profile/edit-account/edit-account.component';
+import { HelpComponent } from './components/dashboard/customer/profile/help/help.component';
 import { AuthGuard } from './core/guards/auth.guard';
 
 const routes: Routes = [
@@ -33,6 +36,21 @@ const routes: Routes = [
   {
     path: 'revocer-password',
     loadChildren: () => import('./components/auth/revocer-password/revocer-password.module').then( m => m.RevocerPasswordPageModule)
+  },
+  {
+    path: 'edit-account',
+    canActivate: [AuthGuard],
+    component: EditAccountComponent
+  },
+  {
+    path: 'favourites',
+    canActivate: [AuthGuard],
+    component: FavouritesComponent
+  },
+  {
+    path: 'help',
+    canActivate: [AuthGuard],
+    component: HelpComponent
   }
 ];
 

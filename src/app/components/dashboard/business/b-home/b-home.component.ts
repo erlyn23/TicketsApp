@@ -7,6 +7,7 @@ import { IEmployee } from 'src/app/core/models/employee.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { RepositoryService } from 'src/app/services/repository.service';
+import { UpdateTurnService } from 'src/app/services/update-turn.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -34,6 +35,7 @@ export class BHomeComponent implements OnInit {
   };
   constructor(private authService: AuthService, 
     private repositoryService: RepositoryService<any>,
+    private updateTurnService: UpdateTurnService,
     private utilityService: UtilityService) { }
 
   ngOnInit() {
@@ -120,34 +122,22 @@ export class BHomeComponent implements OnInit {
           clientsInTurn: employeePreviousQuantity - 1
         }).then(async ()=>{
           await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.key}`);
-          await this.updateClientTurn();
+          this.updateClientTurn();
           this.utilityService.closeLoading();
         });
       });
     });
   }
 
-  async reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
+  reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
     this.turns = ev.detail.complete(this.turns);
     
-    await this.updateClientTurn();
+    this.updateClientTurn();
   }
 
-  async updateClientTurn(){
-    await this.utilityService.presentLoading();
+  updateClientTurn(){
     const tempTurns = this.turns;
-    
-    this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}`).then(()=>{
-      tempTurns.forEach((turn, index) =>{
-        let turnNum = index + 1;
-        turn.key = `${turnNum}`;
-        turn.turnNum = turnNum;
-  
-        this.repositoryService.setElement(`clientsInTurn/${this.businessKey}/${turnNum}`, turn)
-        .then(()=> this.utilityService.closeLoading())
-        .catch((err)=> this.utilityService.closeLoading());
-      });
-    });
+    this.updateTurnService.updateTurn(tempTurns, this.businessKey);
   }
 
   async updateBusinessStatus(ev){

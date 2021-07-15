@@ -8,6 +8,7 @@ import { ServicesComponent } from './business/services/services.component';
 import { ExploreComponent } from './customer/explore/explore.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
 import { HomeComponent } from './customer/home/home.component';
+import { EditAccountComponent } from './customer/profile/edit-account/edit-account.component';
 import { ProfileComponent } from './customer/profile/profile.component';
 import { TurnsComponent } from './customer/turns/turns.component';
 
@@ -33,11 +34,6 @@ const routes: Routes = [
         path: 'turns',
         canActivate: [AuthGuard],
         component: TurnsComponent
-      },
-      {
-        path: 'favourites',
-        canActivate: [AuthGuard],
-        component: FavouritesComponent
       },
       {
         path: 'profile',

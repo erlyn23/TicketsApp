@@ -24,6 +24,8 @@ import { ServicesComponent } from './business/services/services.component';
 import { AddServiceComponent } from './business/services/add-service/add-service.component';
 import { UpdateServiceComponent } from './business/services/update-service/update-service.component';
 import { TurnsComponent } from './customer/turns/turns.component';
+import { EditAccountComponent } from './customer/profile/edit-account/edit-account.component';
+import { HelpComponent } from './customer/profile/help/help.component';
 
 @NgModule({
   imports: [
@@ -50,7 +52,9 @@ import { TurnsComponent } from './customer/turns/turns.component';
     BProfileComponent,
     PhotoPopoverComponent,
     ChangePasswordComponent,
-    TurnsComponent
+    TurnsComponent,
+    EditAccountComponent,
+    HelpComponent
     ]
 })
 export class DashboardPageModule {}

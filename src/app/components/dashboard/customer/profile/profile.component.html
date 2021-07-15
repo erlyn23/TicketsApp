@@ -1,45 +1,34 @@
+<ion-header>
+  <ion-toolbar color="primary"> 
+    <img width="60%" src="../../../../../assets/img/logo-login.png" alt="logo">
+  </ion-toolbar>
+</ion-header>
+
 <ion-content>
-    <div class="photo-container">
-      <img class="profile" src="../../../../assets/icon/Recurso12.png" (click)="openChangePhotoPopover()" height="100" *ngIf="userPhoto === undefined">
-      <img [src]="userPhoto" class="profile" alt="" (click)="openChangePhotoPopover()"  *ngIf="userPhoto !== undefined">
-      <ion-button style="margin-top: 158px; margin-left: -30px;" fill="clear" (click)="isEdit = true">
-        <ion-icon slot="icon-only" src="../../../../assets/icon/edit_profile_icon.svg"></ion-icon>
-      </ion-button>
+    <div class="title-bar">
+      <span>Cuenta</span>
     </div>
-    
-    <ion-list *ngIf="!isEdit && user !== undefined" class="animate__animated animate__bounceIn">
-      <ion-item lines="none" class="user-display-name">
-        <ion-label>{{user.fullName}}</ion-label>
+    <ion-list>
+      <ion-item lines="none" class="ion-activatable ripple-parent" (click)="goToPage('favourites')">
+          <div>
+              <ion-icon name="heart"></ion-icon> &nbsp;
+              <span>Favoritos</span>
+          </div>
+          <ion-ripple-effect></ion-ripple-effect>
       </ion-item>
-      <ion-item lines="none" class="user-display-name">
-        <ion-label style="color: gray; font-weight: normal; font-size: 30px;">ID: #{{user.userId}}</ion-label>
+      <ion-item lines="none" class="ion-activatable ripple-parent" (click)="goToPage('help')">
+        <div>
+          <ion-icon name="help-buoy"></ion-icon> &nbsp;
+          <span>Ayuda</span>
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
       </ion-item>
-      <ion-item lines="none" class="centered-text">
-        <ion-label><b>Correo: &nbsp;</b> <span style="color: gray">{{user.email}}</span></ion-label>
+      <ion-item lines="none" class="ion-activatable ripple-parent" (click)="goToPage('edit-account')">
+        <div>
+            <ion-icon name="settings"></ion-icon> &nbsp;
+            <span>Configuración</span>
+        </div>
+        <ion-ripple-effect></ion-ripple-effect>
       </ion-item>
     </ion-list>
-  
-    <div class="register-form-container animate__animated animate__bounceIn" *ngIf="isEdit">
-      <div class="form-container">
-        <form [formGroup]="updateProfileForm">
-  
-            <input type="text" formControlName="fullName" class="auth-input" [class]="isValidField('fullName')" placeholder="&#xF007; Nombre completo">
-            <div *ngIf="isValidField('fullName') === 'invalid-field'">
-              <p *ngIf="updateProfileForm.get('fullName').errors?.required">Debes escribir tu nombre</p>
-              <p *ngIf="updateProfileForm.get('fullName').errors?.minlength">Debes escribir al menos 3 letras</p>
-              <p *ngIf="updateProfileForm.get('fullName').errors?.maxlength">Debes escribir menos de 50 letras</p>
-            </div>
-        </form>
-      </div>
-    </div>
-
-    <ion-fab vertical="bottom" style="width: 100%; text-align: center;" *ngIf="!isEdit">
-      <button class="auth-btn" (click)="openMyTurn()">Ver mi turno</button>
-      <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
-    </ion-fab>
-    <ion-fab vertical="bottom" style="width: 100%; text-align: center;" *ngIf="isEdit">
-      <button class="auth-btn" (click)="updateProfile()">Guardar cambios</button><br>
-      <button class="auth-btn" (click)="openChangePassword()">Cambiar contraseña</button><br>
-      <button class="auth-btn" (click)="logOut()">Cerrar sesión</button>
-    </ion-fab>
   </ion-content>

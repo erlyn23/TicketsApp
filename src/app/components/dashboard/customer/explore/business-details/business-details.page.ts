@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import * as MapBox from 'mapbox-gl';
@@ -16,7 +16,7 @@ import { Platform } from '@ionic/angular';
   templateUrl: './business-details.page.html',
   styleUrls: ['./business-details.page.scss'],
 })
-export class BusinessDetailsPage implements OnInit {
+export class BusinessDetailsPage implements OnInit, OnDestroy {
 
   business: IBusiness = null;
   employees: IEmployee[] = [];
@@ -43,7 +43,10 @@ export class BusinessDetailsPage implements OnInit {
               this.router.navigate(['dashboard/home']);
             break;
             case 'favourites':
-              this.router.navigate(['dashboard/favourites']);
+              this.router.navigate(['favourites']);
+            break;
+            case 'reserves':
+              this.router.navigate(['dashboard/turns']);
             break;
           }
         }
@@ -62,13 +65,38 @@ export class BusinessDetailsPage implements OnInit {
     
     if(this.business !== null){
       let currentLocation = this.geolocation.getCurrentPosition();
-      currentLocation.then(async (location: Geoposition)=>{
-        await this.utilityService.presentLoading();
+      currentLocation.then((location: Geoposition)=>{
         this.initMap(location.coords.latitude, location.coords.longitude)
       });
     }else this.goToDashboard();
     
     this.getEmployees(); 
+  }
+
+  map: MapBox.Map;
+  initMap(latitude: number, longitude:number){
+    MapBox.accessToken = environment.mapToken;
+    const initLong = this.business.long;
+    const initLat = this.business.latitude;
+
+    let newMapContent = document.createElement('div');
+    newMapContent.id = 'map-content';
+    newMapContent.innerHTML = "&nbsp;";
+    newMapContent.style.height = '400px';
+    document.getElementById('page-content')?.appendChild(newMapContent);
+
+    this.map = new MapBox.Map({
+      container: 'map-content',
+      style: 'mapbox://styles/mapbox/streets-v11', 
+      center: [initLong, initLat], 
+      zoom: 15,
+    });
+    this.map.on('load', ()=>{
+      const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(this.map);
+      const clientMarker = new MapBox.Marker({color: 'red'}).setLngLat([longitude, latitude]).addTo(this.map);
+      this.map.addControl(new MapBox.NavigationControl());
+      this.map.scrollZoom.disable();
+    });
   }
 
   goToDashboard(){
@@ -88,32 +116,6 @@ export class BusinessDetailsPage implements OnInit {
     });
   }
 
-  async initMap(latitude: number, longitude:number){
-    MapBox.accessToken = environment.mapToken;
-    const initLong = this.business.long;
-    const initLat = this.business.latitude;
-
-    let newMapContent = document.createElement('div');
-    newMapContent.id = 'map-content';
-    newMapContent.innerHTML = "&nbsp;";
-    newMapContent.style.height = '400px';
-    document.getElementById('page-content').appendChild(newMapContent);
-
-    const map = new MapBox.Map({
-      container: 'map-content',
-      style: 'mapbox://styles/mapbox/streets-v11', 
-      center: [initLong, initLat], 
-      zoom: 15,
-    });
-    const marker = new MapBox.Marker().setLngLat([initLong, initLat]).addTo(map);
-    const clientMarker = new MapBox.Marker({color: 'red'}).setLngLat([longitude, latitude]).addTo(map);
-    map.addControl(new MapBox.NavigationControl());
-    map.scrollZoom.disable();
-    map.on('load', ()=>{
-      this.utilityService.closeLoading();
-    });
-  }
-
   async openReserveModal(employee: IEmployee){
     this.utilityService.setBusinessName(this.business.businessName);
     await this.utilityService.openModal(EmployeeDetailsComponent, employee, this.business.key);
@@ -129,12 +131,15 @@ export class BusinessDetailsPage implements OnInit {
           this.router.navigate(['dashboard/home']);
         break;
         case 'favourites':
-          this.router.navigate(['dashboard/favourites']);
+          this.router.navigate(['favourites']);
+        break;
+        case 'reserves':
+          this.router.navigate(['dashboard/turns']);
         break;
       }
   }
 
-  ionViewWillLeave() {
+  ngOnDestroy(){
     this.employees$?.unsubscribe();
   }
 

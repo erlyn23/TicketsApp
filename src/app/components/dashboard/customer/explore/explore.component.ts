@@ -187,6 +187,7 @@ export class ExploreComponent implements OnInit {
     this.businessSubscription.forEach(subscription=>{
       subscription.unsubscribe();
     });
+    this.map.remove();
   }
 
 }

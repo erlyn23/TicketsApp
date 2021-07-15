@@ -10,6 +10,7 @@ import { ITurn } from 'src/app/core/models/turn.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
 import { RepositoryService } from 'src/app/services/repository.service';
+import { UpdateTurnService } from 'src/app/services/update-turn.service';
 import { UtilityService } from 'src/app/services/utility.service';
  
 @Component({
@@ -50,6 +51,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
     private servicesRepoService: RepositoryService<IServices>,
+    private updateTurnService: UpdateTurnService,
     private utilityService: UtilityService,
     private angularFireDatabase: AngularFireDatabase,
     private authService: AuthService){
@@ -281,15 +283,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
             turns$.unsubscribe();
             const tempTurns = this.turns;
             
-            this.repositoryService.deleteElement(`clientsInTurn/${this.additionalKey}`).then(()=>{
-                tempTurns.forEach((turn, index) =>{
-                    let turnNum = index + 1;
-                    turn.key = `${turnNum}`;
-                    turn.turnNum = turnNum;
-            
-                    this.repositoryService.setElement(`clientsInTurn/${this.additionalKey}/${turnNum}`, turn);
-                });
-            });
+            this.updateTurnService.updateTurn(tempTurns, this.additionalKey);
         });
     }
 

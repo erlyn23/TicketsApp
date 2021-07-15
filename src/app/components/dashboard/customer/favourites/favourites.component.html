@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar color="primary"> 
+    <ion-button fill="clear" style="color: white;" [routerLink]="['/dashboard/profile']">
+      <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+    </ion-button>
     <img *ngIf="!isSearch" width="60%" src="../../../../../assets/img/logo-login.png" alt="logo">
     <ion-searchbar *ngIf="isSearch" placeholder="Buscar negocio" [(ngModel)]="searchFilter" name="searchFilter" 
         (ionChange)="searchForBusiness($event, businessList)"></ion-searchbar>
