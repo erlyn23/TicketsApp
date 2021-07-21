@@ -33,6 +33,7 @@ export class RegisterBusinessComponent implements OnInit {
     this.initForm();
     await this.utilityService.presentToast("Enciende la ubicación y reinicia la app para acceder al mapa", 'success-toast');
     let position = await this.geolocation.getCurrentPosition();
+    await this.utilityService.presentLoading();
     this.initMap(position);
   }
 
@@ -50,8 +51,7 @@ export class RegisterBusinessComponent implements OnInit {
     });
   }
 
-  async initMap(coordinates:Geoposition){
-    await this.utilityService.presentLoading();
+  initMap(coordinates:Geoposition){
     MapBox.accessToken = environment.mapToken;
     const map = new MapBox.Map({
       container: 'mapbox-container',

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireDatabase, AngularFireObject } from '@angular/fire/database';
 import { NavigationExtras, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
@@ -9,14 +9,13 @@ import { UtilityService } from 'src/app/services/utility.service';
 import * as mapBox from 'mapbox-gl';
 import { Geolocation, Geoposition, PositionError } from '@ionic-native/geolocation/ngx';
 import { environment } from 'src/environments/environment';
-import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-explore',
   templateUrl: './explore.component.html',
   styleUrls: ['./explore.component.scss'],
 })
-export class ExploreComponent implements OnInit {
+export class ExploreComponent implements OnInit, OnDestroy {
 
   userUid: string;
   businessList: IBusiness[] = [];
@@ -37,10 +36,6 @@ export class ExploreComponent implements OnInit {
   }
 
   ngOnInit() {
-    
-  }
-  
-  ionViewWillEnter() {
     this.userUid = this.authService.userData.uid;
 
     let currentLocation = this.geolocation.getCurrentPosition();
@@ -183,7 +178,7 @@ export class ExploreComponent implements OnInit {
     }
   }
 
-  ionViewWillLeave() {
+  ngOnDestroy(): void{
     this.businessSubscription.forEach(subscription=>{
       subscription.unsubscribe();
     });

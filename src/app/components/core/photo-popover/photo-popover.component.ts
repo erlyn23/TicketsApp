@@ -58,7 +58,7 @@ export class PhotoPopoverComponent implements OnInit{
 
 
     percentage: number = 0;
-    async savePhotoInDb(image, filePath, isBusiness){
+    savePhotoInDb(image, filePath, isBusiness){
         this.isCharging = true;
         const fileRef = this.angularFireStorage.ref(filePath);
         const uploadTask = this.angularFireStorage.upload(filePath, image);
@@ -66,16 +66,16 @@ export class PhotoPopoverComponent implements OnInit{
         uploadTask.snapshotChanges().pipe(finalize(()=>{
             const uid = this.authService.userData.uid;
             const uploadedPhoto$ = fileRef.getDownloadURL().subscribe(result=>{
-                this.repositoryService.updateElement(`users/${uid}`,{photo: result}).then(()=>{
+                this.repositoryService.updateElement(`users/${uid}`,{photo: result}).then(async ()=>{
                     if(isBusiness === 'true') this.repositoryService.updateElement(`businessList/${uid}`, {businessPhoto: result});
-                    this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
+                    await this.utilityService.presentToast('Imagen subida correctamente', 'success-toast');
                     this.utilityService.closePopover();
                     this.percentage = 0;
                     uploadedPhoto$.unsubscribe();
-                }).catch(err=>{
+                }).catch(async err=>{
                     console.log(err);
                     this.percentage = 0;
-                    this.utilityService.presentToast('Ha ocurrido un error al subir la foto', 'error-toast');
+                    await this.utilityService.presentToast('Ha ocurrido un error al subir la foto', 'error-toast');
                     this.utilityService.closePopover();
                 });
             });
