@@ -40,8 +40,9 @@ export class PhotoPopoverComponent implements OnInit{
         else filePath = `clients/client-${uid}`;
 
         this.utilityService.presentAlertWithActions('Confirmar', '¿Estás seguro de querer subir esta foto?',
-        async ()=>
+        ()=>
         {
+            this.isCharging = true;
             const resize$ = this.ng2ImgMax.resizeImage(image, 300, 300).subscribe(result => {
                     this.savePhotoInDb(result, filePath, isBusiness); 
                     resize$.unsubscribe();
@@ -59,7 +60,6 @@ export class PhotoPopoverComponent implements OnInit{
 
     percentage: number = 0;
     savePhotoInDb(image, filePath, isBusiness){
-        this.isCharging = true;
         const fileRef = this.angularFireStorage.ref(filePath);
         const uploadTask = this.angularFireStorage.upload(filePath, image);
 
