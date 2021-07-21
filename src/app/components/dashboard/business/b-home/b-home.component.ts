@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireObject } from '@angular/fire/database';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
@@ -15,7 +15,7 @@ import { UtilityService } from 'src/app/services/utility.service';
   templateUrl: './b-home.component.html',
   styleUrls: ['./b-home.component.scss'],
 })
-export class BHomeComponent implements OnInit {
+export class BHomeComponent implements OnInit, OnDestroy {
   turnRef: AngularFireObject<ITurn>;
   turn$: Subscription;
   turns: ITurn[] = [];
@@ -33,16 +33,13 @@ export class BHomeComponent implements OnInit {
     long: 0,
     latitude: 0,
   };
+  profilePhoto: string;
   constructor(private authService: AuthService, 
     private repositoryService: RepositoryService<any>,
     private updateTurnService: UpdateTurnService,
     private utilityService: UtilityService) { }
 
   ngOnInit() {
-    
-  }
-
-  ionViewWillEnter() {
     const user = this.authService.userData;
     this.businessKey = user.uid;
 
@@ -67,6 +64,7 @@ export class BHomeComponent implements OnInit {
     const businessStatus: AngularFireObject<IBusiness> = this.repositoryService.getAllElements(`businessList/${this.businessKey}`);
     const businessStatus$ = businessStatus.valueChanges().subscribe(result=>{
       this.business = result;
+      this.profilePhoto = result.businessPhoto;
       businessStatus$.unsubscribe();
     });
   }
@@ -144,7 +142,7 @@ export class BHomeComponent implements OnInit {
     });
   }
 
-  ionViewWillLeave() {
+  ngOnDestroy(){
     this.turn$.unsubscribe();
   }
 }
