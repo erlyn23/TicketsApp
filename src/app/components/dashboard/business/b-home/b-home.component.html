@@ -4,7 +4,7 @@
             <ion-row>
                 <ion-col size="5"> 
                     <img class="profile" src="../../../../../assets/icon/Recurso12.png" height="100" *ngIf="business.businessPhoto === '' || business.businessPhoto === undefined">
-                    <img [src]="business.businessPhoto" class="profile" alt="" *ngIf="profilePhoto !== undefined">
+                    <img [src]="profilePhoto" class="profile" alt="" *ngIf="profilePhoto">
                 </ion-col>
                 <ion-col size="7">
                     <div class="user-names">
