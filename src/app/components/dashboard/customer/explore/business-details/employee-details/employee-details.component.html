@@ -83,9 +83,16 @@
                         </div>
                         <form>
                             <ion-item>
-                                <ion-label>Fecha de reserva</ion-label>
+                                <ion-label>Fecha</ion-label>
                                 <ion-datetime display-format="DD/MM/YYYY" 
                                 [(ngModel)]="reserveDate" name="reserveDate"
+                                doneText="Aceptar" 
+                                cancelText="Cancelar"></ion-datetime>
+                            </ion-item>
+                            <ion-item>
+                                <ion-label>Hora</ion-label>
+                                <ion-datetime display-format="h:mm a" 
+                                [(ngModel)]="reserveHour" name="reserveHour"
                                 doneText="Aceptar" 
                                 cancelText="Cancelar"></ion-datetime>
                             </ion-item>

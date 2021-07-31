@@ -36,7 +36,7 @@
                     <ion-label>
                         <span class="client-name">{{turn.clientName}} <span>#{{turn.turnNum}}</span></span>
                         <div>{{turn.employeeName}}</div>
-                        <div><small>{{turn.reserveDate | date}}</small></div>
+                        <div><small>{{turn.reserveDate | date:'dd/MM/YYYY'}} {{turn.reserveHour | date:'h:mm a'}}</small></div>
                     </ion-label>
                     <ion-button size="large" fill="clear" style="color: var(--ion-color-danger);" (click)="openCancelTurn(turn)">
                         <ion-icon slot="icon-only" name="close-circle"></ion-icon>

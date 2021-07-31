@@ -8,6 +8,16 @@
  * For more information on global stylesheets, visit the documentation:
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
+
+ @font-face {
+   font-family: 'Quicksand-Regular';
+   src: url('./assets/fonts/Quicksand-Regular.ttf');
+ }
+
+ *{
+   font-family: 'Quicksand-Regular';
+ }
+
  .auth-btn{ 
     outline: none;
     background: var(--ion-color-secondary);

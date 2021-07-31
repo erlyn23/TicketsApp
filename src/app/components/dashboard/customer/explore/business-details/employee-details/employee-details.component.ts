@@ -39,6 +39,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     isInTurn: boolean = false; 
 
     reserveDate: string = (new Date()).toISOString();
+    reserveHour: string = (new Date()).toISOString();
     serviceKey: string = "";
 
     comment: string;
@@ -162,7 +163,11 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         actualDate.setHours(0,0,0,0);
         sendedDate.setHours(0,0,0,0);
 
-        if(sendedDate < actualDate) await this.utilityService.presentToast('La fecha debe ser igual o adelantada a la de hoy', 'error-toast');
+        const actualHour = new Date();
+        const sendedHour = new Date(this.reserveHour);
+
+
+        if(sendedDate < actualDate || sendedHour < actualHour) await this.utilityService.presentToast('La fecha y la hora deben ser iguales o adelantadas a la de hoy', 'error-toast');
         else if(this.serviceKey.length === 0) await this.utilityService.presentToast('Debes elegir un servicio', 'error-toast');
         else{
             await this.utilityService.presentLoading();
@@ -178,6 +183,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
                     clientPhoto: clientPhoto,
                     employeeKey: this.data.key,
                     reserveDate: this.reserveDate,
+                    reserveHour: this.reserveHour,
                     businessName: this.utilityService.getBusinessName(),
                     turnNum: businessPreviousQuantity + 1,
                     businessKey: this.additionalKey,

@@ -6,6 +6,7 @@ export interface ITurn{
     employeeKey: string;
     employeeName: string;
     reserveDate: string;
+    reserveHour: string;
     businessName: string;
     turnNum: number;
     businessKey: string;

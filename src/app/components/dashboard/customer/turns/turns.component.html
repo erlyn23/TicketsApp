@@ -18,6 +18,7 @@
                 <div><b>Servicio:</b> {{services[i]?.service}}</div>
                 <div><b>Precio:</b> RD${{services[i]?.price}}</div>
                 <div><b>Fecha:</b> {{turn.reserveDate | date:'dd/MM/YYYY'}}</div>
+                <div><b>Hora:</b> {{turn.reserveHour | date:'h:mm a'}}</div>
                 <div>
                     <ion-button fill="clear" color="primary" (click)="goToBusinessDetails(turn.businessKey)"> 
                         <ion-icon name="eye-outline" slot="icon-only"></ion-icon>
