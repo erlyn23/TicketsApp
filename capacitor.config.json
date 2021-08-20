@@ -1,6 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "TicketsApp",
+  "appId": "com.tecnocorp.tuturnord",
+  "appName": "TuTurnoRD",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

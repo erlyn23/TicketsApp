@@ -1,4 +1,4 @@
-package io.ionic.starter;
+package com.tecnocorp.tuturnord;
 
 import android.os.Bundle;
 
