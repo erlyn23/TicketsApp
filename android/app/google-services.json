@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "899090511952",
+    "firebase_url": "https://tuturnord-85d8f-default-rtdb.firebaseio.com",
+    "project_id": "tuturnord-85d8f",
+    "storage_bucket": "tuturnord-85d8f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899090511952:android:3571d3b1a4be7ce5943955",
+        "android_client_info": {
+          "package_name": "com.tecnocorp.tuturnord"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "899090511952-f74evqo8t7d0k14hkm6k0r0f2rqvkn4g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tecnocorp.tuturnord",
+            "certificate_hash": "f96c0efb534423d7169ee5042a0ccc2e378dce4a"
+          }
+        },
+        {
+          "client_id": "899090511952-9aj6oat14qeij7tcetg9tho7agluo95p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9CqqyFuSZONSwcFOYY5QDRoNkhqHbzEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "899090511952-9aj6oat14qeij7tcetg9tho7agluo95p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
