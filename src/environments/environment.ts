@@ -12,6 +12,14 @@ export const environment = {
     messagingSenderId: "1066585980356",
     appId: "1:1066585980356:web:d0e5ce67f4e58d04097891"
   },
+  firebaseConfigProd:{
+    apiKey: "AIzaSyC7ObVf0qluPJFUWnu6UFJ8UDeIdUvggmk",
+    authDomain: "tuturnord-85d8f.firebaseapp.com",
+    projectId: "tuturnord-85d8f",
+    storageBucket: "tuturnord-85d8f.appspot.com",
+    messagingSenderId: "899090511952",
+    appId: "1:899090511952:web:8024c9140df54a3d943955"
+  },
   mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw',
   clientId: '1066585980356-ce1gmva74c90bda3p03ce8g9ru81cjto.apps.googleusercontent.com',
   sendMail: 'https://tuturnord.herokuapp.com/api/send-problem'

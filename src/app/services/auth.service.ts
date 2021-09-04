@@ -92,13 +92,18 @@ export class AuthService {
   }
 
   async facebookLogin(){
-    if(this.platform.is('android')){
-      await this.utilityService.presentLoading();
-      const res: FacebookLoginResponse = await this.facebook.login(['public_profile', 'email']);
-      const facebookCrendential = firebase.default.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
-      await this.signInWithFacebook(facebookCrendential);
-    }else{
-      this.socialSignIn(new firebase.default.auth.FacebookAuthProvider());
+    try{
+      if(this.platform.is('android')){
+        await this.utilityService.presentLoading();
+        const res: FacebookLoginResponse = await this.facebook.login(['public_profile', 'email']);
+        const facebookCrendential = firebase.default.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+        await this.signInWithFacebook(facebookCrendential);
+      }else{
+        this.socialSignIn(new firebase.default.auth.FacebookAuthProvider());
+      }
+    }catch(error){
+      this.utilityService.closeLoading();
+      console.log(error);
     }
   }
 
@@ -106,24 +111,33 @@ export class AuthService {
     await this.angularFireAuth.signInWithCredential(credential).then(result=>{
       this.socialSignInLogic(result);
       this.utilityService.closeLoading();
+    }).catch(error=>{
+      this.utilityService.closeLoading();
+      console.log(error);
     });
   }
   
   async googleLogin(){
 
-    if(this.platform.is('android')){
-      await this.utilityService.presentLoading();
-      await this.googlePlus.login({
-        'webClientId': environment.clientId,
-        'offline': true
-      }).then(async res=>{
-        await this.signInWithGoogle(res);
-      }).catch(err=>{
-        this.utilityService.closeLoading();
-      });
-    }else{
-      const provider = new firebase.default.auth.GoogleAuthProvider();
-      await this.socialSignIn(provider);
+    try{
+      if(this.platform.is('android')){
+        await this.utilityService.presentLoading();
+        await this.googlePlus.login({
+          'webClientId': environment.clientId,
+          'offline': true
+        }).then(async res=>{
+          await this.signInWithGoogle(res);
+        }).catch(err=>{
+          this.utilityService.closeLoading();
+          console.log(err);
+        });
+      }else{
+        const provider = new firebase.default.auth.GoogleAuthProvider();
+        await this.socialSignIn(provider);
+      }
+    }catch(error){
+      console.log(error);
+      this.utilityService.closeLoading();
     }
   } 
 
@@ -140,6 +154,9 @@ export class AuthService {
   async socialSignIn(provider){
     await this.angularFireAuth.signInWithPopup(provider).then(async result=>{
       await this.socialSignInLogic(result);
+    }).catch(error=>{
+      console.log(error);
+      this.utilityService.closeLoading();
     });
   }
 
