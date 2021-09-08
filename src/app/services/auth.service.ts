@@ -104,6 +104,10 @@ export class AuthService {
     }catch(error){
       this.utilityService.closeLoading();
       console.log(error);
+      this.angularFireDatabase.database.ref('logs').push({
+        logDate: new Date().toISOString(),
+        errorMessage: error
+      });
     }
   }
 
@@ -114,6 +118,10 @@ export class AuthService {
     }).catch(error=>{
       this.utilityService.closeLoading();
       console.log(error);
+      this.angularFireDatabase.database.ref('logs').push({
+        logDate: new Date().toISOString(),
+        errorMessage: error
+      });
     });
   }
   
@@ -123,7 +131,7 @@ export class AuthService {
       if(this.platform.is('android')){
         await this.utilityService.presentLoading();
         await this.googlePlus.login({
-          'webClientId': environment.clientId,
+          'webClientId': environment.clientIdProd,
           'offline': true
         }).then(async res=>{
           await this.signInWithGoogle(res);
@@ -137,6 +145,10 @@ export class AuthService {
       }
     }catch(error){
       console.log(error);
+      this.angularFireDatabase.database.ref('logs').push({
+        logDate: new Date().toISOString(),
+        errorMessage: error
+      });
       this.utilityService.closeLoading();
     }
   } 
@@ -148,6 +160,10 @@ export class AuthService {
       this.utilityService.closeLoading();
     }).catch(async err=>{
       this.utilityService.closeLoading();
+      this.angularFireDatabase.database.ref('logs').push({
+        logDate: new Date().toISOString(),
+        errorMessage: err
+      });
     });
   }
 

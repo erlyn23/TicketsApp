@@ -22,6 +22,7 @@ export const environment = {
   },
   mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw',
   clientId: '1066585980356-ce1gmva74c90bda3p03ce8g9ru81cjto.apps.googleusercontent.com',
+  clientIdProd: '899090511952-9aj6oat14qeij7tcetg9tho7agluo95p.apps.googleusercontent.com',
   sendMail: 'https://tuturnord.herokuapp.com/api/send-problem'
 };
 
