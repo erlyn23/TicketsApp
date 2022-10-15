@@ -167,7 +167,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         const sendedHour = new Date(this.reserveHour);
 
 
-        if(sendedDate < actualDate || sendedHour < actualHour) await this.utilityService.presentToast('La fecha y la hora deben ser iguales o adelantadas a la de hoy', 'error-toast');
+        if(sendedDate < actualDate && sendedHour < actualHour) await this.utilityService.presentToast('La fecha y la hora deben ser iguales o adelantadas a la de hoy', 'error-toast');
         else if(this.serviceKey.length === 0) await this.utilityService.presentToast('Debes elegir un servicio', 'error-toast');
         else{
             await this.utilityService.presentLoading();
