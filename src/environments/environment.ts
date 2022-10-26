@@ -5,8 +5,9 @@
 export const environment = {
   production: false,
   firebaseConfig: {
-    apiKey: "AIzaSyDLaGNjn1d2oy0D66WsJphtDZV7cojwNK8",
+    apiKey: "AIzaSyA1d1ZjrTpY-gbbrOzjphM7u5furLH7nrQ",
     authDomain: "miturnitord-a5afd.firebaseapp.com",
+    databaseURL: "https://miturnitord-a5afd-default-rtdb.firebaseio.com",
     projectId: "miturnitord-a5afd",
     storageBucket: "miturnitord-a5afd.appspot.com",
     messagingSenderId: "1066585980356",

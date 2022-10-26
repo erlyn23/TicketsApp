@@ -93,14 +93,14 @@ export class AuthService {
 
   async facebookLogin(){
     try{
-      if(this.platform.is('android')){
-        await this.utilityService.presentLoading();
-        const res: FacebookLoginResponse = await this.facebook.login(['public_profile', 'email']);
-        const facebookCrendential = firebase.default.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
-        await this.signInWithFacebook(facebookCrendential);
-      }else{
+      // if(this.platform.is('android')){
+      //   await this.utilityService.presentLoading();
+      //   const res: FacebookLoginResponse = await this.facebook.login(['public_profile', 'email']);
+      //   const facebookCrendential = firebase.default.auth.FacebookAuthProvider.credential(res.authResponse.accessToken);
+      //   await this.signInWithFacebook(facebookCrendential);
+      // }else{
         this.socialSignIn(new firebase.default.auth.FacebookAuthProvider());
-      }
+      //}
     }catch(error){
       this.utilityService.closeLoading();
       console.log(error);
@@ -128,21 +128,21 @@ export class AuthService {
   async googleLogin(){
 
     try{
-      if(this.platform.is('android')){
-        await this.utilityService.presentLoading();
-        await this.googlePlus.login({
-          'webClientId': environment.clientIdProd,
-          'offline': true
-        }).then(async res=>{
-          await this.signInWithGoogle(res);
-        }).catch(err=>{
-          this.utilityService.closeLoading();
-          console.log(err);
-        });
-      }else{
+      // if(this.platform.is('android')){
+      //   await this.utilityService.presentLoading();
+      //   await this.googlePlus.login({
+      //     'webClientId': environment.clientId,
+      //     'offline': true
+      //   }).then(async res=>{
+      //     await this.signInWithGoogle(res);
+      //   }).catch(err=>{
+      //     this.utilityService.closeLoading();
+      //     console.log(err);
+      //   });
+      // }else{
         const provider = new firebase.default.auth.GoogleAuthProvider();
         await this.socialSignIn(provider);
-      }
+      // }
     }catch(error){
       console.log(error);
       this.angularFireDatabase.database.ref('logs').push({
