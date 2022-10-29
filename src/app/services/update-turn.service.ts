@@ -11,14 +11,14 @@ export class UpdateTurnService {
 
     }
 
-    public updateTurn(turns: ITurn[], businessKey){
-        this.repositoryService.deleteElement(`clientsInTurn/${businessKey}`).then(()=>{
+    public updateTurn(turns: ITurn[], businessKey: string, dateKey: string){
+        this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${dateKey}`).then(()=>{
             turns.forEach((turn, index) =>{
                 let turnNum = index + 1;
                 turn.key = `${turnNum}`;
                 turn.turnNum = turnNum;
         
-                this.repositoryService.setElement(`clientsInTurn/${businessKey}/${turnNum}`, turn);
+                this.repositoryService.setElement(`clientsInTurn/${businessKey}/${dateKey}/${turnNum}`, turn);
             });
         });
     }

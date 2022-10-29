@@ -19,7 +19,7 @@
         </ion-segment-button>
     </ion-segment>
     
-    <ion-slides [options]="slideOpts" #slideCtrl (ionSlideDidChange)="setSegment($event)" pager="false">
+    <ion-slides #slideCtrl (ionSlideDidChange)="setSegment($event)" pager="false">
         <ion-slide>
             <ion-list>
                 <ion-item lines="none">

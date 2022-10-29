@@ -18,7 +18,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class BHomeComponent implements OnInit, OnDestroy {
   turnRef: AngularFireObject<ITurn>;
   turn$: Subscription;
-  turns: ITurn[] = [];
+  turns: {} = {};
+  dateKeys: string[] = [];
 
   businessKey: string;
 
@@ -52,10 +53,14 @@ export class BHomeComponent implements OnInit, OnDestroy {
     this.turn$ = this.turnRef.snapshotChanges().subscribe(result=>{
       const data = result.payload.val();
 
-      this.turns = [];
-      for(let turnKey in data){
-        data[turnKey].key = turnKey;
-        this.turns.push(data[turnKey]);
+      this.dateKeys = [];
+      for(let dateKey in data){
+        this.dateKeys.push(dateKey);
+        this.turns[dateKey] = []; 
+        for(let turnKey in data[dateKey]){
+          data[dateKey][turnKey].key = turnKey;
+          this.turns[dateKey].push(data[dateKey][turnKey]);
+        }
       }
     });
   }
@@ -69,15 +74,16 @@ export class BHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  async toggleReorder(){
-    const reorderParent = document.getElementById('reorder-parent');
+  async toggleReorder(index:number){
+    const reorderParent = document.getElementById(`reorder-parent-${index}`);
 
-    if(reorderParent.attributes[2].value === 'true'){
-      document.getElementById('toggle-icon').setAttribute('name', 'close-circle-outline');
+    const disabledAttributeIndex = Array.from(reorderParent.attributes).findIndex(a => a.name === 'disabled');
+    if(reorderParent.attributes[disabledAttributeIndex].value === 'true'){
+      document.getElementById(`toggle-icon-${index}`).setAttribute('name', 'close-circle-outline');
       reorderParent.setAttribute('disabled', 'false');
       await this.utilityService.presentToast('Arrastra los elementos para ordenarlos', 'success-toast');
     }else{
-      document.getElementById('toggle-icon').setAttribute('name', 'reorder-three-outline');
+      document.getElementById(`toggle-icon-${index}`).setAttribute('name', 'reorder-three-outline');
       reorderParent.setAttribute('disabled', 'true');
     }
   }
@@ -117,23 +123,23 @@ export class BHomeComponent implements OnInit, OnDestroy {
         this.repositoryService.updateElement(`businessList/${this.businessKey}/employees/${turn.employeeKey}`,{
           clientsInTurn: employeePreviousQuantity - 1
         }).then(async ()=>{
-          await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.key}`);
-          this.updateClientTurn();
+          await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.dateKey}/${turn.key}`);
+          this.updateClientTurn(turn.dateKey);
           this.utilityService.closeLoading();
         });
       });
     });
   }
 
-  reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
-    this.turns = ev.detail.complete(this.turns);
+  reorderTurns(ev: CustomEvent<ItemReorderEventDetail>, dateKey: string) {
+    this.turns[dateKey] = ev.detail.complete(this.turns[dateKey]);
     
-    this.updateClientTurn();
+    this.updateClientTurn(dateKey);
   }
 
-  updateClientTurn(){
-    const tempTurns = this.turns;
-    this.updateTurnService.updateTurn(tempTurns, this.businessKey);
+  updateClientTurn(dateKey: string){
+    const tempTurns = this.turns[dateKey];
+    this.updateTurnService.updateTurn(tempTurns, this.businessKey, dateKey);
   }
 
   async updateBusinessStatus(ev){

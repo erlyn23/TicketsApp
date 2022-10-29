@@ -21,6 +21,14 @@ export const environment = {
     messagingSenderId: "899090511952",
     appId: "1:899090511952:web:8024c9140df54a3d943955"
   },
+  firebaseConfigDev: {
+    apiKey: "AIzaSyB6KtrgvmtEK26U2UJXozgq89V6Bsyv3FE",
+    authDomain: "tuturnorddev.firebaseapp.com",
+    projectId: "tuturnorddev",
+    storageBucket: "tuturnorddev.appspot.com",
+    messagingSenderId: "211210531678",
+    appId: "1:211210531678:web:0e59e05f891a5f25a755cf"
+  },
   mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw',
   clientId: '1066585980356-ce1gmva74c90bda3p03ce8g9ru81cjto.apps.googleusercontent.com',
   clientIdProd: '899090511952-9aj6oat14qeij7tcetg9tho7agluo95p.apps.googleusercontent.com',

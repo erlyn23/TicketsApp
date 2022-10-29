@@ -19,31 +19,36 @@
     </div>
     <div class="title-bar">
         <span>Listado de turnos</span>
-        <button class="toggle-order-button" (click)="toggleReorder()">
-            <ion-icon id="toggle-icon" slot="icon-only" name="reorder-three-outline"></ion-icon>
-        </button>  
     </div>
     <ion-list style="background: var(--ion-color-primary-contrast);">
-        <ion-reorder-group #turnsReorder id="reorder-parent" (ionItemReorder)="reorderTurns($event)" disabled="true">
-            <ion-reorder *ngFor="let turn of turns, let i = index">
-                <ion-item lines="none">
-                    <ion-thumbnail>
-                        <img src="../../../../../assets/icon/Recurso12.png" class="avatar"
-                                alt="" *ngIf="turn.clientPhoto === undefined">
-                        <img [src]="turn.clientPhoto" class="avatar"
-                                alt="" *ngIf="turn.clientPhoto !== undefined">
-                    </ion-thumbnail>
-                    <ion-label>
-                        <span class="client-name">{{turn.clientName}} <span>#{{turn.turnNum}}</span></span>
-                        <div>{{turn.employeeName}}</div>
-                        <div><small>{{turn.reserveDate | date:'dd/MM/YYYY'}} {{turn.reserveHour | date:'h:mm a'}}</small></div>
-                    </ion-label>
-                    <ion-button size="large" fill="clear" style="color: var(--ion-color-danger);" (click)="openCancelTurn(turn)">
-                        <ion-icon slot="icon-only" name="close-circle"></ion-icon>
-                    </ion-button>
-                </ion-item>
-            </ion-reorder>
-        </ion-reorder-group>
+        <div *ngFor="let dateKey of dateKeys, let i = index">
+            <ion-item color="primary">
+                <ion-label>{{dateKey[0]}}{{dateKey[1]}} / {{dateKey[2]}}{{dateKey[3]}} / {{dateKey[4]}}{{dateKey[5]}}{{dateKey[6]}}{{dateKey[7]}}</ion-label>
+                <button class="toggle-order-button" (click)="toggleReorder(i)">
+                    <ion-icon id="toggle-icon-{{i}}" slot="icon-only" name="reorder-three-outline"></ion-icon>
+                </button>  
+            </ion-item>
+            <ion-reorder-group id="reorder-parent-{{i}}" (ionItemReorder)="reorderTurns($event, dateKey)" disabled="true">
+                <ion-reorder *ngFor="let turn of turns[dateKey], let i = index">
+                    <ion-item lines="none">
+                        <ion-thumbnail>
+                            <img src="../../../../../assets/icon/Recurso12.png" class="avatar"
+                                    alt="" *ngIf="turn.clientPhoto === undefined">
+                            <img [src]="turn.clientPhoto" class="avatar"
+                                    alt="" *ngIf="turn.clientPhoto !== undefined">
+                        </ion-thumbnail>
+                        <ion-label>
+                            <span class="client-name">{{turn.clientName}} <span>#{{turn.turnNum}}</span></span>
+                            <div>{{turn.employeeName}}</div>
+                            <div><small>{{turn.reserveDate | date:'dd/MM/YYYY'}} {{turn.reserveHour | date:'h:mm a'}}</small></div>
+                        </ion-label>
+                        <ion-button size="large" fill="clear" style="color: var(--ion-color-danger);" (click)="openCancelTurn(turn)">
+                            <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+                        </ion-button>
+                    </ion-item>
+                </ion-reorder>
+            </ion-reorder-group>
+        </div>
     </ion-list>
     
 </ion-content> 
