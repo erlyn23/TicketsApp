@@ -27,12 +27,14 @@ export const environment = {
     projectId: "tuturnorddev",
     storageBucket: "tuturnorddev.appspot.com",
     messagingSenderId: "211210531678",
-    appId: "1:211210531678:web:0e59e05f891a5f25a755cf"
+    appId: "1:211210531678:web:0e59e05f891a5f25a755cf",
+    vapidKey: "BBBWctkG0_J5h_nAzzPXITLBEvho31ICHGEiqPyxhzkcAGQG3YE7TXgKrj5i03u2AUoMxNjcgFgiVOQbQmlMjd4"
   },
   mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw',
   clientId: '1066585980356-ce1gmva74c90bda3p03ce8g9ru81cjto.apps.googleusercontent.com',
   clientIdProd: '899090511952-9aj6oat14qeij7tcetg9tho7agluo95p.apps.googleusercontent.com',
-  sendMail: 'https://tuturnord.herokuapp.com/api/send-problem'
+  sendMail: 'https://tuturnord.herokuapp.com/api/send-problem',
+  sendNotification: 'https://tuturnord.herokuapp.com/api/send-notification'
 };
 
 /*

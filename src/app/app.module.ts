@@ -19,6 +19,7 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { Ng2ImgMaxModule } from 'ng2-img-max';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +33,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     AngularFireDatabaseModule,
     AngularFireAuthModule,
     AngularFireStorageModule,
+    AngularFireMessagingModule,
     Ng2ImgMaxModule,
     HttpClientModule,
     ServiceWorkerModule.register('ngsw-worker.js', {

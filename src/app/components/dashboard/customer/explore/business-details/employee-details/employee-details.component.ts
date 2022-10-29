@@ -5,10 +5,12 @@ import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import { IEmployeeComments } from 'src/app/core/models/employee-comments.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
+import { INotificationBody } from 'src/app/core/models/notification-body.interface';
 import { IServices } from 'src/app/core/models/services.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { RepositoryService } from 'src/app/services/repository.service';
 import { UpdateTurnService } from 'src/app/services/update-turn.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -31,6 +33,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     objectRef: AngularFireObject<IEmployee>;
     servicesRef: AngularFireObject<IServices>;
     userRef: AngularFireObject<IUser>;
+    businessRef: AngularFireObject<IBusiness>;
 
     dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: [], employeeSpecialty: ''};
     services: IServices[] = [];
@@ -52,9 +55,11 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
     private servicesRepoService: RepositoryService<IServices>,
+    private businessRepository: RepositoryService<IBusiness>,
     private updateTurnService: UpdateTurnService,
     private utilityService: UtilityService,
     private angularFireDatabase: AngularFireDatabase,
+    private notificationService: NotificationService,
     private authService: AuthService){
     }
 
@@ -215,6 +220,19 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
                         }).then(async ()=>{
                             await this.utilityService.presentToast('Turno reservado correctamente', 'success-toast');
                             this.utilityService.closeLoading();
+
+                            this.businessRef = this.businessRepository.getAllElements(`businessList/${this.additionalKey}`);
+                            const business$ = this.businessRef.valueChanges().subscribe(business => {
+                                const notification: INotificationBody = {
+                                    token: business.notificationToken,
+                                    notification: {
+                                        title: 'Nuevo turno reservado en su negocio',
+                                        body: 'Un cliente ha reservado un turno en tu negocio'
+                                    }
+                                };
+                                this.notificationService.sendNotification(notification);
+                                business$.unsubscribe();
+                            });
                         });
                     }).catch(async err=>{
                         this.angularFireDatabase.database.ref('logs').push({
@@ -313,17 +331,14 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
     turns: ITurn[] =[];
     updateTurns(dateKey: string){
-        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${this.additionalKey}`);
+        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${this.additionalKey}/${dateKey}`);
         const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
             const data = result.payload.val();
-            for(let dateKey in data){
-                for(let turnKey in data[dateKey]){
-                        
-                    data[dateKey][turnKey].key = turnKey;
-                    this.turns.push(data[dateKey][turnKey]);
-                }
+            for(let turnKey in data){
+                    
+                data[turnKey].key = turnKey;
+                this.turns.push(data[turnKey]);
             }
-
             turns$.unsubscribe();
             const tempTurns = this.turns;
             

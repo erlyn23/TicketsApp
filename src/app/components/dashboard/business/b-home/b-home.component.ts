@@ -1,11 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireObject } from '@angular/fire/database';
+import { AngularFireMessaging } from '@angular/fire/messaging';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
+import { INotificationBody } from 'src/app/core/models/notification-body.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { RepositoryService } from 'src/app/services/repository.service';
 import { UpdateTurnService } from 'src/app/services/update-turn.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -18,6 +21,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class BHomeComponent implements OnInit, OnDestroy {
   turnRef: AngularFireObject<ITurn>;
   turn$: Subscription;
+  notification$: Subscription;
   turns: {} = {};
   dateKeys: string[] = [];
 
@@ -32,21 +36,24 @@ export class BHomeComponent implements OnInit, OnDestroy {
     clientsInTurn: 0,
     employees: [],
     long: 0,
-    latitude: 0,
+    latitude: 0
   };
   profilePhoto: string;
   constructor(private authService: AuthService, 
     private repositoryService: RepositoryService<any>,
     private updateTurnService: UpdateTurnService,
-    private utilityService: UtilityService) { }
+    private utilityService: UtilityService,
+    private notificationService: NotificationService) { }
 
   ngOnInit() {
     const user = this.authService.userData;
     this.businessKey = user.uid;
-
+    
     this.getTurns();
     this.getBusiness();
+    this.notificationService.requestNotification(this.businessKey);
   }
+
 
   getTurns(){
     this.turnRef = this.repositoryService.getAllElements(`clientsInTurn/${this.businessKey}`);

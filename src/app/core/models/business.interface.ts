@@ -12,4 +12,5 @@ export interface IBusiness{
     businessPhoto: string;
     employees: IEmployee[];
     isOpened: boolean;
+    notificationToken?: string;
 }
