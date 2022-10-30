@@ -26,6 +26,9 @@ import { UpdateServiceComponent } from './business/services/update-service/updat
 import { TurnsComponent } from './customer/turns/turns.component';
 import { EditAccountComponent } from './customer/profile/edit-account/edit-account.component';
 import { HelpComponent } from './customer/profile/help/help.component';
+import { LimitsComponent } from './business/limits/limits.component';
+import { AddLimitComponent } from './business/limits/add-limit/add-limit.component';
+import { UpdateLimitComponent } from './business/limits/update-limit/update-limit.component';
 
 @NgModule({
   imports: [
@@ -46,6 +49,9 @@ import { HelpComponent } from './customer/profile/help/help.component';
     AddEmployeeComponent,
     UpdateEmployeeComponent,
     ServicesComponent,
+    LimitsComponent,
+    AddLimitComponent,
+    UpdateLimitComponent,
     AddServiceComponent,
     UpdateServiceComponent,
     BEmployeeDetailsComponent,

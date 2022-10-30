@@ -1,0 +1,24 @@
+<ion-header>
+  <ion-toolbar color="primary">
+      <ion-buttons slot="start">
+          <ion-button (click)="closeWindow()">
+              <ion-icon slot="start" name="arrow-back"></ion-icon>
+          </ion-button>
+      </ion-buttons>
+      <ion-title>Modificar límite</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="turnLimitForm">
+    <ion-item>
+      <ion-label>Fecha</ion-label>
+      <ion-datetime display-format="DD/MM/YYYY" 
+        formControlName="limitDate"
+        doneText="Aceptar" 
+        cancelText="Cancelar"></ion-datetime>
+    </ion-item>
+    <input type="text" class="auth-input" formControlName="limitQuantity" placeholder="Límite de turnos">
+    <button class="auth-btn" (click)="saveChanges()">Guardar cambios</button>
+  </form>
+</ion-content>

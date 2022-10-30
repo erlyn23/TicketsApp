@@ -21,10 +21,6 @@
         <span>Listado de turnos</span>
     </div>
     <ion-list style="background: var(--ion-color-primary-contrast);">
-        <form>
-            <ion-label color="primary">Límite de turnos de hoy:</ion-label>
-            <input type="text" class="auth-input" [(ngModel)]="turnLimit" (change)="setDiaryTurnLimit($event)" name="turnLimit" placeholder="Turnos máximos">
-        </form>
         <div *ngFor="let dateKey of dateKeys, let i = index">
             <ion-item color="primary">
                 <ion-label>{{dateKey[0]}}{{dateKey[1]}} / {{dateKey[2]}}{{dateKey[3]}} / {{dateKey[4]}}{{dateKey[5]}}{{dateKey[6]}}{{dateKey[7]}}</ion-label>

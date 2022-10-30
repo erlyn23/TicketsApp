@@ -7,6 +7,7 @@ import { IEmployeeComments } from 'src/app/core/models/employee-comments.interfa
 import { IEmployee } from 'src/app/core/models/employee.interface';
 import { INotificationBody } from 'src/app/core/models/notification-body.interface';
 import { IServices } from 'src/app/core/models/services.interface';
+import { ITurnLimit } from 'src/app/core/models/turn-limit.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { IUser } from 'src/app/core/models/user.interface';
 import { AuthService } from 'src/app/services/auth.service';
@@ -33,6 +34,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     objectRef: AngularFireObject<IEmployee>;
     servicesRef: AngularFireObject<IServices>;
     userRef: AngularFireObject<IUser>;
+    turnLimitRef: AngularFireObject<ITurnLimit>;
     businessRef: AngularFireObject<IBusiness>;
 
     dbEmployee: IEmployee = {rating: 0, fullName: '', clientsInTurn: 0, comments: [], employeeSpecialty: ''};
@@ -40,7 +42,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
     userUid: string;
     isInTurn: boolean = false; 
-    turnsLimit: number = 0;
+    turnsLimit:  ITurnLimit[] = [];
 
     reserveDate: string = (new Date()).toISOString();
     reserveHour: string = (new Date()).toISOString();
@@ -57,6 +59,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     constructor(private utilityServie: UtilityService,
     private repositoryService: RepositoryService<IEmployee>,
     private servicesRepoService: RepositoryService<IServices>,
+    private turnLimitRepository: RepositoryService<ITurnLimit>,
     private businessRepository: RepositoryService<IBusiness>,
     private updateTurnService: UpdateTurnService,
     private utilityService: UtilityService,
@@ -109,9 +112,14 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     }
 
     getTurnsLimit(){
-        this.businessRef = this.businessRepository.getAllElements(`businessList/${this.additionalKey}`);
-        this.turnLimitSubscription = this.businessRef.valueChanges().subscribe(business => {
-            this.turnsLimit = (business.turnDiaryLimit) ? parseInt(business.turnDiaryLimit.toString()) : 0;
+        this.turnLimitRef = this.turnLimitRepository.getAllElements(`businessList/${this.additionalKey}/turnLimits`);
+        this.turnLimitSubscription = this.turnLimitRef.snapshotChanges().subscribe(result => {
+            const data = result.payload.val();
+
+            this.turnsLimit = [];
+            for(let turnLimitKey in data)
+                this.turnsLimit.push(data[turnLimitKey]);
+            
         });
     }
 
@@ -194,12 +202,10 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         const actualHour = new Date();
         const sendedHour = new Date(this.reserveHour);
 
+        const turnLimit = this.turnsLimit.filter(p => (new Date(p.limitDate).getDate() === sendedDate.getDate() && new Date(p.limitDate).getMonth() === sendedDate.getMonth() && new Date(p.limitDate).getFullYear() === sendedDate.getFullYear()))[0];
+        const turnLimitQuantity = (turnLimit) ? turnLimit.limitQuantity : businessPreviousQuantity + 2;
 
-        const isToday = (actualDate.getDate() == sendedDate.getDate() 
-        && actualDate.getMonth() == sendedDate.getMonth() 
-        && actualDate.getFullYear() == sendedDate.getFullYear())
-
-        if(isToday && businessPreviousQuantity + 1 > this.turnsLimit) await this.utilityService.presentToast('Ya no se pueden reservar más turnos en este negocio', 'error-toast');
+        if((businessPreviousQuantity + 1) > turnLimitQuantity) await this.utilityService.presentToast('Ese día alcanzó el máximo de turnos en este negocio', 'error-toast');
         else if(sendedDate < actualDate && sendedHour < actualHour) await this.utilityService.presentToast('La fecha y la hora deben ser iguales o adelantadas a la de hoy', 'error-toast');
         else if(this.serviceKey.length === 0) await this.utilityService.presentToast('Debes elegir un servicio', 'error-toast');
         else{

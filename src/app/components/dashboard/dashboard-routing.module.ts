@@ -4,6 +4,7 @@ import { AuthGuard } from 'src/app/core/guards/auth.guard';
 import { BHomeComponent } from './business/b-home/b-home.component';
 import { BProfileComponent } from './business/b-profile/b-profile.component';
 import { EmployeesComponent } from './business/employees/employees.component';
+import { LimitsComponent } from './business/limits/limits.component';
 import { ServicesComponent } from './business/services/services.component';
 import { ExploreComponent } from './customer/explore/explore.component';
 import { FavouritesComponent } from './customer/favourites/favourites.component';
@@ -59,9 +60,15 @@ const routes: Routes = [
         path: 'b-profile',
         canActivate: [AuthGuard],
         component: BProfileComponent
+      },
+      {
+        path: 'limits',
+        canActivate: [AuthGuard],
+        component: LimitsComponent
       }
     ]
   }
+
 ];
 
 @NgModule({

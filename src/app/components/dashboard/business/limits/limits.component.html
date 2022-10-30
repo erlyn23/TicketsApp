@@ -1,0 +1,27 @@
+<ion-content>
+  <div class="title-bar">
+    <span>Límite de turnos por día</span>
+  </div>
+  <ion-list>
+    <ion-item lines="none" *ngFor="let limit of turnLimits, let i = index">
+      <ion-label style="text-align: center;">
+        <ion-title><b>Fecha:</b> {{limit.limitDate | date:'dd/MM/YYYY' }}</ion-title>
+        <div>
+          <p><b>Máximo de turnos:</b> {{limit.limitQuantity}}</p>
+        </div>
+      </ion-label>
+      <ion-button fill="clear" style="color: var(--ion-color-primary)" (click)="openUpdateTurnLimitModal(limit)">
+        <ion-icon slot="icon-only" name="create"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" style="color: var(--ion-color-danger)" (click)="openDeleteConfirm(limit)">
+        <ion-icon slot="icon-only" name="trash"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="secondary" (click)="openAddTurnLimitModal()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

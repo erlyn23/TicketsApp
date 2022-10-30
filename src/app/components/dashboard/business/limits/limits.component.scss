@@ -1,0 +1,12 @@
+ion-list{
+    background: var(--ion-color-primary-contrast);
+    ion-item{
+        --background: white;
+        margin: 10px;
+        border-radius: 10px;
+        box-shadow: 3px 3px 5px 3px lightgray;
+    }
+}
+.button-clear{
+    color: var(--ion-color-primary-contrast);
+}

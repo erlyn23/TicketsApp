@@ -1,4 +1,5 @@
 import { IEmployee } from "./employee.interface";
+import { ITurnLimit } from "./turn-limit.interface";
 
 export interface IBusiness{
     key?: string;
@@ -10,6 +11,7 @@ export interface IBusiness{
     clientsInTurn: number;
     businessPhoto: string;
     employees: IEmployee[];
+    turnLimits: ITurnLimit[];
     isOpened: boolean;
     notificationToken?: string;
     turnDiaryLimit?: number;

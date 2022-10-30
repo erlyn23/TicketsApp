@@ -24,7 +24,6 @@ export class BHomeComponent implements OnInit, OnDestroy {
   notification$: Subscription;
   turns: {} = {};
   dateKeys: string[] = [];
-  turnLimit: number;
 
   businessKey: string;
 
@@ -36,6 +35,7 @@ export class BHomeComponent implements OnInit, OnDestroy {
     closeTime: '',
     clientsInTurn: 0,
     employees: [],
+    turnLimits: [],
     long: 0,
     latitude: 0
   };
@@ -78,7 +78,6 @@ export class BHomeComponent implements OnInit, OnDestroy {
     const businessStatus$ = businessStatus.valueChanges().subscribe(result=>{
       this.business = result;
       this.profilePhoto = result.businessPhoto;
-      this.turnLimit = (result.turnDiaryLimit) ? result.turnDiaryLimit : undefined;
       businessStatus$.unsubscribe();
     });
   }
@@ -170,20 +169,7 @@ export class BHomeComponent implements OnInit, OnDestroy {
       isOpened: this.business.isOpened
     });
   }
-
-  async setDiaryTurnLimit(ev){
-    if(ev.target.value !== ""){
-      this.repositoryService.updateElement(`businessList/${this.businessKey}`, {
-        turnDiaryLimit: ev.target.value
-      }).then(async () => {
-        await this.utilityService.presentToast('Cambios guardados correctamente', 'success-toast');
-      });
-    } else{
-      this.repositoryService.deleteElement(`businessList/${this.businessKey}/turnDiaryLimit`);
-      await this.utilityService.presentToast('Debes escribir una cantidad', 'error-toast');
-    }
-  }
-
+  
   ngOnDestroy(){
     this.turn$.unsubscribe();
   }

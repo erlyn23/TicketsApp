@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="closeWindow">
+        <ion-icon slot="start" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Agregar límite de turnos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+  <form>
+      <ion-item>
+        <ion-label>Fecha</ion-label>
+        <ion-datetime display-format="DD/MM/YYYY" 
+        [(ngModel)]="limitDate" name="limitDate"
+        doneText="Aceptar" 
+        cancelText="Cancelar"></ion-datetime>
+      </ion-item>
+      <input type="text" class="auth-input" [(ngModel)]="limitQuantity" name="limitQuantity" placeholder="Límite de turnos">
+      <button type="button" class="auth-btn" (click)="saveTurnLimit()">Agregar</button>
+  </form>
+</ion-content>
