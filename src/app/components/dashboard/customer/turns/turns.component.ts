@@ -112,7 +112,7 @@ export class TurnsComponent implements OnInit, OnDestroy{
     searchBusinessToUnreserveTurn(employeeKey: string, turnKey: string, businessKey:string, dateKey: string)
     {
         const previousQuantities: number[] = [];
-        const businessObject: AngularFireObject<IBusiness> = this.businessRepoService.getAllElements(`businessList/${dateKey}/${businessKey}`);
+        const businessObject: AngularFireObject<IBusiness> = this.businessRepoService.getAllElements(`businessList/${businessKey}`);
         const business$ = businessObject.valueChanges().subscribe(result=>{
             previousQuantities.push(result.clientsInTurn);
             this.searchEmployeeToUnreserveTurn(employeeKey, previousQuantities, turnKey, businessKey, dateKey);
@@ -148,22 +148,18 @@ export class TurnsComponent implements OnInit, OnDestroy{
         });
     }
 
-    turnsToUpdate: ITurn[] = [];
+
     updateTurns(businessKey:string, dateKey:string){
-        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${businessKey}`);
+        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${businessKey}/${dateKey}`);
         const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
             const data = result.payload.val();
 
-            for(let dateKey in data){
-                for(let turnKey in data[dateKey]){
-                    data[dateKey][turnKey].key = turnKey;
-                    this.turnsToUpdate.push(data[dateKey][turnKey]);
-                }
+            const tempTurns = [];
+            for(let turnKey in data){
+                data[turnKey].key = turnKey;
+                tempTurns.push(data[turnKey]);
             }
-
             turns$.unsubscribe();
-            const tempTurns = this.turnsToUpdate;
-            
             this.updateTurnService.updateTurn(tempTurns, businessKey, dateKey);
         });
     }

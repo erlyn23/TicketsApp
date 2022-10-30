@@ -24,6 +24,7 @@ export class NotificationService {
   requestNotification(businessKey: string){
     
     this.angularFireMessaging.requestToken.subscribe(token => {
+      
       this.repositoryService.updateElement(`businessList/${businessKey}`, {
         notificationToken: token
       }).catch(error => {
@@ -31,9 +32,7 @@ export class NotificationService {
       });
 
 
-      this.angularFireMessaging.messages.subscribe(payload => {
-        console.log(payload);
-      });
+      this.angularFireMessaging.messages.subscribe();
     });
   }
 

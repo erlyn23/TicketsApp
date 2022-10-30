@@ -145,8 +145,19 @@ export class BHomeComponent implements OnInit, OnDestroy {
   }
 
   updateClientTurn(dateKey: string){
-    const tempTurns = this.turns[dateKey];
-    this.updateTurnService.updateTurn(tempTurns, this.businessKey, dateKey);
+    const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${this.businessKey}/${dateKey}`);
+    const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
+        const data = result.payload.val();
+        const tempTurns = [];
+        for(let turnKey in data){
+
+            data[turnKey].key = turnKey;
+            tempTurns.push(data[turnKey]);
+        }
+        turns$.unsubscribe();
+        
+        this.updateTurnService.updateTurn(tempTurns, this.businessKey, dateKey);
+    });
   }
 
   async updateBusinessStatus(ev){
