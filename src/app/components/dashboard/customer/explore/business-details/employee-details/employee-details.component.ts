@@ -40,6 +40,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
     userUid: string;
     isInTurn: boolean = false; 
+    turnsLimit: number = 0;
 
     reserveDate: string = (new Date()).toISOString();
     reserveHour: string = (new Date()).toISOString();
@@ -50,6 +51,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
 
     employeeSubscription: Subscription;
+    turnLimitSubscription: Subscription;
 
     clientPhoto: string;
     constructor(private utilityServie: UtilityService,
@@ -69,7 +71,8 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         
         this.getEmployeeDetails();
         this.getClientPhoto();
-        this.getBusiness();
+        this.getBusinessServices();
+        this.getTurnsLimit();
         this.searchForPreviousTurn();
     }
 
@@ -92,7 +95,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         });
     }
 
-    getBusiness(){
+    getBusinessServices(){
         this.servicesRef = this.servicesRepoService.getAllElements(`services/${this.additionalKey}`);
         const services$ = this.servicesRef.snapshotChanges().subscribe(result=>{
             const services = result.payload.val();
@@ -102,6 +105,13 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
                 this.services.push(services[serviceKey]);
             }
             services$.unsubscribe();
+        });
+    }
+
+    getTurnsLimit(){
+        this.businessRef = this.businessRepository.getAllElements(`businessList/${this.additionalKey}`);
+        this.turnLimitSubscription = this.businessRef.valueChanges().subscribe(business => {
+            this.turnsLimit = (business.turnDiaryLimit) ? parseInt(business.turnDiaryLimit.toString()) : 0;
         });
     }
 
@@ -157,8 +167,8 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     searchForBusinessPreviousQuantity(clientPhoto: string, previousQuantity: number){
         const reserveDateKey = this.getReserveDateKey();
 
-        const businessObject: AngularFireObject<ITurn> = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}/${reserveDateKey}`);
-        const business$ = businessObject.snapshotChanges().subscribe(async result=>{
+        const turnFireObject: AngularFireObject<ITurn> = this.angularFireDatabase.object(`clientsInTurn/${this.additionalKey}/${reserveDateKey}`);
+        const turn$ = turnFireObject.snapshotChanges().subscribe(async result=>{
             const turnList = result.payload.val();
             let turnsCounter = 0;
             
@@ -167,7 +177,7 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
 
             const turnNum = (result) ? turnsCounter : 0;
             await this.reserveTurn(clientPhoto, turnNum, previousQuantity);
-            business$.unsubscribe();
+            turn$.unsubscribe();
 
         }, error => {
             console.log(error);
@@ -185,7 +195,12 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         const sendedHour = new Date(this.reserveHour);
 
 
-        if(sendedDate < actualDate && sendedHour < actualHour) await this.utilityService.presentToast('La fecha y la hora deben ser iguales o adelantadas a la de hoy', 'error-toast');
+        const isToday = (actualDate.getDate() == sendedDate.getDate() 
+        && actualDate.getMonth() == sendedDate.getMonth() 
+        && actualDate.getFullYear() == sendedDate.getFullYear())
+
+        if(isToday && businessPreviousQuantity + 1 > this.turnsLimit) await this.utilityService.presentToast('Ya no se pueden reservar más turnos en este negocio', 'error-toast');
+        else if(sendedDate < actualDate && sendedHour < actualHour) await this.utilityService.presentToast('La fecha y la hora deben ser iguales o adelantadas a la de hoy', 'error-toast');
         else if(this.serviceKey.length === 0) await this.utilityService.presentToast('Debes elegir un servicio', 'error-toast');
         else{
             await this.utilityService.presentLoading();
@@ -329,19 +344,18 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
         });
     }
 
-    turns: ITurn[] =[];
     updateTurns(dateKey: string){
         const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${this.additionalKey}/${dateKey}`);
         const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
             const data = result.payload.val();
+            const tempTurns = [];
             for(let turnKey in data){
                     
                 data[turnKey].key = turnKey;
-                this.turns.push(data[turnKey]);
+                tempTurns.push(data[turnKey]);
             }
             turns$.unsubscribe();
-            const tempTurns = this.turns;
-            
+
             this.updateTurnService.updateTurn(tempTurns, this.additionalKey, dateKey);
         });
     }
@@ -369,5 +383,6 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy{
     ngOnDestroy():void{
         this.user$.unsubscribe();
         this.employeeSubscription.unsubscribe();
+        this.turnLimitSubscription.unsubscribe();
     }
 }

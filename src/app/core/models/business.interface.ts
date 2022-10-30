@@ -1,5 +1,4 @@
 import { IEmployee } from "./employee.interface";
-import { IServices } from "./services.interface";
 
 export interface IBusiness{
     key?: string;
@@ -13,4 +12,5 @@ export interface IBusiness{
     employees: IEmployee[];
     isOpened: boolean;
     notificationToken?: string;
+    turnDiaryLimit?: number;
 }
