@@ -10,5 +10,6 @@ export interface ITurn{
     businessName: string;
     turnNum: number;
     businessKey: string;
+    dateKey: string;
     serviceKey: string
 }

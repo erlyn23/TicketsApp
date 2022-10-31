@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AngularFireObject } from '@angular/fire/database';
+import { AngularFireMessaging } from '@angular/fire/messaging';
 import { ItemReorderEventDetail } from '@ionic/core';
 import { Subscription } from 'rxjs';
 import { IBusiness } from 'src/app/core/models/business.interface';
 import { IEmployee } from 'src/app/core/models/employee.interface';
 import { ITurn } from 'src/app/core/models/turn.interface';
 import { AuthService } from 'src/app/services/auth.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { RepositoryService } from 'src/app/services/repository.service';
 import { UpdateTurnService } from 'src/app/services/update-turn.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -18,7 +20,9 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class BHomeComponent implements OnInit, OnDestroy {
   turnRef: AngularFireObject<ITurn>;
   turn$: Subscription;
-  turns: ITurn[] = [];
+  notification$: Subscription;
+  turns: {} = {};
+  dateKeys: string[] = [];
 
   businessKey: string;
 
@@ -30,14 +34,16 @@ export class BHomeComponent implements OnInit, OnDestroy {
     closeTime: '',
     clientsInTurn: 0,
     employees: [],
+    turnLimits: [],
     long: 0,
-    latitude: 0,
+    latitude: 0
   };
   profilePhoto: string;
   constructor(private authService: AuthService, 
     private repositoryService: RepositoryService<any>,
     private updateTurnService: UpdateTurnService,
-    private utilityService: UtilityService) { }
+    private utilityService: UtilityService,
+    private notificationService: NotificationService) { }
 
   ngOnInit() {
     const user = this.authService.userData;
@@ -45,17 +51,23 @@ export class BHomeComponent implements OnInit, OnDestroy {
 
     this.getTurns();
     this.getBusiness();
+    this.notificationService.requestNotification(this.businessKey);
   }
+
 
   getTurns(){
     this.turnRef = this.repositoryService.getAllElements(`clientsInTurn/${this.businessKey}`);
     this.turn$ = this.turnRef.snapshotChanges().subscribe(result=>{
       const data = result.payload.val();
 
-      this.turns = [];
-      for(let turnKey in data){
-        data[turnKey].key = turnKey;
-        this.turns.push(data[turnKey]);
+      this.dateKeys = [];
+      for(let dateKey in data){
+        this.dateKeys.push(dateKey);
+        this.turns[dateKey] = []; 
+        for(let turnKey in data[dateKey]){
+          data[dateKey][turnKey].key = turnKey;
+          this.turns[dateKey].push(data[dateKey][turnKey]);
+        }
       }
     });
   }
@@ -69,15 +81,16 @@ export class BHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  async toggleReorder(){
-    const reorderParent = document.getElementById('reorder-parent');
+  async toggleReorder(index:number){
+    const reorderParent = document.getElementById(`reorder-parent-${index}`);
 
-    if(reorderParent.attributes[2].value === 'true'){
-      document.getElementById('toggle-icon').setAttribute('name', 'close-circle-outline');
+    const disabledAttributeIndex = Array.from(reorderParent.attributes).findIndex(a => a.name === 'disabled');
+    if(reorderParent.attributes[disabledAttributeIndex].value === 'true'){
+      document.getElementById(`toggle-icon-${index}`).setAttribute('name', 'close-circle-outline');
       reorderParent.setAttribute('disabled', 'false');
       await this.utilityService.presentToast('Arrastra los elementos para ordenarlos', 'success-toast');
     }else{
-      document.getElementById('toggle-icon').setAttribute('name', 'reorder-three-outline');
+      document.getElementById(`toggle-icon-${index}`).setAttribute('name', 'reorder-three-outline');
       reorderParent.setAttribute('disabled', 'true');
     }
   }
@@ -117,23 +130,37 @@ export class BHomeComponent implements OnInit, OnDestroy {
         this.repositoryService.updateElement(`businessList/${this.businessKey}/employees/${turn.employeeKey}`,{
           clientsInTurn: employeePreviousQuantity - 1
         }).then(async ()=>{
-          await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.key}`);
-          this.updateClientTurn();
+          await this.repositoryService.deleteElement(`clientsInTurn/${this.businessKey}/${turn.dateKey}/${turn.key}`);
+          this.updateClientTurn(turn.dateKey);
           this.utilityService.closeLoading();
         });
       });
     });
   }
 
-  reorderTurns(ev: CustomEvent<ItemReorderEventDetail>) {
-    this.turns = ev.detail.complete(this.turns);
+  reorderTurns(ev: CustomEvent<ItemReorderEventDetail>, dateKey: string) {
+    this.turns[dateKey] = ev.detail.complete(this.turns[dateKey]);
     
-    this.updateClientTurn();
+    this.updateClientTurn(dateKey);
   }
 
-  updateClientTurn(){
-    const tempTurns = this.turns;
-    this.updateTurnService.updateTurn(tempTurns, this.businessKey);
+  updateClientTurn(dateKey: string){
+    const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${this.businessKey}/${dateKey}`);
+    const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
+        const data = result.payload.val();
+        const tempTurns = [];
+        
+        for(let turnKey in data){
+
+          data[turnKey].key = turnKey;
+          tempTurns.push(data[turnKey]);
+          
+        }
+
+        turns$.unsubscribe();
+        
+        this.updateTurnService.updateTurn(tempTurns, this.businessKey, dateKey);
+    });
   }
 
   async updateBusinessStatus(ev){
@@ -141,7 +168,7 @@ export class BHomeComponent implements OnInit, OnDestroy {
       isOpened: this.business.isOpened
     });
   }
-
+  
   ngOnDestroy(){
     this.turn$.unsubscribe();
   }

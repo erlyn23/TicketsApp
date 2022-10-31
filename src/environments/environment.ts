@@ -11,7 +11,8 @@ export const environment = {
     projectId: "miturnitord-a5afd",
     storageBucket: "miturnitord-a5afd.appspot.com",
     messagingSenderId: "1066585980356",
-    appId: "1:1066585980356:web:d0e5ce67f4e58d04097891"
+    appId: "1:1066585980356:web:d0e5ce67f4e58d04097891",
+    vapidKey: "BExFBvnkNjTAzXmAFdiTeI-YCb2ysX-jBQkQyaG5MQL0VXdkQk5sAeoAyircLv9xSbmb1UzlKBeP8-f2Pds-Tpc"
   },
   firebaseConfigProd:{
     apiKey: "AIzaSyC7ObVf0qluPJFUWnu6UFJ8UDeIdUvggmk",
@@ -21,10 +22,20 @@ export const environment = {
     messagingSenderId: "899090511952",
     appId: "1:899090511952:web:8024c9140df54a3d943955"
   },
+  firebaseConfigDev: {
+    apiKey: "AIzaSyB6KtrgvmtEK26U2UJXozgq89V6Bsyv3FE",
+    authDomain: "tuturnorddev.firebaseapp.com",
+    projectId: "tuturnorddev",
+    storageBucket: "tuturnorddev.appspot.com",
+    messagingSenderId: "211210531678",
+    appId: "1:211210531678:web:0e59e05f891a5f25a755cf",
+    vapidKey: "BBBWctkG0_J5h_nAzzPXITLBEvho31ICHGEiqPyxhzkcAGQG3YE7TXgKrj5i03u2AUoMxNjcgFgiVOQbQmlMjd4"
+  },
   mapToken: 'pk.eyJ1IjoiZXJseW4yMyIsImEiOiJja2Q4NnFtYmkwMW5jMzRzZ3N0aTEwZWEzIn0.cO65NFyyEyHN8OSn-9uNYw',
   clientId: '1066585980356-ce1gmva74c90bda3p03ce8g9ru81cjto.apps.googleusercontent.com',
   clientIdProd: '899090511952-9aj6oat14qeij7tcetg9tho7agluo95p.apps.googleusercontent.com',
-  sendMail: 'https://tuturnord.herokuapp.com/api/send-problem'
+  sendMail: 'https://tuturnord.herokuapp.com/api/send-problem',
+  sendNotification: 'https://tuturnord.herokuapp.com/api/send-notification'
 };
 
 /*

@@ -51,11 +51,14 @@ export class TurnsComponent implements OnInit, OnDestroy{
             const turnList = result.payload.val();
             this.turns = [];
             for(let businessKey in turnList){
-                for(let turnKey in turnList[businessKey]){
-                    if(turnList[businessKey][turnKey].clientKey === this.userUid){
-                        turnList[businessKey][turnKey].key = turnKey;
-                        this.turns.push(turnList[businessKey][turnKey]);
-                        this.getServices(businessKey, turnList[businessKey][turnKey].serviceKey);
+                for(let dateKey in turnList[businessKey]){
+                    for(let turnKey in turnList[businessKey][dateKey]){
+
+                        if(turnList[businessKey][dateKey][turnKey].clientKey === this.userUid){
+                            turnList[businessKey][dateKey][turnKey].key = turnKey;
+                            this.turns.push(turnList[businessKey][dateKey][turnKey]);
+                            this.getServices(businessKey, turnList[businessKey][dateKey][turnKey].serviceKey);
+                        }
                     }
                 }
             }
@@ -93,38 +96,40 @@ export class TurnsComponent implements OnInit, OnDestroy{
         const employeeClientTurn$ = this.employeeClientTurnObject.snapshotChanges().subscribe(result=>{
             if(result !== null){
                 const data = result.payload.val();
-                for(let turnKey in data){
-                    if(data[turnKey].clientKey === this.userUid){
-                        this.searchBusinessToUnreserveTurn(data[turnKey].employeeKey, turnKey, businessKey);
-                        employeeClientTurn$.unsubscribe();
-                        break;
+                for(let dateKey in data){
+                    for(let turnKey in data[dateKey]){
+                        if(data[dateKey][turnKey].clientKey === this.userUid){
+                            this.searchBusinessToUnreserveTurn(data[dateKey][turnKey].employeeKey, turnKey, businessKey, dateKey);
+                            employeeClientTurn$.unsubscribe();
+                            break;
+                        }
                     }
                 }
             }
         });
     }
 
-    searchBusinessToUnreserveTurn(employeeKey: string, turnKey: string, businessKey:string)
+    searchBusinessToUnreserveTurn(employeeKey: string, turnKey: string, businessKey:string, dateKey: string)
     {
         const previousQuantities: number[] = [];
         const businessObject: AngularFireObject<IBusiness> = this.businessRepoService.getAllElements(`businessList/${businessKey}`);
         const business$ = businessObject.valueChanges().subscribe(result=>{
             previousQuantities.push(result.clientsInTurn);
-            this.searchEmployeeToUnreserveTurn(employeeKey, previousQuantities, turnKey, businessKey);
+            this.searchEmployeeToUnreserveTurn(employeeKey, previousQuantities, turnKey, businessKey, dateKey);
             business$.unsubscribe();
         });
     }
 
-    searchEmployeeToUnreserveTurn(employeeKey: string, previousQuantities: number[], turnKey: string, businessKey:string){
+    searchEmployeeToUnreserveTurn(employeeKey: string, previousQuantities: number[], turnKey: string, businessKey:string, dateKey: string){
         const employeeToUnsubscribeObjectRef: AngularFireObject<IEmployee> = this.angularFireDatabase.object(`businessList/${businessKey}/employees/${employeeKey}`);
         const employee$ = employeeToUnsubscribeObjectRef.valueChanges().subscribe(result=>{
             previousQuantities.push(result.clientsInTurn);
-            this.unreserveTurn(employeeKey, previousQuantities, turnKey, businessKey);
+            this.unreserveTurn(employeeKey, previousQuantities, turnKey, businessKey, dateKey);
             employee$.unsubscribe();
         });
     }
 
-    unreserveTurn(employeeKey: string, previousQuantities: number[], turnKey: string, businessKey:string){
+    unreserveTurn(employeeKey: string, previousQuantities: number[], turnKey: string, businessKey:string, dateKey: string){
 
         const businessPreviousQuantity = previousQuantities[0];
         const employeePreviousQuantity = previousQuantities[1];
@@ -136,28 +141,26 @@ export class TurnsComponent implements OnInit, OnDestroy{
                 this.repositoryService.updateElement(`businessList/${businessKey}/employees/${employeeKey}`,{
                     clientsInTurn: employeePreviousQuantity - 1
                 }).then(()=>{
-                    this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${turnKey}`);
-                    this.updateTurns(businessKey);
+                    this.repositoryService.deleteElement(`clientsInTurn/${businessKey}/${dateKey}/${turnKey}`);
+                    this.updateTurns(businessKey, dateKey);
                 });
             });
         });
     }
 
-    turnsToUpdate: ITurn[] = [];
-    updateTurns(businessKey:string){
-        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${businessKey}`);
+
+    updateTurns(businessKey:string, dateKey:string){
+        const turnObject: AngularFireObject<any> = this.repositoryService.getAllElements(`clientsInTurn/${businessKey}/${dateKey}`);
         const turns$ = turnObject.snapshotChanges().subscribe(async result=>{
             const data = result.payload.val();
 
+            const tempTurns = [];
             for(let turnKey in data){
                 data[turnKey].key = turnKey;
-                this.turnsToUpdate.push(data[turnKey]);
+                tempTurns.push(data[turnKey]);
             }
-
             turns$.unsubscribe();
-            const tempTurns = this.turnsToUpdate;
-            
-            this.updateTurnService.updateTurn(tempTurns, businessKey);
+            this.updateTurnService.updateTurn(tempTurns, businessKey, dateKey);
         });
     }
 

@@ -93,12 +93,12 @@ export class EmployeesComponent implements OnInit {
     });
   }
 
-  async goToEmployeeDetails(employee: IEmployee){
-    await this.utilityService.openModal(BEmployeeDetailsComponent, employee);
-  }
-
   cancelDeleteEmployee(){
     this.utilityService.closeAlert();
+  }
+
+  async goToEmployeeDetails(employee: IEmployee){
+    await this.utilityService.openModal(BEmployeeDetailsComponent, employee);
   }
 
   ionViewWillLeave() {
